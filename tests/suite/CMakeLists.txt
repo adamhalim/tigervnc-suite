@@ -9,7 +9,9 @@ target_sources(suite PRIVATE
   Server.cxx
   Client.cxx
   codec/PPMDecoder.cxx
+  codec/PNGDecoder.cxx
   codec/Image.cxx
+  codec/lib/fpng.cpp
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
 )
