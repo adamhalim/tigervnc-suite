@@ -15,3 +15,4 @@ target_sources(suite PRIVATE
 )
 
 target_link_libraries(suite rfb)
+target_compile_features(suite PRIVATE cxx_std_11)
