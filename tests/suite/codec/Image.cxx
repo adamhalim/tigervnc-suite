@@ -43,3 +43,8 @@ std::istringstream& operator>>(std::istringstream &in, Pixel& pixel)
   pixel.b = b;
   return in;
 }
+
+void Image::setBuffer(rdr::U8 *buffer)
+{
+  this->buffer = buffer;
+}

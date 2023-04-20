@@ -75,8 +75,3 @@ void PPMDecoder::encodeImage(const rdr::U8* data, int width, int height, std::st
   file << oss.str();
   file.close();
 }
-
-void Image::setBuffer(rdr::U8 *buffer)
-{
-  this->buffer = buffer;
-}
