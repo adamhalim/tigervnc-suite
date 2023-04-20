@@ -11,7 +11,12 @@ void runTest(std::string dir);
 
 int main(int argc, char** argv)
 {
-  std::string dir = argc > 1 ? argv[1] : "pictures/"; 
+  if (argc < 2) {
+    fprintf(stderr, "Syntax: %s <directory>\n", argv[0]);
+    exit(1);
+  }
+
+  std::string dir = argv[1];
 
   try {
     runTest(dir);
