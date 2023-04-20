@@ -8,6 +8,7 @@ target_sources(suite PRIVATE
   Manager.cxx
   Server.cxx
   Client.cxx
+  benchmark/Benchmark.cxx
   codec/PPMDecoder.cxx
   codec/PNGDecoder.cxx
   codec/Image.cxx
