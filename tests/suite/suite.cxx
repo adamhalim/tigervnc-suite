@@ -1,9 +1,9 @@
-#include "codec/PPMDecoder.h"
+#include "benchmark/Benchmark.h"
+#include "codec/PNGDecoder.h"
 #include "Server.h"
 #include "fileUtil.h"
 #include "Client.h"
 #include <iostream>
-#include <cstdlib>
 
 using namespace suite;
 
@@ -27,21 +27,19 @@ int main(int argc, char** argv)
 
 void runTest(std::string dir)
 {
+
+  Benchmark* b = new Benchmark(dir, new PNGDecoder());
   std::vector<std::string> files = readDirectory(dir);
   if(!files.size())
     throw rdr::Exception("no files in directory");
 
   int width = 1920;
-  int height = 1080;
+  int height = 1200;
   Server *server = new Server(width,height);
-  ImageDecoder* decoder = new PPMDecoder();
+  b->runBenchmark(server);
 
-  // Decode all images & write them to framebuffer
-  for (unsigned int i = 0; i < files.size(); i++) {
-    Image* image = decoder->decodeImage(files[i]);
-    server->loadImage(image);
-    delete image;
-  }
+  std::cout << "Benchmark " << dir << " took "  
+    << b->getTime() << " seconds.\n";
 
   #if _DEBUG
   // // Copy sc OutStream to cc InStream
@@ -62,6 +60,4 @@ void runTest(std::string dir)
   #endif
 
   delete server;
-  delete decoder;
-
 }
