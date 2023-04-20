@@ -24,6 +24,18 @@ std::vector<std::string> readDirectory(std::string dir)
 
 }
 
+std::vector<std::pair<double, double> > loadOffsets(std::string filename)
+{
+  // FIXME: error handling
+  std::vector<std::pair<double, double> > offsets;
+  std::ifstream is(filename);
+  int x, y;
+  while (is >> x >> y) {
+    offsets.push_back({x, y});
+  }
+  return offsets;
+}
+
 FILE* loadFile(std::string filename)
 {
   FILE* file;
