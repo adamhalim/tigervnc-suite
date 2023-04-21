@@ -1,8 +1,8 @@
 #include "PNGDecoder.h"
 #include <algorithm>
 #include <cstddef>
-#include <cstdint>
 #include <cstring>
+#include <iostream>
 #include <vector>
 #include "Image.h"
 
@@ -15,6 +15,10 @@
 PNGDecoder::PNGDecoder()
 {
   fpng::fpng_init();
+    #if _DEBUG
+      start = std::chrono::system_clock::now();
+      frameCount = 0;
+    #endif
 }
 
 PNGDecoder::~PNGDecoder()
@@ -43,6 +47,16 @@ void PNGDecoder::encodeImage(const rdr::U8 *data, int width, int height, std::st
   rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
   fpng::fpng_encode_image_to_file(filename.c_str(), paddedBuf, width, height, 4);
   delete paddedBuf;
+    #if _DEBUG
+      frameCount++;
+      const int FRAME_SAMPLE_SIZE = 100;
+      if (frameCount % FRAME_SAMPLE_SIZE == 0) {
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        std::chrono::duration<double> time = (now - start);
+        std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
+        start = now;
+      }
+      #endif
 }
 
 rdr::U8* PNGDecoder::addAlphaPadding(const rdr::U8* data, int width, int height)
