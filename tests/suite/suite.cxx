@@ -60,4 +60,5 @@ void runTest(std::string dir)
   #endif
 
   delete server;
+  delete b;
 }

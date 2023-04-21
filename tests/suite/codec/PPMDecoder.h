@@ -3,16 +3,18 @@
 
 #include "ImageDecoder.h"
 
-class PPMDecoder : public ImageDecoder
-{
-public:
-  PPMDecoder();
-  ~PPMDecoder();
+namespace suite {
+  class PPMDecoder : public ImageDecoder
+  {
+  public:
+    PPMDecoder();
+    ~PPMDecoder();
 
-  Image *decodeImage(std::string filename);
-  static void encodeImage(Image *image, std::string filename);
-  static void encodeImage(const rdr::U8* data, int width, int height, std::string filename);
+    Image *decodeImage(std::string filename);
+    static void encodeImage(Image *image, std::string filename);
+    static void encodeImage(const rdr::U8* data, int width, int height, std::string filename);
 
-};
+  };
+}
 
 #endif

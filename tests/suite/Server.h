@@ -7,6 +7,8 @@
 #include "rfb/UpdateTracker.h"
 #include "rfb/encodings.h"
 
+namespace suite {
+
 static const rfb::PixelFormat fbPF(32, 24, false, true, 255, 255, 255, 0, 8, 16);
 
 // Encodings to use
@@ -16,7 +18,6 @@ static const rdr::S32 encodings[] = {
   rfb::pseudoEncodingQualityLevel0 + 8,
   rfb::pseudoEncodingCompressLevel0 + 2};
 
-namespace suite {
   class Server : public rfb::SConnection
   {
   public:

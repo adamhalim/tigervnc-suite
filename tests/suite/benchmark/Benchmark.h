@@ -44,5 +44,5 @@ namespace suite {
     std::vector<std::pair<double, double> > offsets;
   };
 
-  #endif
 }
+  #endif
