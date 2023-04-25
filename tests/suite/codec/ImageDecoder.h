@@ -4,6 +4,7 @@
 #include "Image.h"
 #include <chrono>
 #include <iostream>
+#include <map>
 
 namespace suite {
 
@@ -13,10 +14,26 @@ namespace suite {
     QOI
   };
 
+  static std::map<std::string, decoderEnum> decodersMap = {
+    {"PPM", PPM},
+    {"PNG", PNG},
+    {"QOI", QOI}
+  };
+
+  static std::string decoderTypeToString(enum decoderEnum e)
+  {
+    static std::string strings[] = {
+      "PPM",
+      "PNG",
+      "QOI",
+    };
+    return strings[e];
+  }
+
   class ImageDecoder
   {
   public:
-    ImageDecoder(decoderEnum type) : type(type) {
+    ImageDecoder(decoderEnum type) : type(type), name(decoderTypeToString(type)) {
       #if _DEBUG
         start = std::chrono::system_clock::now();
         frameCount = 0;
@@ -32,6 +49,7 @@ namespace suite {
                                       int height, int offset_x = 0,
                                       int offset_y  = 0) = 0;
     const decoderEnum type;
+    const std::string name;
   protected:
     // Measures encoding/decoding performance.
     void measureFPS()
