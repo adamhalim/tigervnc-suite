@@ -36,7 +36,7 @@ namespace suite {
     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &channels, 0);
 
     Image* image = new Image(width, height);
-    image->setBuffer(data);
+    image->setBuffer(data, width * height * 4);
     return image;
   }
 

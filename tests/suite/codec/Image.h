@@ -15,13 +15,14 @@ namespace suite {
   class Image
   {
   public:
-    Image(int width, int height);
+    Image(int width, int height, int offset_x = 0, int offset_y = 0);
+    Image(int width, int height, rdr::U8* buffer, int size, int offset_x = 0, int offset_y = 0);
     virtual ~Image();
     virtual Image& operator+=(Pixel const &pixel);
     virtual rdr::U8* getBuffer();
-    const int width, height;
-    const unsigned int bufferSize;
-    void setBuffer(rdr::U8 *buffer);
+    const int width, height, x_offset, y_offset;
+    unsigned int size;
+    void setBuffer(rdr::U8 *buffer, int size);
   private:
     rdr::U8* buffer;
     unsigned int pixelCount;
