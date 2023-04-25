@@ -7,10 +7,16 @@
 
 namespace suite {
 
+  enum decoderEnum {
+    PPM = 0,
+    PNG,
+    QOI
+  };
+
   class ImageDecoder
   {
   public:
-    ImageDecoder() {
+    ImageDecoder(decoderEnum type) : type(type) {
       #if _DEBUG
         start = std::chrono::system_clock::now();
         frameCount = 0;
@@ -25,6 +31,7 @@ namespace suite {
     virtual Image* encodeImageToMemory(const rdr::U8* data, int width,
                                       int height, int offset_x = 0,
                                       int offset_y  = 0) = 0;
+    const decoderEnum type;
   protected:
     // Measures encoding/decoding performance.
     void measureFPS()

@@ -15,7 +15,7 @@
 
 namespace suite {
 
-  PNGDecoder::PNGDecoder()
+  PNGDecoder::PNGDecoder() : ImageDecoder(PNG)
   {
     fpng::fpng_init();
   }

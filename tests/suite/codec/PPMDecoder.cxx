@@ -5,7 +5,7 @@
 #include <string>
 
 namespace suite {
-  PPMDecoder::PPMDecoder() : ImageDecoder()
+  PPMDecoder::PPMDecoder() : ImageDecoder(PPM)
   {
   }
 
