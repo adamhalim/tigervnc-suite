@@ -18,10 +18,6 @@ namespace suite {
   PNGDecoder::PNGDecoder()
   {
     fpng::fpng_init();
-    #if _DEBUG
-      start = std::chrono::system_clock::now();
-      frameCount = 0;
-    #endif
   }
 
   PNGDecoder::~PNGDecoder()
@@ -39,6 +35,7 @@ namespace suite {
 
     Image* image = new Image(width, height);
     image->setBuffer(data, width * height * 4);
+    measureFPS();
     return image;
   }
 
@@ -59,6 +56,7 @@ namespace suite {
 
     Image* image = new Image(width, height, x_offset, y_offset);
     image->setBuffer(vectoryCopy, out.size());
+    measureFPS();
     return image;
   }
 
@@ -70,16 +68,7 @@ namespace suite {
     rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
     fpng::fpng_encode_image_to_file(filename.c_str(), paddedBuf, width, height, 4);
     delete paddedBuf;
-    #if _DEBUG
-      frameCount++;
-      const int FRAME_SAMPLE_SIZE = 100;
-      if (frameCount % FRAME_SAMPLE_SIZE == 0) {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::chrono::duration<double> time = (now - start);
-        std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
-        start = now;
-      }
-      #endif
+    measureFPS();
   }
 
   Image* PNGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
@@ -94,17 +83,8 @@ namespace suite {
 
     rdr::U8* vectorCopy = new rdr::U8[out.size()];
     std::copy(out.begin(), out.end(), vectorCopy);
-    #if _DEBUG
-    frameCount++;
-    const int FRAME_SAMPLE_SIZE = 100;
-    if (frameCount % FRAME_SAMPLE_SIZE == 0) {
-      std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-      std::chrono::duration<double> time = (now - start);
-      std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
-      start = now;
-    }
-    #endif
     Image* image = new Image(width, height, vectorCopy, out.size(), x_offset, y_offset);
+    measureFPS();
     return image;
   }
 
