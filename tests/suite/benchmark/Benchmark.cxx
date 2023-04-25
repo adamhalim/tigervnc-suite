@@ -39,7 +39,7 @@ void Benchmark::runBenchmark(Server* server)
 
   
   for (unsigned int i = 0; i < files.size(); i++) {
-    Image* image = decoder->decodeImage(files.at(i));
+    Image* image = decoder->decodeImageFromFile(files.at(i));
 
     stats.startClock();
     server->loadImage(image, offsets.at(i).first, offsets.at(i).second);
