@@ -1,5 +1,5 @@
-#ifndef __BENCHMARK_FILE_H__
-#define __BENCHMARK_FILE_H__
+#ifndef __IMAGE_UPDATE_H__
+#define __IMAGE_UPDATE_H__
 
 #include "../codec/Image.h"
 
