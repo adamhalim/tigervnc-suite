@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <fstream>
+#include <ios>
 #include <iostream>
 #include <vector>
 #include "Image.h"
@@ -26,7 +28,7 @@ namespace suite {
   {
   }
 
-  Image* PNGDecoder::decodeImage(std::string filename)
+  Image* PNGDecoder::decodeImageFromFile(std::string filename)
   {
     // uses stb_image for decoding
     int width;
@@ -40,7 +42,27 @@ namespace suite {
     return image;
   }
 
-  void PNGDecoder::encodeImage(const rdr::U8 *data, int width, int height, std::string filename)
+ Image* PNGDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
+                                          int size, int x_offset, int y_offset)
+  {
+
+    std::vector<uint8_t> out;
+    uint32_t w;
+    uint32_t h;
+    uint32_t channels;
+    int ret = fpng::fpng_decode_memory(data, size, out, w, h, channels, 4);
+    if (ret)
+      throw std::ios_base::failure("fpng: failed to decode image\n");
+
+    rdr::U8* vectoryCopy = new rdr::U8[width * height * 4];
+    std::copy(out.begin(), out.end(), vectoryCopy);
+
+    Image* image = new Image(width, height, x_offset, y_offset);
+    image->setBuffer(vectoryCopy, out.size());
+    return image;
+  }
+
+  void PNGDecoder::encodeImageTofile(const rdr::U8 *data, int width, int height, std::string filename)
   {
     // We use fpng to encode images as it's faster than stb_image.
     // FIXME: images encoded by fpng must be decoded using fpng.
@@ -58,6 +80,32 @@ namespace suite {
         start = now;
       }
       #endif
+  }
+
+  Image* PNGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+                                        int height, int x_offset, int y_offset)
+  {
+    rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
+    std::vector<rdr::U8> out;
+    int ret = fpng::fpng_encode_image_to_memory(paddedBuf, width, height, 4, out);
+    delete paddedBuf;
+    if (!ret)
+      throw std::ios_base::failure("fpng: failed to encode image\n");
+
+    rdr::U8* vectorCopy = new rdr::U8[out.size()];
+    std::copy(out.begin(), out.end(), vectorCopy);
+    #if _DEBUG
+    frameCount++;
+    const int FRAME_SAMPLE_SIZE = 100;
+    if (frameCount % FRAME_SAMPLE_SIZE == 0) {
+      std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+      std::chrono::duration<double> time = (now - start);
+      std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
+      start = now;
+    }
+    #endif
+    Image* image = new Image(width, height, vectorCopy, out.size(), x_offset, y_offset);
+    return image;
   }
 
   rdr::U8* PNGDecoder::addAlphaPadding(const rdr::U8* data, int width, int height)

@@ -11,8 +11,12 @@ namespace suite {
     PNGDecoder();
     ~PNGDecoder();
 
-    Image *decodeImage(std::string filename);
-    void encodeImage(const rdr::U8* data, int width, int height, std::string filename);
+    Image *decodeImageFromFile(std::string filename);
+    Image* decodeImageFromMemory(rdr::U8* data, int width, int height,
+                                          int size, int x_offest = 0, int y_offset = 0);
+    void encodeImageTofile(const rdr::U8* data, int width, int height, std::string filename);
+    Image* encodeImageToMemory(const rdr::U8* data, int width, int height,
+                                int x_offset = 0, int y_offset = 0);
   private:
     // Sets all bits in alpha channel to 255
     rdr::U8* addAlphaPadding(const rdr::U8* data, int width, int height);

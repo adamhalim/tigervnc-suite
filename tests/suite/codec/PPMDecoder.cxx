@@ -1,6 +1,8 @@
 #include "PPMDecoder.h"
+#include <cstring>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 namespace suite {
   PPMDecoder::PPMDecoder() : ImageDecoder()
@@ -13,7 +15,7 @@ namespace suite {
   }
 
   // Leaves ownership of Image
-  Image *PPMDecoder::decodeImage(std::string filename)
+  Image *PPMDecoder::decodeImageFromFile(std::string filename)
   {
     unsigned int width;
     unsigned int height;
@@ -47,12 +49,12 @@ namespace suite {
     return image;
   }
 
-  void PPMDecoder::encodeImage(Image *image, std::string filename)
+  void PPMDecoder::encodeImageTofile(Image *image, std::string filename)
   {
-    encodeImage(image->getBuffer(), image->width, image->height, filename);
+    encodeImageTofile(image->getBuffer(), image->width, image->height, filename);
   }
 
-  void PPMDecoder::encodeImage(const rdr::U8* data, int width, int height, std::string filename)
+  void PPMDecoder::encodeImageTofile(const rdr::U8* data, int width, int height, std::string filename)
   {
     std::ofstream file;
     file.open(filename.c_str());
@@ -75,6 +77,25 @@ namespace suite {
     }
     file << oss.str();
     file.close();
+  }
+
+  Image* PPMDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+                                        int height, int offset_x, int offset_y)
+  {
+    const std::string MAXVAL = "255";
+    std::string header = "P3\n" + std::to_string(width) + " " 
+      + std::to_string(height) + "\n" + MAXVAL + "\n";
+    rdr::U8* buf = new rdr::U8[(width * height * 3) + header.length()];
+
+    for (int i = 0; i < width * height * 4; i+=4) {
+      *buf++ = data[i];
+      *buf++ = data[i+1];
+      *buf++ = data[i+2];
+    }
+
+    Image* image = new Image(width,height, offset_x, offset_y);
+    image->setBuffer(buf, width * height * 3);
+    return image;
   }
 
 }
