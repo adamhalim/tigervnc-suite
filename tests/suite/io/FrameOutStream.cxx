@@ -4,8 +4,9 @@
 
 namespace suite {
 
-  FrameOutStream::FrameOutStream(std::string filename) : head(buffer),
-                                  end(buffer + BUF_SIZE)
+  FrameOutStream::FrameOutStream(std::string filename, ImageDecoder* decoder)
+                                : head(buffer), end(buffer + BUF_SIZE),
+                                  headerWritten(false), decoder(decoder->name)
   {
     file.open(filename.c_str());
     if (!file.is_open())
@@ -18,6 +19,8 @@ namespace suite {
 
   void FrameOutStream::addUpdate(ImageUpdate* update)
   {
+    if (!headerWritten)
+      throw std::logic_error("header not written");
     Image* image = update->image;
     lock.lock();
     if (!check(image->size))
@@ -46,5 +49,13 @@ namespace suite {
   bool FrameOutStream::check(size_t size)
   {
     return head + size > end;
+  }
+
+  void FrameOutStream::writeHeader(int width, int height)
+  {
+    if (headerWritten)
+      throw std::logic_error("header already written");
+    file << decoder << " " << width << " " << height << "\n";
+    headerWritten = true;
   }
 }

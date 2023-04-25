@@ -2,7 +2,7 @@
 #define __FRAME_OUT_STREAM_H__
 
 #include "ImageUpdate.h"
-#include <cstdint>
+#include "../codec/ImageDecoder.h"
 #include <fstream>
 #include <mutex>
 #include <string>
@@ -15,8 +15,9 @@ namespace suite {
      The file structure is as follows:
 
       ___________________________________________
-      | imageSize width height x_offset y_offset |  <-- Image metadata in 
-      |******************************************|      plaintext. 
+      |           encoding width height          |  <-- File header 
+      | imageSize width height x_offset y_offset |  <-- Image metadata
+      |******************************************|
       |******************************************|
       |************* RAW IMAGE DATA *************|  <-- Raw dump of image data.
       |******************************************|
@@ -30,6 +31,9 @@ namespace suite {
       |__________________________________________|
 
 
+      The file metadata tells which encoding was used for the images, as well
+      as the framebuffer width & height. The header must be parsed first before
+      processing the rest of the file. The file header ends with a '\n'.
       The image header has information about the next image stored in the file
       and is marked by ending with a '\n'.
       On the next line, the image can be read by reading imageSize many bytes
@@ -39,8 +43,6 @@ namespace suite {
       Knowledge of which image encoding was used to write is necessary to
       decode images in the file.
 
-      FIXME: Add framebuffer resolution to header metadata.
-      FIXME: Add which encoder was used to header metadata.
       FIXME: Add timing information to header metadata.
       
   */
@@ -48,7 +50,7 @@ namespace suite {
   class FrameOutStream
   {
   public:
-    FrameOutStream(std::string filename);
+    FrameOutStream(std::string filename, ImageDecoder* decoder);
     ~FrameOutStream();
 
     void addUpdate(ImageUpdate* update);
@@ -57,6 +59,7 @@ namespace suite {
                   
     // Check if data of size will fit in buffer
     bool check(size_t size);
+    void writeHeader(int width, int height);
   protected:
     rdr::U8 buffer[BUF_SIZE];  
     rdr::U8* head;
@@ -65,6 +68,8 @@ namespace suite {
     std::string filename;
     std::ofstream file;
     std::mutex lock; // In case updates are encoded in parallel.
+    bool headerWritten;
+    const std::string decoder;
   };
 
 }

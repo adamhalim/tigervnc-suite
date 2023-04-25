@@ -45,7 +45,7 @@
 #include "../../tests/suite/io/FrameOutStream.h"
 #include "../../tests/suite/codec/QOIDecoder.h"
 static suite::QOIDecoder* qoi = new suite::QOIDecoder();
-static suite::FrameOutStream* outStream = new suite::FrameOutStream("outfile.txt");
+static suite::FrameOutStream* outStream = new suite::FrameOutStream("outfile.txt", qoi);
 #endif
 
 using namespace rfb;
@@ -365,6 +365,9 @@ void EncodeManager::doUpdate(bool allowLossy, const Region& changed_,
       writeCopyRects(copied, copyDelta);
 
     #if _DEBUG
+    try {
+      outStream->writeHeader(pb->width(),  pb->height());
+    } catch (std::logic_error &ignored) {}
     Rect r = pb->getRect();
     int height = r.br.y - r.tl.y;
     int stride;

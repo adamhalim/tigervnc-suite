@@ -2,6 +2,7 @@
 #include "rdr/types.h"
 #include "../codec/lib/fpng.h"
 #include "../codec/lib/qoi.h"
+#include "../codec/decoderFactory.h"
 #include <cstdio>
 #include <fstream>
 #include <ios>
@@ -10,7 +11,7 @@
 
 namespace suite {
 
-  FrameInStream::FrameInStream(ImageDecoder* decoder) : decoder(decoder)
+  FrameInStream::FrameInStream() : headerParsed(false)
   {
   }
 
@@ -20,6 +21,9 @@ namespace suite {
 
   Image* FrameInStream::readImage(std::istream& is)
   {
+    if (!headerParsed)
+      throw std::logic_error("need to parse header before reading image");
+
     int size, width, height, x_offset, y_offset;
 
     if (is.peek() == EOF) 
@@ -35,5 +39,20 @@ namespace suite {
     delete [] data;
 
     return image;
+  }
+
+  std::pair<int, int> FrameInStream::parseHeader(std::istream& is)
+  {
+    if (headerParsed)
+      throw std::logic_error("header already parsed");
+    
+    std::string decoder;
+    int width;
+    int height;
+    is >> decoder >> width >> height;
+    
+    this->decoder = constructDecoder(decoder);
+    headerParsed = true;
+    return std::make_pair(width, height);
   }
 }
