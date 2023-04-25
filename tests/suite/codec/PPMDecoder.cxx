@@ -38,7 +38,9 @@ namespace suite {
     is.close();
 
     std::istringstream iss(pixels);
-    Image *image = new Image(width, height);
+    int bufSize = width * height * 3;
+    rdr::U8* buf = new rdr::U8[bufSize];
+    Image *image = new Image(width, height, buf, bufSize);
     // While there is data still in stream, 
     while ((iss >> std::ws).peek() != std::char_traits<char>::eof()) {
       Pixel pixel;
@@ -94,8 +96,7 @@ namespace suite {
       *buf++ = data[i+2];
     }
 
-    Image* image = new Image(width,height, offset_x, offset_y);
-    image->setBuffer(buf, width * height * 3);
+    Image* image = new Image(width,height, buf, width * height * 3, offset_x, offset_y);
     measureFPS();
     return image;
   }

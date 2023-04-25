@@ -38,8 +38,7 @@ namespace suite {
   void FrameOutStream::addUpdate(rdr::U8* data, int width, int height,
                                 int x_offset, int y_offset, int size)
   {
-    Image* image = new Image(width, height, x_offset, y_offset);
-    image->setBuffer(data, size);
+    Image* image = new Image(width, height, data, size, x_offset, y_offset);
     ImageUpdate* update = new ImageUpdate(image);
     addUpdate(update);
   }

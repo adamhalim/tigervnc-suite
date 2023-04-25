@@ -17,13 +17,13 @@ namespace suite {
  Image* QOIDecoder::decodeImageFromFile(std::string filename)
  {
   qoi_desc desc;
-  void* data = qoi_read(filename.c_str(), &desc, 4);
+  rdr::U8* data = (rdr::U8*)qoi_read(filename.c_str(), &desc, 4);
 
   if (!data)
     throw std::ios_base::failure("qoi: error decoding image");
 
-  Image* image = new Image(desc.width, desc.height);
-  image->setBuffer((rdr::U8*)data, desc.width * desc.height * desc.channels);
+  int bufSize = desc.width * desc.height * desc.channels;
+  Image* image = new Image(desc.width, desc.height, data, bufSize);
   measureFPS();
   return image;
  }
@@ -36,8 +36,8 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   if (decodedImage == NULL)
     throw std::ios_base::failure("qoi: error decoding image");
 
-  Image* image = new Image(width, height, x_offset, y_offset);
-  image->setBuffer(decodedImage, desc.width * desc.height * desc.channels);
+  int bufSize = desc.width * desc.height * desc.channels;
+  Image* image = new Image(width, height, decodedImage, bufSize, x_offset, y_offset);
   measureFPS();
   return image;
 }
@@ -71,9 +71,9 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
 
   int size;
   rdr::U8* encodedData = (rdr::U8*)qoi_encode(data, &desc,  &size);
+  int bufSize = desc.width * desc.height * desc.channels;
 
-  Image* image = new Image(desc.width, desc.height);
-  image->setBuffer(encodedData, size);
+  Image* image = new Image(desc.width, desc.height, encodedData, bufSize);
   measureFPS();
   return image;
  }

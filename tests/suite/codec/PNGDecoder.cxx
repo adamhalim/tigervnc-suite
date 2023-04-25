@@ -31,10 +31,10 @@ namespace suite {
     int height;
     int channels;
 
-    unsigned char* data = stbi_load(filename.c_str(), &width, &height, &channels, 0);
+    rdr::U8* data = (rdr::U8*)stbi_load(filename.c_str(), &width, &height, &channels, 0);
+    int bufSize = width * height * channels;
 
-    Image* image = new Image(width, height);
-    image->setBuffer(data, width * height * 4);
+    Image* image = new Image(width, height, data, bufSize);
     measureFPS();
     return image;
   }
@@ -54,8 +54,7 @@ namespace suite {
     rdr::U8* vectoryCopy = new rdr::U8[width * height * 4];
     std::copy(out.begin(), out.end(), vectoryCopy);
 
-    Image* image = new Image(width, height, x_offset, y_offset);
-    image->setBuffer(vectoryCopy, out.size());
+    Image* image = new Image(width, height, vectoryCopy, out.size() ,x_offset, y_offset);
     measureFPS();
     return image;
   }

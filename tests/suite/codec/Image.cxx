@@ -6,17 +6,6 @@
 
 namespace suite {
 
-  Image::Image(int width, int height, int x_offset, int y_offset) 
-              : width(width), height(height), x_offset(x_offset),
-                y_offset(y_offset), size(width * height * 4)              
-  {
-    if (width <= 0 || height <= 0)
-      throw rdr::Exception("width and height need to be > 0");
-      
-    buffer = new rdr::U8[size];
-    pixelCount = 0;
-  }
-
   Image::Image(int width, int height, rdr::U8* buffer, int size, int x_offset,
               int y_offset)
               : width(width), height(height), x_offset(x_offset),

@@ -15,7 +15,6 @@ namespace suite {
   class Image
   {
   public:
-    Image(int width, int height, int offset_x = 0, int offset_y = 0);
     Image(int width, int height, rdr::U8* buffer, int size, int offset_x = 0, int offset_y = 0);
     virtual ~Image();
     virtual Image& operator+=(Pixel const &pixel);
