@@ -51,6 +51,12 @@ namespace suite {
     return image;
   }
 
+  Image* PPMDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
+                                int size, int x_offest, int y_offset)
+  {
+    throw std::logic_error("function not implemented");
+  }
+
   void PPMDecoder::encodeImageTofile(Image *image, std::string filename)
   {
     encodeImageTofile(image->getBuffer(), image->width, image->height, filename);

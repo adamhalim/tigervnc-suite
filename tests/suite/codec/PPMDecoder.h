@@ -13,6 +13,8 @@ namespace suite {
     Image *decodeImageFromFile(std::string filename);
     void encodeImageTofile(Image *image, std::string filename);
     void encodeImageTofile(const rdr::U8* data, int width, int height, std::string filename);
+    Image* decodeImageFromMemory(rdr::U8* data, int width, int height,
+                                          int size, int x_offest = 0, int y_offset = 0);
     Image* encodeImageToMemory(const rdr::U8* data, int width, int height,
                                 int offset_x = 0, int offset_y = 0);
 
