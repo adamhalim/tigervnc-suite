@@ -12,7 +12,9 @@ target_sources(suite PRIVATE
   codec/PPMDecoder.cxx
   codec/PNGDecoder.cxx
   codec/Image.cxx
+  codec/QOIDecoder.cxx
   codec/lib/fpng.cpp
+  codec/lib/qoi.h
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
 )
