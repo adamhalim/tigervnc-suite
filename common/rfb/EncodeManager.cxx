@@ -41,6 +41,13 @@
 #include <rfb/TightEncoder.h>
 #include <rfb/TightJPEGEncoder.h>
 
+#if _DEBUG
+#include "../../tests/suite/io/FrameOutStream.h"
+#include "../../tests/suite/codec/QOIDecoder.h"
+static suite::QOIDecoder* qoi = new suite::QOIDecoder();
+static suite::FrameOutStream* outStream = new suite::FrameOutStream("outfile.txt");
+#endif
+
 using namespace rfb;
 
 static LogWriter vlog("EncodeManager");
@@ -356,6 +363,80 @@ void EncodeManager::doUpdate(bool allowLossy, const Region& changed_,
 
     if (conn->client.supportsEncoding(encodingCopyRect))
       writeCopyRects(copied, copyDelta);
+
+    #if _DEBUG
+    Rect r = pb->getRect();
+    int height = r.br.y - r.tl.y;
+    int stride;
+    const rdr::U8* data = pb->getBuffer(r, &stride);
+    suite::Image* image = qoi->encodeImageToMemory(data, stride, height);
+    suite::ImageUpdate* update = new suite::ImageUpdate(image);
+    outStream->addUpdate(update);
+    delete update;
+
+    #if PARTIAL_WRITE
+    // This code only adds changed & copied regions to updates, insted of 
+    // adding the entire framebuffer each time. Doesn't work currently.
+    // think copying needs a bit more logic than what I'm doing right now...
+
+    // Write copied
+    Region changedCopy(changed);
+    Region copiedCopy(copied);
+    std::vector<Rect> copiedRects;
+    copiedCopy.get_rects(&copiedRects, copyDelta.x <= 0, copyDelta.y <= 0);
+    for (Rect r : copiedRects) {
+      int stride;
+      int width = r.br.x - r.tl.x;
+      int height = r.br.y - r.tl.y;
+      int x_offset = r.tl.x;
+      int y_offset = r.tl.y;
+      const rdr::U8* data = pb->getBuffer(r, &stride);
+
+      // We only want to copy the data in the buffer that is part of the rect
+      rdr::U8* rectData = new rdr::U8[width * height * 4];
+      memset(rectData, 255, width * height * 4); // This shouldn't be necessary
+      
+      for(int i = 0; i < height * 4; i++) {
+        // FIXME: Unintuitive indexing here, we should memcpy() width * 4 per
+        // loop, but it doesn't seem to work.
+        int offset = stride * i;
+        memcpy(&rectData[width * i], &data[offset], width);
+      }
+      suite::Image* image = qoi->encodeImageToMemory(rectData, width, height, x_offset, y_offset);
+      suite::ImageUpdate* update = new suite::ImageUpdate(image);
+      outStream->addUpdate(update);
+      delete update;
+      changedCopy.assign_subtract(copied);
+    }
+
+    // Write changed
+    std::vector<Rect> rects;
+    changedCopy.get_rects(&rects);
+    for (Rect r : rects) {
+      int stride;
+      int width = r.br.x - r.tl.x;
+      int height = r.br.y - r.tl.y;
+      int x_offset = r.tl.x;
+      int y_offset = r.tl.y;
+      const rdr::U8* data = pb->getBuffer(r, &stride);
+
+      // We only want to copy the data in the buffer that is part of the rect
+      rdr::U8* rectData = new rdr::U8[width * height * 4];
+      memset(rectData, 255, width * height * 4); // This shouldn't be necessary
+      
+      for(int i = 0; i < height * 4; i++) {
+        // FIXME: Unintuitive indexing here, we should memcpy() width * 4 per
+        // loop, but it doesn't seem to work.
+        int offset = stride * i;
+        memcpy(&rectData[width * i], &data[offset], width);
+      }
+      suite::Image* image = qoi->encodeImageToMemory(rectData, width, height, x_offset, y_offset);
+      suite::ImageUpdate* update = new suite::ImageUpdate(image);
+      outStream->addUpdate(update);
+      delete update;
+    }
+    #endif
+    #endif
 
     /*
      * We start by searching for solid rects, which are then removed
