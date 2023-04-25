@@ -73,7 +73,8 @@ void Client::framebufferUpdateEnd()
 
     const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
     PNGDecoder decoder = PNGDecoder();
-    decoder.encodeImage(data, pb->width(), pb->height(), "debug_output.png");
+
+    decoder.encodeImageTofile(data, pb->width(), pb->height(), "debug_output.png");
   #endif
 
   rfb::CConnection::framebufferUpdateEnd();
