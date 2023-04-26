@@ -71,9 +71,9 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
 
   int size;
   rdr::U8* encodedData = (rdr::U8*)qoi_encode(data, &desc,  &size);
-  int bufSize = desc.width * desc.height * desc.channels;
-
-  Image* image = new Image(desc.width, desc.height, encodedData, bufSize);
+  if (!encodedData)
+    throw std::ios_base::failure("error encoding image");
+  Image* image = new Image(desc.width, desc.height, encodedData, size, x_offset, y_offset);
   measureFPS();
   return image;
  }
