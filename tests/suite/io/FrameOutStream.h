@@ -65,7 +65,6 @@ namespace suite {
     rdr::U8* head;
     rdr::U8* end;
   private:
-    std::string filename;
     std::ofstream file;
     std::mutex lock; // In case updates are encoded in parallel.
     bool headerWritten;
