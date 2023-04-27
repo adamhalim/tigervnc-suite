@@ -11,10 +11,8 @@ namespace suite {
       return (ImageDecoder*)new PPMDecoder();
     case PNG:
       return (ImageDecoder*)new PNGDecoder();
-    break;
     case QOI:
       return (ImageDecoder*)new QOIDecoder();
-    break;
     default:
       throw std::logic_error("decoder not imlpemented");
     }

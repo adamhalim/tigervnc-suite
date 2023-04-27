@@ -35,7 +35,8 @@ namespace suite {
     rdr::U8* data = new rdr::U8[size];
     is.read((char*)data, size);
 
-    Image* image = decoder->decodeImageFromMemory(data, width, height, size, x_offset, y_offset);
+    Image* image = decoder->decodeImageFromMemory(data, width, height, size,
+                                                  x_offset, y_offset);
     delete [] data;
 
     return image;

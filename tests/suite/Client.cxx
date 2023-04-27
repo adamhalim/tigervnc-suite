@@ -54,7 +54,8 @@ void Client::copyOutStreamToInStream(DummyOutStream* out)
 void Client::resizeFramebuffer()
 {
   rfb::ModifiablePixelBuffer *pb;
-  pb = new rfb::ManagedPixelBuffer(server.pf(), server.width(), server.height());
+  pb = new rfb::ManagedPixelBuffer(server.pf(), server.width(),
+                                                server.height());
   setFramebuffer(pb);
 }
 
@@ -74,7 +75,8 @@ void Client::framebufferUpdateEnd()
     const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
     PNGDecoder decoder = PNGDecoder();
 
-    decoder.encodeImageTofile(data, pb->width(), pb->height(), "debug_output.png");
+    decoder.encodeImageTofile(data, pb->width(), pb->height(),
+                                          "debug_output.png");
   #endif
 
   rfb::CConnection::framebufferUpdateEnd();
@@ -98,7 +100,8 @@ void Client::bell()
 }
 
 
-void Client::setCursor(int width, int height, const rfb::Point& hotspot, const rdr::U8* data)
+void Client::setCursor(int width, int height, const rfb::Point& hotspot,
+                                              const rdr::U8* data)
 {
 }
 

@@ -9,13 +9,15 @@ namespace suite {
   struct Pixel
   {
     rdr::U8 r, g, b;
-    friend std::istringstream& operator>>(std::istringstream &in, Pixel& pixel);
+    friend std::istringstream& operator>>(std::istringstream &in,
+                                          Pixel& pixel);
   };
 
   class Image
   {
   public:
-    Image(int width, int height, rdr::U8* buffer, int size, int offset_x = 0, int offset_y = 0);
+    Image(int width, int height, rdr::U8* buffer,
+          int size, int offset_x = 0, int offset_y = 0);
     virtual ~Image();
     virtual Image& operator+=(Pixel const &pixel);
     virtual rdr::U8* getBuffer();

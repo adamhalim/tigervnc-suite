@@ -53,7 +53,8 @@ rfb::StringParameter displayname("display", "The X display", "");
       pb = new XPixelBuffer(dpy, factory, geo->getRect());
       int stride;
       const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
-      suite::Image* image = decoder->encodeImageToMemory(data, pb->width(), pb->height());
+      suite::Image* image = decoder->encodeImageToMemory(data, pb->width(),
+                                                               pb->height());
       suite::ImageUpdate* update = new suite::ImageUpdate(image);
       fs->addUpdate(update);
       delete update;

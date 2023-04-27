@@ -33,7 +33,9 @@ namespace suite {
   class ImageDecoder
   {
   public:
-    ImageDecoder(decoderEnum type) : type(type), name(decoderTypeToString(type)) {
+    ImageDecoder(decoderEnum type) : type(type),
+                                     name(decoderTypeToString(type))
+    {
       #if _DEBUG
         start = std::chrono::system_clock::now();
         frameCount = 0;
@@ -43,8 +45,10 @@ namespace suite {
 
     virtual Image *decodeImageFromFile(std::string filename) = 0;
     virtual Image* decodeImageFromMemory(rdr::U8* data, int width, int height,
-                                          int size, int x_offest = 0, int y_offset = 0) = 0;
-    virtual void encodeImageTofile(const rdr::U8* data, int width, int height, std::string filename) = 0;
+                                         int size, int x_offest = 0,
+                                         int y_offset = 0) = 0;
+    virtual void encodeImageTofile(const rdr::U8* data, int width, int height,
+                                                    std::string filename) = 0;
     virtual Image* encodeImageToMemory(const rdr::U8* data, int width,
                                       int height, int offset_x = 0,
                                       int offset_y  = 0) = 0;
@@ -70,7 +74,6 @@ namespace suite {
   private:
     int frameCount;
     std::chrono::system_clock::time_point start;
-
   };
 }
 #endif

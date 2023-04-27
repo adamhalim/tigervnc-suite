@@ -37,7 +37,8 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
     throw std::ios_base::failure("qoi: error decoding image");
 
   int bufSize = desc.width * desc.height * desc.channels;
-  Image* image = new Image(width, height, decodedImage, bufSize, x_offset, y_offset);
+  Image* image = new Image(width, height, decodedImage, bufSize,
+                            x_offset, y_offset);
   measureFPS();
   return image;
 }
@@ -73,7 +74,8 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   rdr::U8* encodedData = (rdr::U8*)qoi_encode(data, &desc,  &size);
   if (!encodedData)
     throw std::ios_base::failure("error encoding image");
-  Image* image = new Image(desc.width, desc.height, encodedData, size, x_offset, y_offset);
+  Image* image = new Image(desc.width, desc.height, encodedData,
+                           size, x_offset, y_offset);
   measureFPS();
   return image;
  }

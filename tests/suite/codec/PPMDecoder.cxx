@@ -30,8 +30,8 @@ namespace suite {
 
     std::string line;
     std::string pixels;
-    // Load entire image into one string, since PPM images don't necessarily have
-    // columns of same length.
+    // Load entire image into one string, since PPM images don't
+    // necessarily have columns of same length.
     while (std::getline(is, line)) {
       pixels += line + " ";
     }
@@ -51,8 +51,9 @@ namespace suite {
     return image;
   }
 
-  Image* PPMDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
-                                int size, int x_offest, int y_offset)
+  Image* PPMDecoder::decodeImageFromMemory(rdr::U8* data, int width,
+                                           int height, int size,
+                                           int x_offest, int y_offset)
   {
     throw std::logic_error("function not implemented");
   }
@@ -62,7 +63,9 @@ namespace suite {
     encodeImageTofile(image->getBuffer(), image->width, image->height, filename);
   }
 
-  void PPMDecoder::encodeImageTofile(const rdr::U8* data, int width, int height, std::string filename)
+  void PPMDecoder::encodeImageTofile(const rdr::U8* data,
+                                     int width, int height,
+                                     std::string filename)
   {
     std::ofstream file;
     file.open(filename.c_str());
@@ -102,7 +105,9 @@ namespace suite {
       buf[i + 2 - (i/4)] = data[i+ 2];
     }
 
-    Image* image = new Image(width,height, buf, width * height * 3, offset_x, offset_y);
+    Image* image = new Image(width, height, buf,
+                             width * height * 3,
+                             offset_x, offset_y);
     measureFPS();
     return image;
   }

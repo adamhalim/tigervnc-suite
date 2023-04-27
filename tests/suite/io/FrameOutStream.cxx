@@ -23,11 +23,10 @@ namespace suite {
       throw std::logic_error("header not written");
     Image* image = update->image;
     lock.lock();
-    if (!check(image->size))
-    {
+    if (!check(image->size)) {
       // FIXME: Investigate if it's worth to compress the buffer before writing
       // to save storage and IO.
-     head = buffer;
+      head = buffer;
     }
 
     file << image->size << " " << image->width << " " << image->height << " "
