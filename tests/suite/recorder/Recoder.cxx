@@ -37,7 +37,7 @@ rfb::StringParameter displayname("display", "The X display", "");
 
   void Recoder::startRecording()
   {
-    ImageFactory factory(true);
+    ImageFactory factory(false);
     rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, geo->getRect());
 
     try {
