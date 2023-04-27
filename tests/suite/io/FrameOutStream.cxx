@@ -48,7 +48,7 @@ namespace suite {
 
   bool FrameOutStream::check(size_t size)
   {
-    return head + size > end;
+    return head + size < end;
   }
 
   void FrameOutStream::writeHeader(int width, int height)
