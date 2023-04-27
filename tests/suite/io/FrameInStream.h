@@ -1,5 +1,5 @@
-#ifndef __UPDATES_IN_STREAM_H__
-#define __UPDATES_IN_STREAM_H__
+#ifndef __FRAME_IN_STREAM_H__
+#define __FRAME_IN_STREAM_H__
 
 #include "../codec/ImageDecoder.h"
 namespace suite {
