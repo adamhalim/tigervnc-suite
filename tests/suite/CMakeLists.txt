@@ -1,4 +1,8 @@
 include_directories(${CMAKE_SOURCE_DIR}/common)
+include_directories(${CMAKE_SOURCE_DIR}/unix)
+include_directories(${CMAKE_SOURCE_DIR}/unix/tx)
+include_directories(${CMAKE_SOURCE_DIR}/unix/common)
+include_directories(${X11_INCLUDE_DIR})
 include_directories(${FLTK_INCLUDE_DIR})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
@@ -18,7 +22,11 @@ target_sources(suite PRIVATE
   codec/lib/qoi.h
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
+  recorder/Recoder.cxx
+  ../../unix/x0vncserver/Image.cxx
+  ../../unix/x0vncserver/XPixelBuffer.cxx
+  ../../unix/x0vncserver/PollingManager.cxx
+  ../../unix/x0vncserver/Geometry.cxx
 )
 
-target_link_libraries(suite rfb)
-target_compile_features(suite PRIVATE cxx_std_11)
+target_link_libraries(suite rfb ${X11_LIBRARIES})
