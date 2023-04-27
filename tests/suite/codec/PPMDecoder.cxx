@@ -97,9 +97,9 @@ namespace suite {
     rdr::U8* buf = new rdr::U8[(width * height * 3) + header.length()];
 
     for (int i = 0; i < width * height * 4; i+=4) {
-      *buf++ = data[i];
-      *buf++ = data[i+1];
-      *buf++ = data[i+2];
+      buf[i - (i/4)] = data[i];
+      buf[i +1 - (i/4)] = data[i + 1];
+      buf[i + 2 - (i/4)] = data[i+ 2];
     }
 
     Image* image = new Image(width,height, buf, width * height * 3, offset_x, offset_y);
