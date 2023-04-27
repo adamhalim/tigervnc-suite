@@ -1,5 +1,5 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
+#ifndef __SUITE_IMAGE_H__
+#define __SUITE_IMAGE_H__
 
 #include "rdr/types.h"
 #include <istream>
