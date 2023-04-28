@@ -2,9 +2,10 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <fstream>
+#include <ios>
 #include <iostream>
 #include <vector>
-#include "Image.h"
 
 #include "lib/fpng.h"
 
@@ -13,54 +14,87 @@
 
 namespace suite {
 
-  PNGDecoder::PNGDecoder()
+  PNGDecoder::PNGDecoder() : ImageDecoder(PNG)
   {
     fpng::fpng_init();
-    #if _DEBUG
-      start = std::chrono::system_clock::now();
-      frameCount = 0;
-    #endif
   }
 
   PNGDecoder::~PNGDecoder()
   {
   }
 
-  Image* PNGDecoder::decodeImage(std::string filename)
+  Image* PNGDecoder::decodeImageFromFile(std::string filename)
   {
     // uses stb_image for decoding
     int width;
     int height;
     int channels;
 
-    unsigned char* data = stbi_load(filename.c_str(), &width, &height, &channels, 0);
+    rdr::U8* data = (rdr::U8*)stbi_load(filename.c_str(), &width, &height,
+                                        &channels, 0);
+    int bufSize = width * height * channels;
 
-    Image* image = new Image(width, height);
-    image->setBuffer(data);
+    Image* image = new Image(width, height, data, bufSize);
+    measureFPS();
     return image;
   }
 
-  void PNGDecoder::encodeImage(const rdr::U8 *data, int width, int height, std::string filename)
+ Image* PNGDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
+                                          int size, int x_offset, int y_offset)
+  {
+
+    std::vector<uint8_t> out;
+    uint32_t w;
+    uint32_t h;
+    uint32_t channels;
+    int ret = fpng::fpng_decode_memory(data, size, out, w, h, channels, 4);
+    if (ret)
+      throw std::ios_base::failure("fpng: failed to decode image\n");
+
+    rdr::U8* vectoryCopy = new rdr::U8[width * height * 4];
+    std::copy(out.begin(), out.end(), vectoryCopy);
+
+    Image* image = new Image(width, height, vectoryCopy, out.size(),
+                             x_offset, y_offset);
+    measureFPS();
+    return image;
+  }
+
+  void PNGDecoder::encodeImageTofile(const rdr::U8 *data, int width,
+                                     int height, std::string filename)
   {
     // We use fpng to encode images as it's faster than stb_image.
     // FIXME: images encoded by fpng must be decoded using fpng.
     // Won't work using stb_image for example
     rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
-    fpng::fpng_encode_image_to_file(filename.c_str(), paddedBuf, width, height, 4);
+    fpng::fpng_encode_image_to_file(filename.c_str(),
+                                    paddedBuf, width, height, 4);
     delete paddedBuf;
-    #if _DEBUG
-      frameCount++;
-      const int FRAME_SAMPLE_SIZE = 100;
-      if (frameCount % FRAME_SAMPLE_SIZE == 0) {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::chrono::duration<double> time = (now - start);
-        std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
-        start = now;
-      }
-      #endif
+    measureFPS();
   }
 
-  rdr::U8* PNGDecoder::addAlphaPadding(const rdr::U8* data, int width, int height)
+  Image* PNGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+                                        int height, int x_offset, int y_offset)
+  {
+    rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
+    std::vector<rdr::U8> out;
+    int ret = fpng::fpng_encode_image_to_memory(paddedBuf, width, height,
+                                                4, out);
+    delete paddedBuf;
+    if (!ret)
+      throw std::ios_base::failure("fpng: failed to encode image\n");
+
+    rdr::U8* vectorCopy = new rdr::U8[out.size()];
+    std::copy(out.begin(), out.end(), vectorCopy);
+
+    Image* image = new Image(width, height, vectorCopy, out.size(),
+                             x_offset, y_offset);
+    measureFPS();
+    return image;
+  }
+
+  rdr::U8* PNGDecoder::addAlphaPadding(const rdr::U8* data,
+                                       int width, int height)
   {
     // When copying data from the framebuffer, the alpha channel is set to 0
     // which causes issues when encoding PNG. We don't want anything to be 

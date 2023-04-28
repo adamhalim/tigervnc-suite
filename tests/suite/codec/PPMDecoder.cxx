@@ -1,9 +1,11 @@
 #include "PPMDecoder.h"
+#include <cstring>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 namespace suite {
-  PPMDecoder::PPMDecoder() : ImageDecoder()
+  PPMDecoder::PPMDecoder() : ImageDecoder(PPM)
   {
   }
 
@@ -13,7 +15,7 @@ namespace suite {
   }
 
   // Leaves ownership of Image
-  Image *PPMDecoder::decodeImage(std::string filename)
+  Image *PPMDecoder::decodeImageFromFile(std::string filename)
   {
     unsigned int width;
     unsigned int height;
@@ -28,31 +30,42 @@ namespace suite {
 
     std::string line;
     std::string pixels;
-    // Load entire image into one string, since PPM images don't necessarily have
-    // columns of same length.
+    // Load entire image into one string, since PPM images don't
+    // necessarily have columns of same length.
     while (std::getline(is, line)) {
       pixels += line + " ";
     }
     is.close();
 
     std::istringstream iss(pixels);
-    Image *image = new Image(width, height);
+    int bufSize = width * height * 3;
+    rdr::U8* buf = new rdr::U8[bufSize];
+    Image *image = new Image(width, height, buf, bufSize);
     // While there is data still in stream, 
     while ((iss >> std::ws).peek() != std::char_traits<char>::eof()) {
       Pixel pixel;
       iss >> pixel;
       *image += pixel;
     }
-
+    measureFPS();
     return image;
   }
 
-  void PPMDecoder::encodeImage(Image *image, std::string filename)
+  Image* PPMDecoder::decodeImageFromMemory(rdr::U8* data, int width,
+                                           int height, int size,
+                                           int x_offest, int y_offset)
   {
-    encodeImage(image->getBuffer(), image->width, image->height, filename);
+    throw std::logic_error("function not implemented");
   }
 
-  void PPMDecoder::encodeImage(const rdr::U8* data, int width, int height, std::string filename)
+  void PPMDecoder::encodeImageTofile(Image *image, std::string filename)
+  {
+    encodeImageTofile(image->getBuffer(), image->width, image->height, filename);
+  }
+
+  void PPMDecoder::encodeImageTofile(const rdr::U8* data,
+                                     int width, int height,
+                                     std::string filename)
   {
     std::ofstream file;
     file.open(filename.c_str());
@@ -75,7 +88,28 @@ namespace suite {
     }
     file << oss.str();
     file.close();
+    measureFPS();
   }
 
+  Image* PPMDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+                                        int height, int offset_x, int offset_y)
+  {
+    const std::string MAXVAL = "255";
+    std::string header = "P3\n" + std::to_string(width) + " " 
+      + std::to_string(height) + "\n" + MAXVAL + "\n";
+    rdr::U8* buf = new rdr::U8[(width * height * 3) + header.length()];
+
+    for (int i = 0; i < width * height * 4; i+=4) {
+      buf[i - (i/4)] = data[i];
+      buf[i +1 - (i/4)] = data[i + 1];
+      buf[i + 2 - (i/4)] = data[i+ 2];
+    }
+
+    Image* image = new Image(width, height, buf,
+                             width * height * 3,
+                             offset_x, offset_y);
+    measureFPS();
+    return image;
+  }
 }
 

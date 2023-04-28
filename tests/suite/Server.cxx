@@ -44,12 +44,14 @@ namespace suite {
     writeUpdate(ui, pb);
   }
 
-  void Server::writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb)
+  void Server::writeUpdate(const rfb::UpdateInfo& ui,
+                           const rfb::PixelBuffer* pb)
   {
     manager->writeUpdate(ui, pb, NULL);
   }
 
-  void Server::setDesktopSize(int fb_width, int fb_height, const rfb::ScreenSet &layout)
+  void Server::setDesktopSize(int fb_width, int fb_height,
+                              const rfb::ScreenSet &layout)
   {
   }
 }

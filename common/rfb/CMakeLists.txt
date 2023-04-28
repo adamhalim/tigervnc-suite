@@ -64,6 +64,10 @@ add_library(rfb STATIC
   ZRLEEncoder.cxx
   ZRLEDecoder.cxx
   encodings.cxx
+  ../../tests/suite/codec/QOIDecoder.cxx
+  ../../tests/suite/codec/Image.cxx
+  ../../tests/suite/io/FrameOutStream.cxx
+  ../../tests/suite/io/ImageUpdate.cxx
   util.cxx)
 
 target_link_libraries(rfb os rdr)
@@ -114,3 +118,5 @@ endif()
 if(UNIX)
   libtool_create_control_file(rfb)
 endif()
+
+target_compile_features(rfb PRIVATE cxx_std_11)
