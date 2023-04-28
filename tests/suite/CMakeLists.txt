@@ -22,12 +22,10 @@ target_sources(suite PRIVATE
   codec/lib/qoi.h
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
-  recorder/Recoder.cxx
-  ../../unix/x0vncserver/Image.cxx
-  ../../unix/x0vncserver/XPixelBuffer.cxx
-  ../../unix/x0vncserver/PollingManager.cxx
-  ../../unix/x0vncserver/Geometry.cxx
 )
 
-target_link_libraries(suite rfb ${X11_LIBRARIES})
+target_link_libraries(suite rfb)
 target_compile_features(suite PRIVATE cxx_std_11)
+
+# Recording tool
+add_subdirectory(recorder)
