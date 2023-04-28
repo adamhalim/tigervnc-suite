@@ -1,4 +1,4 @@
-#include "Recoder.h"
+#include "Recorder.h"
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include <cstdlib>
 #include <cstdio>
@@ -8,7 +8,7 @@ namespace suite {
 
 rfb::StringParameter displayname("display", "The X display", "");
 
-  Recoder::Recoder(std::string filename, ImageDecoder* decoder,
+  Recorder::Recorder(std::string filename, ImageDecoder* decoder,
                     std::string display) : decoder(decoder)
   {
     // XOpenDisplay takes ownership of displayname string,
@@ -29,13 +29,13 @@ rfb::StringParameter displayname("display", "The X display", "");
     fs = new FrameOutStream(filename, decoder);
   }
 
-  Recoder::~Recoder()
+  Recorder::~Recorder()
   {
     delete fs;
     delete decoder;
   }
 
-  void Recoder::startRecording()
+  void Recorder::startRecording()
   {
     ImageFactory factory(false);
     rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, geo->getRect());
@@ -62,7 +62,7 @@ rfb::StringParameter displayname("display", "The X display", "");
     }
   }
 
-  void Recoder::stopRecording()
+  void Recorder::stopRecording()
   {
     throw std::logic_error("method not implemented");
   }

@@ -10,11 +10,11 @@ namespace suite {
 
   /* This class is used to record an X display to file.
   */
-  class Recoder
+  class Recorder
   {
   public:
-    Recoder(std::string filename, ImageDecoder* decoder, std::string display);
-    ~Recoder();
+    Recorder(std::string filename, ImageDecoder* decoder, std::string display);
+    ~Recorder();
 
     // Starts recording to file
     void startRecording();
