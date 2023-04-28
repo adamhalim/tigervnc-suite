@@ -9,8 +9,6 @@
 
 namespace suite {
 
-  const int BUF_SIZE = 100 << 20; 
-
   /* This class is used to create the output file of a recorded VNC session.
      The file structure is as follows:
 
@@ -57,13 +55,7 @@ namespace suite {
     void addUpdate(rdr::U8* data, int width, int height, int x_offset, 
                   int y_offset, int size);
                   
-    // Check if data of size will fit in buffer
-    bool check(size_t size);
     void writeHeader(int width, int height);
-  protected:
-    rdr::U8 buffer[BUF_SIZE];  
-    rdr::U8* head;
-    rdr::U8* end;
   private:
     std::ofstream file;
     std::mutex lock; // In case updates are encoded in parallel.
