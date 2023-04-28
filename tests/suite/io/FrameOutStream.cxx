@@ -1,4 +1,5 @@
 #include "FrameOutStream.h"
+#include <chrono>
 #include <cstdio>
 #include <fstream>
 
@@ -21,9 +22,19 @@ namespace suite {
     if (!headerWritten)
       throw std::logic_error("header not written");
     Image* image = update->image;
+
+    // Keep track of time between frames
+    auto now = std::chrono::steady_clock::now();
+    auto timeSinceLastFrame = std::chrono::duration_cast
+                             <std::chrono::milliseconds>
+                             (now - lastFrameTime);
+    lastFrameTime = now;
+
     lock.lock();
     file << image->size << " " << image->width << " " << image->height << " "
-         << image->x_offset << " " << image->y_offset<< "\n";
+         << image->x_offset << " " << image->y_offset << " "
+         << timeSinceLastFrame.count() 
+         << "\n";
     file.write((char*)image->getBuffer(), image->size);
     file << "\n";
     lock.unlock();
@@ -43,5 +54,6 @@ namespace suite {
       throw std::logic_error("header already written");
     file << decoder << " " << width << " " << height << "\n";
     headerWritten = true;
+    lastFrameTime = std::chrono::steady_clock::now();
   }
 }

@@ -3,6 +3,7 @@
 
 #include "ImageUpdate.h"
 #include "../codec/ImageDecoder.h"
+#include <chrono>
 #include <fstream>
 #include <mutex>
 #include <string>
@@ -12,28 +13,29 @@ namespace suite {
   /* This class is used to create the output file of a recorded VNC session.
      The file structure is as follows:
 
-      ___________________________________________
-      |           encoding width height          |  <-- File header 
-      | imageSize width height x_offset y_offset |  <-- Image metadata
-      |******************************************|
-      |******************************************|
-      |************* RAW IMAGE DATA *************|  <-- Raw dump of image data.
-      |******************************************|
-      |******************************************|
-      |******************************************|
-      | imageSize width height x_offset y_offset |  <-- Next image
-      |******************************************|
-      |******************************************| 
-      |************* RAW IMAGE DATA *************|
-      |******************************************|
-      |__________________________________________|
+      ______________________________________________________
+      |               encoding width height                | <-- File header 
+      | imageSize width height x_offset y_offset frameTime | <-- Image metadata
+      |****************************************************|
+      |****************************************************|
+      |****************** RAW IMAGE DATA ******************| <-- Raw dump of 
+      |****************************************************|     image data.
+      |****************************************************|
+      |****************************************************|
+      | imageSize width height x_offset y_offset frameTime | <-- Next image
+      |****************************************************|
+      |****************************************************| 
+      |****************** RAW IMAGE DATA ******************|
+      |****************************************************|
+      |____________________________________________________|
 
 
       The file metadata tells which encoding was used for the images, as well
       as the framebuffer width & height. The header must be parsed first before
       processing the rest of the file. The file header ends with a '\n'.
       The image header has information about the next image stored in the file
-      and is marked by ending with a '\n'.
+      and is marked by ending with a '\n'. frameTime is an integer in 
+      milliseconds that tells how much time passed since the last frame update.
       On the next line, the image can be read by reading imageSize many bytes
       from the file. Images are also terminated with a '\n'.
       There is no way of knowing how many images are stores in the file
@@ -41,8 +43,6 @@ namespace suite {
       Knowledge of which image encoding was used to write is necessary to
       decode images in the file.
 
-      FIXME: Add timing information to header metadata.
-      
   */
 
   class FrameOutStream
@@ -61,6 +61,7 @@ namespace suite {
     std::mutex lock; // In case updates are encoded in parallel.
     bool headerWritten;
     const std::string decoder;
+    std::chrono::steady_clock::time_point lastFrameTime;
   };
 
 }

@@ -24,12 +24,12 @@ namespace suite {
     if (!headerParsed)
       throw std::logic_error("need to parse header before reading image");
 
-    int size, width, height, x_offset, y_offset;
+    int size, width, height, x_offset, y_offset, frameTime;
 
     if (is.peek() == EOF) 
       throw std::ios_base::failure("error reading from stream");
 
-    is >> size >> width >> height >> x_offset >> y_offset;
+    is >> size >> width >> height >> x_offset >> y_offset >> frameTime;
     is.ignore();
 
     rdr::U8* data = new rdr::U8[size];
