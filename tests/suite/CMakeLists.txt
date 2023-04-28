@@ -30,3 +30,4 @@ target_sources(suite PRIVATE
 )
 
 target_link_libraries(suite rfb ${X11_LIBRARIES})
+target_compile_features(suite PRIVATE cxx_std_11)
