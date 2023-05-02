@@ -1,5 +1,5 @@
-#ifndef PPM_DECODER_H
-#define PPM_DECODER_H
+#ifndef __SUITE_PPM_DECODER_H__
+#define __SUITE_PPM_DECODER_H__
 
 #include "ImageDecoder.h"
 
@@ -24,4 +24,4 @@ namespace suite {
   };
 }
 
-#endif
+#endif // __SUITE_PPM_DECODER_H__

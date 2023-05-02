@@ -1,5 +1,5 @@
-#ifndef __QOI_DECODER_H__
-#define __QOI_DECODER_H__
+#ifndef __SUITE_QOI_DECODER_H__
+#define __SUITE_QOI_DECODER_H__
 
 #include "ImageDecoder.h"
 
@@ -23,4 +23,4 @@ namespace suite {
                                   int x_offset = 0, int y_offset = 0);
   };
 }
-#endif
+#endif // __SUITE_QOI_DECODER_H__

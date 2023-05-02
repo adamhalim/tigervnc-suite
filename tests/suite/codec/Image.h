@@ -29,4 +29,4 @@ namespace suite {
     unsigned int pixelCount;
   };
 }
-#endif
+#endif // __SUITE_IMAGE_H__

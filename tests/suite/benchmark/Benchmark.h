@@ -45,4 +45,4 @@ namespace suite {
     int height_;
   };
 }
-#endif
+#endif // __SUITE_BENCHMARK_H__

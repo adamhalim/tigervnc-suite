@@ -1,5 +1,5 @@
-#ifndef __MANAGER_H__
-#define __MANAGER_H__
+#ifndef __SUITE_MANAGER_H__
+#define __SUITE_MANAGER_H__
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
 
@@ -12,4 +12,4 @@ namespace suite {
         ~Manager();
     };
 }
-#endif
+#endif // __SUITE_MANAGER_H__

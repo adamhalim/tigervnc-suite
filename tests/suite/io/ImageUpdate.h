@@ -1,5 +1,5 @@
-#ifndef __IMAGE_UPDATE_H__
-#define __IMAGE_UPDATE_H__
+#ifndef __SUITE_IMAGE_UPDATE_H__
+#define __SUITE_IMAGE_UPDATE_H__
 
 #include "../codec/Image.h"
 
@@ -15,4 +15,4 @@ namespace suite {
   };
 }
 
-#endif
+#endif // __SUITE_IMAGE_UPDATE_H__

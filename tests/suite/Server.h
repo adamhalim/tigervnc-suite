@@ -1,5 +1,5 @@
-#ifndef __SCONN_H__
-#define __SCONN_H__
+#ifndef __SUITE_SERVER_H__
+#define __SUITE_SERVER_H__
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
@@ -43,4 +43,4 @@ namespace suite {
     };
 
   }
-#endif
+#endif // __SUITE_SERVER_H__

@@ -1,5 +1,5 @@
-#ifndef __IMAGE_DECODER_H__
-#define __IMAGE_DECODER_H__
+#ifndef __SUITE_IMAGE_DECODER_H__
+#define __SUITE_IMAGE_DECODER_H__
 
 #include "Image.h"
 #include <chrono>
@@ -76,4 +76,4 @@ namespace suite {
     std::chrono::system_clock::time_point start;
   };
 }
-#endif
+#endif // __SUITE_IMAGE_DECODER_H__

@@ -36,4 +36,4 @@ namespace suite {
   };
 }
 
-#endif
+#endif // __SUITE_RECORDER_H__
