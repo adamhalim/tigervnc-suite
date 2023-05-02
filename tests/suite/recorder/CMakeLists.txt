@@ -17,6 +17,9 @@ target_sources(recorder PRIVATE
   ../../../unix/x0vncserver/Geometry.cxx
 )
 
-target_link_libraries(recorder rfb ${X11_LIBRARIES})
+add_definitions(-DHAVE_XDAMAGE)
+target_link_libraries(recorder ${X11_Xdamage_LIB})
+
+target_link_libraries(recorder rfb tx ${X11_LIBRARIES})
 
 target_compile_features(recorder PRIVATE cxx_std_14)

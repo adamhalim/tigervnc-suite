@@ -1,5 +1,7 @@
 #include "Recorder.h"
 #include "../../unix/x0vncserver/XPixelBuffer.h"
+#include "tx/TXWindow.h"
+#include <X11/Xlib.h>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -27,6 +29,20 @@ rfb::StringParameter displayname("display", "The X display", "");
     geo = new Geometry(DisplayWidth(dpy, DefaultScreen(dpy)),
                  DisplayHeight(dpy, DefaultScreen(dpy)));
     fs = new FrameOutStream(filename, decoder);
+
+    int xdamageErrorBase;
+
+    if(!XDamageQueryExtension(dpy, &xdamageEventBase, &xdamageErrorBase)) {
+      std::cerr << "DAMAGE extension not present" << std::endl;
+      exit(1);
+    }
+
+    damage = XDamageCreate(dpy, DefaultRootWindow(dpy),
+                           XDamageReportRawRectangles);
+    TXWindow::init(dpy, "recorder");
+    TXWindow::setGlobalEventHandler(this);
+
+    
   }
 
   Recorder::~Recorder()
@@ -50,15 +66,7 @@ rfb::StringParameter displayname("display", "The X display", "");
 
     // FIXME: stopRecording() should stop the loop
     while (true) {
-      pb = new XPixelBuffer(dpy, factory, geo->getRect());
-      int stride;
-      const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
-      suite::Image* image = decoder->encodeImageToMemory(data, pb->width(),
-                                                               pb->height());
-      suite::ImageUpdate* update = new suite::ImageUpdate(image);
-      fs->addUpdate(update);
-      delete update;
-      delete pb;
+      TXWindow::handleXEvents(dpy);
     }
   }
 
@@ -66,4 +74,37 @@ rfb::StringParameter displayname("display", "The X display", "");
   {
     throw std::logic_error("method not implemented");
   }
+
+  bool Recorder::handleGlobalEvent(XEvent* ev) {
+    if (ev->type == xdamageEventBase) {
+      XDamageNotifyEvent* dev;
+      rfb::Rect rect;
+
+      // Get damage from window
+      dev = (XDamageNotifyEvent*)ev;
+      rect.setXYWH(dev->area.x, dev->area.y,
+                   dev->area.width, dev->area.height);
+      rect = rect.translate(rfb::Point(-geo->offsetLeft(),
+                                  -geo->offsetTop()));
+      ImageFactory factory(false);
+      rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, rect);
+
+      // Get framebuffer for damaged rectangle
+      int stride;
+      const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
+      int width = rect.br.x - rect.tl.x;
+      int height = rect.br.y - rect.tl.y;
+
+      // Save changed rectangle
+      suite::Image* image = decoder->encodeImageToMemory(data, 
+                                                         width, height,
+                                                         rect.tl.x, rect.tl.y);
+      suite::ImageUpdate* update = new suite::ImageUpdate(image);
+      fs->addUpdate(update);
+      delete update;
+      delete pb;
+    }
+    return true;
+  }
+
 }
