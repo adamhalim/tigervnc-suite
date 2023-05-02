@@ -47,10 +47,13 @@ void Benchmark::runBenchmark()
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
   while(file.peek() != EOF) {
-    Image* image = is.readImage(file);
-    stats.outputSize += image->size;
-    stats.inputSize += image->width * image->height * 3; // assume 24bpp
+    Image* image = is.readImage(file, stats.inputSize);
+    // FIXME: Not sure if we should multiply by 3 or 4? 
+    stats.outputSize += image->width * image->height * 3;
+
     stats.startClock();
+    // FIXME: This will in practice load the entire file to memory as the 
+    // Server writes to its InputStream for each update.
     server_->loadImage(image, image->x_offset, image->y_offset);
     stats.stopClock();
     delete image;

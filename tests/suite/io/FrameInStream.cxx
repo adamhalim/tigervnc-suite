@@ -19,7 +19,7 @@ namespace suite {
   {
   }
 
-  Image* FrameInStream::readImage(std::istream& is)
+  Image* FrameInStream::readImage(std::istream& is, int& inputSize)
   {
     if (!headerParsed)
       throw std::logic_error("need to parse header before reading image");
@@ -31,6 +31,7 @@ namespace suite {
 
     is >> size >> width >> height >> x_offset >> y_offset >> frameTime;
     is.ignore();
+    inputSize += size;
 
     rdr::U8* data = new rdr::U8[size];
     is.read((char*)data, size);
