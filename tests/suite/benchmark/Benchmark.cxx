@@ -1,51 +1,61 @@
 #include "Benchmark.h"
 #include "../fileUtil.h"
 #include "rdr/Exception.h"
+#include "rfb/Exception.h"
+#include <exception>
+#include <fstream>
 #include <chrono>
+#include <ios>
+#include <stdexcept>
+#include <sys/stat.h>
 using namespace suite;
 
-Benchmark::Benchmark(std::string dirName, ImageDecoder* decoder) 
-                    : dirName(dirName), decoder(decoder)
+Benchmark::Benchmark(std::string filename) : filename(filename)
 {
-  this->files = readDirectory(dirName);
-  if (dirName.back() != '/')  {
-    dirName += '/';
+  struct stat buf;
+  if (stat (filename.c_str(), &buf) != 0)
+    throw std::ios_base::failure("file does not exist");
+
+  FrameInStream is =  FrameInStream();
+  std::ifstream file(filename);
+  file = std::ifstream(filename);
+
+  int width;
+  int height;
+  std::tie(width, height) = is.parseHeader(file);
+
+  this->width_ = width;
+  this->height_ = height;
+  try {
+    this->server_ = new Server(width, height);
+  } catch (rfb::Exception &e) {
+    throw e;
   }
-
-  this->offsets = loadOffsets(dirName + OFFSETS_FILENAME);
-}
-
-Benchmark:: Benchmark(std::string dirName, ImageDecoder* decoder, 
-                      std::vector<std::pair<double, double> > offsets) 
-                      : dirName(dirName), decoder(decoder), offsets(offsets)
-{
-    this->files = readDirectory(dirName);
 }
 
 Benchmark::~Benchmark()
 {
-  delete decoder;
+  delete server_;
 }
 
-void Benchmark::runBenchmark(Server* server)
+void Benchmark::runBenchmark()
 {
-  if (offsets.empty()) {
-    for(unsigned int i = 0; i < files.size(); i++) {
-      offsets.push_back(std::make_pair(0,0));
-    }
-  } else if (offsets.size() != files.size()) {
-    throw rdr::Exception("offsets and files mismatch");
-  }
+  FrameInStream is =  FrameInStream();
+  std::ifstream file(filename);
+  is.parseHeader(file); // FIXME: Don't parse header twice
 
-  
-  for (unsigned int i = 0; i < files.size(); i++) {
-    Image* image = decoder->decodeImageFromFile(files.at(i));
-
+  std::cout << "Starting benchmark using \"" << filename << "\"\n";
+  while(file.peek() != EOF) {
+    Image* image = is.readImage(file);
     stats.startClock();
-    server->loadImage(image, offsets.at(i).first, offsets.at(i).second);
+    server_->loadImage(image, image->x_offset, image->y_offset);
     stats.stopClock();
     delete image;
   }
+
+  std::cout << "Benchmark complete!\n"
+            << "\t Total encoding time: " << stats.time() << "\n";
+
 }
 
 

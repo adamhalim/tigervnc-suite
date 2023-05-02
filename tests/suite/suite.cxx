@@ -1,51 +1,38 @@
 #include "benchmark/Benchmark.h"
-#include "codec/PNGDecoder.h"
-#include "Server.h"
-#include "fileUtil.h"
 #include "Client.h"
-#include <iostream>
+#include "rfb/Exception.h"
 
 using namespace suite;
 
-void runTest(std::string dir);
-
 int main(int argc, char** argv)
 {
+
   if (argc < 2) {
-    fprintf(stderr, "Syntax: %s <directory>\n", argv[0]);
+    std::cerr << "Error, incorrect arguments\n"
+              << "Usage:\n\t" 
+              << argv[0] << " <inputfile>\n";
     exit(1);
   }
 
-  std::string dir = argv[1];
+  std::string filename = argv[1];
 
+  Benchmark *b;
   try {
-    runTest(dir);
-  } catch (rdr::Exception &e) {
-    std::cerr << e.str() << std::endl;
+   b = new Benchmark(filename);
+  } catch (rfb::Exception &e) {
+    std::cerr << "Error: " << e.str() << std::endl;
+    exit(1);
+  } catch (std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    exit(1);
   }
-}
 
-void runTest(std::string dir)
-{
-
-  Benchmark* b = new Benchmark(dir, new PNGDecoder());
-  std::vector<std::string> files = readDirectory(dir);
-  if(!files.size())
-    throw rdr::Exception("no files in directory");
-
-  int width = 1920;
-  int height = 1200;
-  Server *server = new Server(width,height);
-  b->runBenchmark(server);
-
-  std::cout << "Benchmark " << dir << " took "  
-    << b->getTime() << " seconds.\n";
+  b->runBenchmark();
 
   #if _DEBUG
-  // // Copy sc OutStream to cc InStream
-  Client *client = new Client(width,height);
-  client->copyOutStreamToInStream(server->out);
-
+  // Copy Server OutStream to Client InStream
+  Client *client = new Client(b->width(), b->height());
+  client->copyOutStreamToInStream(b->server()->out);
   // Decode input & dump to file
     try {
       while (true) {
@@ -59,6 +46,7 @@ void runTest(std::string dir)
     delete client;
   #endif
 
-  delete server;
   delete b;
+  exit(0);
 }
+

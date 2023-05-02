@@ -1,13 +1,12 @@
-#ifndef __BENCHMARK_H__
-#define __BENCHMARK_H__
+#ifndef __SUITE_BENCHMARK_H__
+#define __SUITE_BENCHMARK_H__
 
 #include "../codec/ImageDecoder.h"
 #include "../Server.h"
+#include "../io/FrameInStream.h"
 #include <chrono>
 
 namespace suite {
-
-  static const std::string OFFSETS_FILENAME = "offsets.txt";
 
   class stats
   {
@@ -25,24 +24,22 @@ namespace suite {
   class Benchmark
   {
   public:
-    Benchmark(std::string dirName, ImageDecoder* decoder);
-    Benchmark(std::string dirName, ImageDecoder* decoder, 
-              std::vector<std::pair<double, double> > offsets);
+    Benchmark(std::string filename);
     ~Benchmark();
 
     // Runs decoding benchmark on the server.
-    // Throws exception if offsets don't line up with files
-    void runBenchmark(Server* server);
+    void runBenchmark();
     double getTime();
+    int width() const { return width_; }
+    int height() const { return height_; }
+    Server* server() const { return server_; }
 
   protected:
-
-    std::vector<std::string> files; 
     suite::stats stats;
-    std::string dirName;
-    ImageDecoder* decoder;
-    std::vector<std::pair<double, double> > offsets;
+    std::string filename;
+    Server* server_;
+    int width_;
+    int height_;
   };
-
 }
-  #endif
+#endif
