@@ -14,6 +14,9 @@ namespace suite {
     void startClock();
     void stopClock();
     double time();
+    double compressionRatio();
+    int inputSize;
+    int outputSize;
   private:
     double encodeTime;
 

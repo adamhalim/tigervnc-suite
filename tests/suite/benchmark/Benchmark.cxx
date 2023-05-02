@@ -8,6 +8,7 @@
 #include <ios>
 #include <stdexcept>
 #include <sys/stat.h>
+#include <iomanip>
 using namespace suite;
 
 Benchmark::Benchmark(std::string filename) : filename(filename)
@@ -47,6 +48,8 @@ void Benchmark::runBenchmark()
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
   while(file.peek() != EOF) {
     Image* image = is.readImage(file);
+    stats.outputSize += image->size;
+    stats.inputSize += image->width * image->height * 3; // assume 24bpp
     stats.startClock();
     server_->loadImage(image, image->x_offset, image->y_offset);
     stats.stopClock();
@@ -54,8 +57,10 @@ void Benchmark::runBenchmark()
   }
 
   std::cout << "Benchmark complete!\n"
-            << "\t Total encoding time: " << stats.time() << "\n";
-
+            << std::setprecision(17)
+            << "\tTotal encoding time:\t" << stats.time() << " seconds\n"
+            << "\tCompression ratio:\t" << stats.compressionRatio()
+            << "\n";
 }
 
 
@@ -79,4 +84,8 @@ void stats::stopClock()
 
   std::chrono::duration<double> time = end - start;
   encodeTime += time.count();
+}
+
+double stats::compressionRatio() {
+  return (double)inputSize / outputSize;
 }
