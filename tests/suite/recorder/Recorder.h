@@ -1,5 +1,5 @@
-#ifndef __RECORDER_H__
-#define __RECORDER_H__
+#ifndef __SUITE_RECORDER_H__
+#define __SUITE_RECORDER_H__
 
 #include "../../unix/x0vncserver/Geometry.h"
 #include "../io/FrameOutStream.h"

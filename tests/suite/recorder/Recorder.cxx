@@ -2,18 +2,13 @@
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
 #include <X11/Xlib.h>
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
 
 namespace suite {
-
-rfb::StringParameter displayname("display", "The X display", "");
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
                     std::string display) : decoder(decoder)
   {
-    // XOpenDisplay takes ownership of displayname string,
+    // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
     char* displayCopy = new char[display.length() + 1];
     strncpy(displayCopy, display.c_str(), display.length());
@@ -21,17 +16,16 @@ rfb::StringParameter displayname("display", "The X display", "");
 
     rfb::CharArray dpyStr(displayCopy);
     if (!(dpy = XOpenDisplay(dpyStr.buf[0] ? dpyStr.buf : 0))) {
-      fprintf(stderr,"unable to open display \"%s\"\r\n",
-            XDisplayName(dpyStr.buf));
-    exit(1);
+      std::cerr << "unable to open display " << XDisplayName(dpyStr.buf)
+                << std::endl;
+      exit(1);
     }
 
     geo = new Geometry(DisplayWidth(dpy, DefaultScreen(dpy)),
-                 DisplayHeight(dpy, DefaultScreen(dpy)));
+                       DisplayHeight(dpy, DefaultScreen(dpy)));
     fs = new FrameOutStream(filename, decoder);
 
     int xdamageErrorBase;
-
     if(!XDamageQueryExtension(dpy, &xdamageEventBase, &xdamageErrorBase)) {
       std::cerr << "DAMAGE extension not present" << std::endl;
       exit(1);
@@ -41,8 +35,6 @@ rfb::StringParameter displayname("display", "The X display", "");
                            XDamageReportRawRectangles);
     TXWindow::init(dpy, "recorder");
     TXWindow::setGlobalEventHandler(this);
-
-    
   }
 
   Recorder::~Recorder()
@@ -85,7 +77,7 @@ rfb::StringParameter displayname("display", "The X display", "");
       rect.setXYWH(dev->area.x, dev->area.y,
                    dev->area.width, dev->area.height);
       rect = rect.translate(rfb::Point(-geo->offsetLeft(),
-                                  -geo->offsetTop()));
+                                       -geo->offsetTop()));
       ImageFactory factory(false);
       rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, rect);
 
@@ -106,5 +98,4 @@ rfb::StringParameter displayname("display", "The X display", "");
     }
     return true;
   }
-
 }
