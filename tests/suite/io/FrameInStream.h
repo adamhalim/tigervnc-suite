@@ -16,7 +16,7 @@ namespace suite {
 
     // Parses one image from the isteam.
     // Should be called repeatedly in a loop to parse an entire file.
-    Image* readImage(std::istream& is, int& inputSize);
+    Image* readImage(std::istream& is);
     // Parses the header of the file and returns a pair with the 
     // width and size of the framebuffer. 
     // Needs to be run before readImage as it also sets the decoder.

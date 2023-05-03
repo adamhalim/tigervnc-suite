@@ -47,7 +47,7 @@ void Benchmark::runBenchmark()
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
   while(file.peek() != EOF) {
-    Image* image = is.readImage(file, stats.inputSize);
+    Image* image = is.readImage(file);
     // FIXME: Not sure if we should multiply by 3 or 4? 
     stats.outputSize += image->width * image->height * 3;
 
@@ -58,6 +58,11 @@ void Benchmark::runBenchmark()
     stats.stopClock();
     delete image;
   }
+
+  // FIXME: This takes the compression ration including data taken up by the
+  // RFB protocol. Needs to be changed if we only care about the actual image
+  // compression ratio.
+  stats.inputSize = server_->out->length();
 
   std::cout << "Benchmark complete!\n"
             << std::setprecision(17)
