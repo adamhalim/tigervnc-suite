@@ -35,7 +35,7 @@ namespace suite {
     int bufSize = width * height * channels;
 
     Image* image = new Image(width, height, data, bufSize);
-    measureFPS();
+    measurePixelRate(width, height, channels);
     return image;
   }
 
@@ -56,7 +56,7 @@ namespace suite {
 
     Image* image = new Image(width, height, vectoryCopy, out.size(),
                              x_offset, y_offset);
-    measureFPS();
+    measurePixelRate(width, height, channels);
     return image;
   }
 
@@ -70,7 +70,7 @@ namespace suite {
     fpng::fpng_encode_image_to_file(filename.c_str(),
                                     paddedBuf, width, height, 4);
     delete paddedBuf;
-    measureFPS();
+    measurePixelRate(width, height, 4);
   }
 
   Image* PNGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
@@ -89,7 +89,7 @@ namespace suite {
 
     Image* image = new Image(width, height, vectorCopy, out.size(),
                              x_offset, y_offset);
-    measureFPS();
+    measurePixelRate(width, height, 4);
     return image;
   }
 

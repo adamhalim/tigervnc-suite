@@ -47,7 +47,7 @@ namespace suite {
       iss >> pixel;
       *image += pixel;
     }
-    measureFPS();
+    measurePixelRate(width, height, 3);
     return image;
   }
 
@@ -88,7 +88,7 @@ namespace suite {
     }
     file << oss.str();
     file.close();
-    measureFPS();
+    measurePixelRate(width, height, 3);
   }
 
   Image* PPMDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
@@ -108,7 +108,7 @@ namespace suite {
     Image* image = new Image(width, height, buf,
                              width * height * 3,
                              offset_x, offset_y);
-    measureFPS();
+    measurePixelRate(width, height, 3);
     return image;
   }
 }
