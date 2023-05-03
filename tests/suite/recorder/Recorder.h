@@ -7,12 +7,13 @@
 #include <X11/extensions/Xdamage.h>
 #include <X11/Xlib.h>
 #include <string>
+#include <vector>
 
 namespace suite {
 
   /* This class is used to record an X display to file.
   */
-  class Recorder : public TXGlobalEventHandler
+  class Recorder
   {
   public:
     Recorder(std::string filename, ImageDecoder* decoder, std::string display);
@@ -22,8 +23,7 @@ namespace suite {
     void startRecording();
     void stopRecording();
 
-    // -=- TXGlobalEventHandler interface
-    virtual bool handleGlobalEvent(XEvent* ev);
+    void handleEvents(std::vector<XEvent>& events);
   protected:
     Damage damage;
     int xdamageEventBase;

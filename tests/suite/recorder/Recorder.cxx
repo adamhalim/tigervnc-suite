@@ -34,7 +34,6 @@ namespace suite {
     damage = XDamageCreate(dpy, DefaultRootWindow(dpy),
                            XDamageReportRawRectangles);
     TXWindow::init(dpy, "recorder");
-    TXWindow::setGlobalEventHandler(this);
   }
 
   Recorder::~Recorder()
@@ -58,44 +57,57 @@ namespace suite {
 
     // FIXME: stopRecording() should stop the loop
     while (true) {
-      TXWindow::handleXEvents(dpy);
+      std::vector<XEvent> events;
+      while (XPending(dpy)) {
+        XEvent event;
+        XNextEvent(dpy, &event);
+        events.push_back(event);
+      }
+      if (events.size()) {
+        handleEvents(events);
+      }
     }
+  }
+
+  void Recorder::handleEvents(std::vector<XEvent>& events)
+  {
+    rfb::Rect damagedRect;
+    for(XEvent event : events) {
+      if (event.type == xdamageEventBase) {
+        XDamageNotifyEvent* dev;
+        rfb::Rect rect;
+        // Get damage from window
+        dev = (XDamageNotifyEvent*)&event;
+        rect.setXYWH(dev->area.x, dev->area.y,
+                    dev->area.width, dev->area.height);
+        rect = rect.translate(rfb::Point(-geo->offsetLeft(),
+                                         -geo->offsetTop()));
+        damagedRect = damagedRect.union_boundary(rect);
+      }
+    }
+
+    ImageFactory factory(false);
+    rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, damagedRect);
+
+    // Get framebuffer for damaged rectangle
+    int stride;
+    const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
+    int width = damagedRect.br.x - damagedRect.tl.x;
+    int height = damagedRect.br.y - damagedRect.tl.y;
+
+    // Save changed rectangle
+    suite::Image* image = decoder->encodeImageToMemory(data, 
+                                                        width, height,
+                                                        damagedRect.tl.x,
+                                                        damagedRect.tl.y);
+    suite::ImageUpdate* update = new suite::ImageUpdate(image);
+    fs->addUpdate(update);
+    delete update;
+    delete pb;
   }
 
   void Recorder::stopRecording()
   {
     throw std::logic_error("method not implemented");
-  }
-
-  bool Recorder::handleGlobalEvent(XEvent* ev) {
-    if (ev->type == xdamageEventBase) {
-      XDamageNotifyEvent* dev;
-      rfb::Rect rect;
-
-      // Get damage from window
-      dev = (XDamageNotifyEvent*)ev;
-      rect.setXYWH(dev->area.x, dev->area.y,
-                   dev->area.width, dev->area.height);
-      rect = rect.translate(rfb::Point(-geo->offsetLeft(),
-                                       -geo->offsetTop()));
-      ImageFactory factory(false);
-      rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, rect);
-
-      // Get framebuffer for damaged rectangle
-      int stride;
-      const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
-      int width = rect.br.x - rect.tl.x;
-      int height = rect.br.y - rect.tl.y;
-
-      // Save changed rectangle
-      suite::Image* image = decoder->encodeImageToMemory(data, 
-                                                         width, height,
-                                                         rect.tl.x, rect.tl.y);
-      suite::ImageUpdate* update = new suite::ImageUpdate(image);
-      fs->addUpdate(update);
-      delete update;
-      delete pb;
-    }
-    return true;
   }
 }
