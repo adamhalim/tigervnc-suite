@@ -50,6 +50,12 @@ namespace suite {
     manager->writeUpdate(ui, pb, NULL);
   }
 
+
+  std::vector<encoderStats> Server::stats()
+  {
+    return manager->stats();
+  }
+
   void Server::setDesktopSize(int fb_width, int fb_height,
                               const rfb::ScreenSet &layout)
   {

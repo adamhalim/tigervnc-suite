@@ -1,6 +1,7 @@
 #include "Benchmark.h"
 #include "../fileUtil.h"
 #include "rdr/Exception.h"
+#include "rfb/EncodeManager.h"
 #include "rfb/Exception.h"
 #include <exception>
 #include <fstream>
@@ -63,14 +64,44 @@ void Benchmark::runBenchmark()
   // RFB protocol. Needs to be changed if we only care about the actual image
   // compression ratio.
   stats.inputSize = server_->out->length();
+  std::vector<encoderStats> encoderStats = server_->stats();
 
-  std::cout << "Benchmark complete!\n"
-            << std::setprecision(17)
-            << "\tTotal encoding time:\t" << stats.time() << " seconds\n"
-            << "\tCompression ratio:\t" << stats.compressionRatio()
-            << "\n";
+  std::cout << "Benchmarking complete!\n"
+            << "Encoders used:\n\n";
+  double totalEncodingtime = 0;
+  int tableWidth = 20;
+  for(struct encoderStats es : encoderStats) {
+    std::cout << "\t" << es.name << " encoder: (seconds)\n\t\t"
+              << std::setprecision(5) << std::fixed 
+              << std::setw(tableWidth) << std::setfill(' ') << std::left
+              << "writeRect: " << std::right << es.writeRectEncodetime
+              << "\n\t\t" << std::left  << std::setw(tableWidth)
+              << "writeSolidRect: " << std::right 
+              << es.writeSolidRectEncodetime << "\n\t\t"
+              << std::setw(tableWidth) << std::left
+              << "total: " << std::right << es.writeRectEncodetime 
+                                          + es.writeSolidRectEncodetime
+              << std::endl;
+    totalEncodingtime += es.writeRectEncodetime + es.writeSolidRectEncodetime;
+  }
+
+  tableWidth  = 30;
+  std::cout << "\nBENCHMARK SUMMARY:\n"
+            << std::setw(tableWidth) << std::fixed << std::setfill(' ')
+            << std::left 
+            << "Encoders time:" 
+            << std::right << totalEncodingtime << "\n"
+            << std::setw(tableWidth) << std::left
+            << "EncodeManager time:" 
+            << std::right << stats.time() << "\n"
+            << std::setw(tableWidth) << std::left
+            << "Compression ratio (RFB):" 
+            << std::right << stats.compressionRatio() << "\n"
+            << std::setw(tableWidth) << std::left
+            << "\% time spent encoding:"
+            << std::right << totalEncodingtime / stats.time()
+            << " (EncodeManager)\n";
 }
-
 
 double Benchmark::getTime()
 {

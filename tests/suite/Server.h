@@ -33,6 +33,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(Image* image, int x = 0, int y = 0);
 
+      std::vector<encoderStats> stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;
