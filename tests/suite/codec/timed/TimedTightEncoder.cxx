@@ -1,12 +1,14 @@
 #include "TimedTightEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
+#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedTightEncoder::TimedTightEncoder(SConnection* conn_) 
-                                     : TightEncoder(conn_), TimedEncoder()
+                                : TightEncoder(conn_),
+                                  TimedEncoder(encoderClassName(encoderTight))
   {
   }
 

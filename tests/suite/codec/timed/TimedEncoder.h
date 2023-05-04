@@ -3,17 +3,19 @@
 
 #include "rfb/Encoder.h"
 #include <chrono>
+#include <string>
 namespace suite {
 
   struct encoderStats {
     double writeRectEncodetime;
     double writeSolidRectEncodetime;
+    std::string name;
   };
 
   class TimedEncoder 
   {
   public:
-    TimedEncoder();
+    TimedEncoder(std::string name);
     ~TimedEncoder();
 
     void startWriteRectTimer();

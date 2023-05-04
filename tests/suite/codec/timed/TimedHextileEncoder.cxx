@@ -1,12 +1,14 @@
 #include "TimedHextileEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
+#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedHextileEncoder::TimedHextileEncoder(SConnection* conn_) 
-                                     : HextileEncoder(conn_), TimedEncoder()
+                              : HextileEncoder(conn_), 
+                                TimedEncoder(encoderClassName(encoderHextile))
   {
   }
 

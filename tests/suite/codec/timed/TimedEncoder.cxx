@@ -3,9 +3,13 @@
 
 namespace suite {
 
-  TimedEncoder::TimedEncoder()
+  TimedEncoder::TimedEncoder(std::string name)
   {
-    stats_ = encoderStats{};
+    stats_ = encoderStats{ 
+      .writeRectEncodetime = 0,
+      .writeSolidRectEncodetime = 0,
+      .name = name
+      };
   }
 
   TimedEncoder::~TimedEncoder()
