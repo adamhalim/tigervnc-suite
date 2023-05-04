@@ -1,5 +1,6 @@
 #ifndef __SUITE_MANAGER_H__
 #define __SUITE_MANAGER_H__
+#include "codec/timed/TimedEncoder.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
 
@@ -43,8 +44,12 @@ namespace suite {
     class Manager : public rfb::EncodeManager 
     {
     public:
-        Manager(class rfb::SConnection *conn);
-        ~Manager();
+      Manager(class rfb::SConnection *conn);
+      ~Manager();
+
+      std::vector<encoderStats> stats();
+    protected:
+      std::vector<TimedEncoder*> timedEncoders;
     };
 }
 #endif // __SUITE_MANAGER_H__
