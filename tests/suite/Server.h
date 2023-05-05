@@ -6,6 +6,7 @@
 #include "Manager.h"
 #include "rfb/UpdateTracker.h"
 #include "rfb/encodings.h"
+#include <map>
 
 namespace suite {
 
@@ -33,7 +34,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(Image* image, int x = 0, int y = 0);
 
-      std::vector<encoderStats> stats();
+      std::map<const int, encoderStats> stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;

@@ -51,7 +51,7 @@ namespace suite {
   }
 
 
-  std::vector<encoderStats> Server::stats()
+  std::map<const int, encoderStats> Server::stats()
   {
     return manager->stats();
   }

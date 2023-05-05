@@ -8,41 +8,28 @@
 
 namespace suite {
 
-  class stats
-  {
-  public:
-    void startClock();
-    void stopClock();
-    double time();
-    double compressionRatio();
-    int inputSize;
-    int outputSize;
-  private:
-    double encodeTime;
-
-    std::chrono::steady_clock::time_point start;
-    std::chrono::steady_clock::time_point end;
-  };
-
   class Benchmark
   {
   public:
-    Benchmark(std::string filename);
+    Benchmark(std::string filename, const rdr::S32* e = encodings,
+                                    const size_t len = sizeof(encodings) /
+                                                       sizeof(*encodings));
     ~Benchmark();
 
     // Runs decoding benchmark on the server.
     void runBenchmark();
-    double getTime();
     int width() const { return width_; }
     int height() const { return height_; }
     Server* server() const { return server_; }
 
   protected:
-    suite::stats stats;
     std::string filename;
     Server* server_;
     int width_;
     int height_;
+  private:
+    const rdr::S32* encodings_;
+    const size_t encodingsLength_;
   };
 }
 #endif // __SUITE_BENCHMARK_H__

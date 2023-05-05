@@ -3,6 +3,7 @@
 #include "rdr/Exception.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/Exception.h"
+#include "rfb/encodings.h"
 #include <exception>
 #include <fstream>
 #include <chrono>
@@ -10,9 +11,14 @@
 #include <stdexcept>
 #include <sys/stat.h>
 #include <iomanip>
+
 using namespace suite;
 
-Benchmark::Benchmark(std::string filename) : filename(filename)
+Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
+                                           const size_t len) 
+                                           : filename(filename),
+                                             encodings_(encodings),
+                                             encodingsLength_(len)
 {
   struct stat buf;
   if (stat (filename.c_str(), &buf) != 0)
@@ -29,6 +35,9 @@ Benchmark::Benchmark(std::string filename) : filename(filename)
   this->width_ = width;
   this->height_ = height;
   try {
+    // FIXME: this Server is unused in this class, but we still want to enable
+    // debugging using the Client somehow. Maybe we always want to have a
+    // default server & encoding that can be used for debugging the output?
     this->server_ = new Server(width, height);
   } catch (rfb::Exception &e) {
     throw e;
@@ -46,85 +55,74 @@ void Benchmark::runBenchmark()
   std::ifstream file(filename);
   is.parseHeader(file); // FIXME: Don't parse header twice
 
+  // Use one Server instance per encoding
+  std::map<int, Server*> servers;
+  for(unsigned int i = 0; i < encodingsLength_; i++) {
+    int encoder = encodings_[i];
+    servers[encoder] = new Server(this->width(), this->height());
+  }
+
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
   while(file.peek() != EOF) {
     Image* image = is.readImage(file);
-    // FIXME: Not sure if we should multiply by 3 or 4? 
-    stats.outputSize += image->width * image->height * 3;
 
-    stats.startClock();
-    // FIXME: This will in practice load the entire file to memory as the 
-    // Server writes to its InputStream for each update.
-    server_->loadImage(image, image->x_offset, image->y_offset);
-    stats.stopClock();
+    // For each image we load, we loop each server and pass our 
+    // preferred encoding.
+    for(unsigned int i = 0; i < encodingsLength_; i++) {
+      int encoder = encodings_[i];
+      Server* server = servers[encoder];
+
+      if(encoder < 0) // FIXME: Support quality & compress pseudoencodings
+        continue;
+
+      server->setEncodings(1, &encoder);
+      server->loadImage(image, image->x_offset, image->y_offset);
+      server->out->clear();
+    }
     delete image;
   }
+  std::cout << "Benchmarking complete!\n";
 
-  // FIXME: This takes the compression ration including data taken up by the
-  // RFB protocol. Needs to be changed if we only care about the actual image
-  // compression ratio.
-  stats.inputSize = server_->out->length();
-  std::vector<encoderStats> encoderStats = server_->stats();
+  // Loop through each server and print the corresponding statistics
+  for(auto &s : servers) {
+    // FIXME: Refactor this to a separate function
+    std::string encoderRequested = encodingToString(s.first);
+    Server* server = s.second;
+    std::map<const int, encoderStats> encoderStats = server->stats();
 
-  std::cout << "Benchmarking complete!\n"
-            << "Encoders used:\n\n";
-  double totalEncodingtime = 0;
-  int tableWidth = 20;
-  for(struct encoderStats es : encoderStats) {
-    std::cout << "\t" << es.name << " encoder: (seconds)\n\t\t"
-              << std::setprecision(5) << std::fixed 
-              << std::setw(tableWidth) << std::setfill(' ') << std::left
-              << "writeRect: " << std::right << es.writeRectEncodetime
-              << "\n\t\t" << std::left  << std::setw(tableWidth)
-              << "writeSolidRect: " << std::right 
-              << es.writeSolidRectEncodetime << "\n\t\t"
-              << std::setw(tableWidth) << std::left
-              << "total: " << std::right << es.writeRectEncodetime 
-                                          + es.writeSolidRectEncodetime
-              << std::endl;
-    totalEncodingtime += es.writeRectEncodetime + es.writeSolidRectEncodetime;
+    if(!encoderStats.size())
+      continue; // FIXME: throw/log error?
+
+    std::cout << "Encoder set: " << encoderRequested << ".\n"
+              << "\tEncoder(s) used:\n";
+    double totalEncodingtime = 0;
+    int tableWidth = 20;
+    for(const auto& es : encoderStats) {
+       struct encoderStats stats = es.second;
+
+        std::cout << "\t\t" << stats.name << " encoder: (seconds)\n\t\t\t"
+                  << std::setprecision(5) << std::fixed 
+                  << std::setw(tableWidth) << std::setfill(' ') << std::left
+                  << "writeRect: " << std::right << stats.writeRectEncodetime
+                  << "\n\t\t\t" << std::left  << std::setw(tableWidth)
+                  << "writeSolidRect: " << std::right 
+                  << (stats.writeSolidRectEncodetime != 0 ? 
+                        std::to_string(stats.writeSolidRectEncodetime)
+                            : "-" ) // FIXME: the string is 1 char too long
+                  << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left
+                  << "total: " << std::right << stats.writeRectEncodetime 
+                                              + stats.writeSolidRectEncodetime
+                    << "\n\t\t\t" << std::setw(tableWidth) << std::left 
+                    << "Compression ratio: " << std::right
+                    <<  stats.outputSize / (double) stats.inputSize 
+                    << std::endl;
+
+      totalEncodingtime += stats.writeRectEncodetime 
+                         + stats.writeSolidRectEncodetime;
+    }
+
+  if(totalEncodingtime) {} // FIXME: use this value...
+  delete server;
   }
-
-  tableWidth  = 30;
-  std::cout << "\nBENCHMARK SUMMARY:\n"
-            << std::setw(tableWidth) << std::fixed << std::setfill(' ')
-            << std::left 
-            << "Encoders time:" 
-            << std::right << totalEncodingtime << "\n"
-            << std::setw(tableWidth) << std::left
-            << "EncodeManager time:" 
-            << std::right << stats.time() << "\n"
-            << std::setw(tableWidth) << std::left
-            << "Compression ratio (RFB):" 
-            << std::right << stats.compressionRatio() << "\n"
-            << std::setw(tableWidth) << std::left
-            << "\% time spent encoding:"
-            << std::right << totalEncodingtime / stats.time()
-            << " (EncodeManager)\n";
-}
-
-double Benchmark::getTime()
-{
-  return stats.time();
-}
-
-double stats::time()
-{
-  return encodeTime;
-}
-void stats::startClock()
-{
-  this->start = std::chrono::steady_clock::now();
-}
-
-void stats::stopClock()
-{
-  this->end = std::chrono::steady_clock::now();
-
-  std::chrono::duration<double> time = end - start;
-  encodeTime += time.count();
-}
-
-double stats::compressionRatio() {
-  return (double)inputSize / outputSize;
 }
