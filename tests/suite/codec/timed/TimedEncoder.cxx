@@ -11,8 +11,12 @@ namespace suite {
     stats_ = encoderStats{ 
       .writeRectEncodetime = 0,
       .writeSolidRectEncodetime = 0,
-      .inputSize = 0,
-      .outputSize = 0,
+      .inputSizeRects = 0,
+      .outputSizeRects = 0,
+      .inputSizeSolidRects = 0,
+      .outputSizeSolidRects = 0,
+      .nRects = 0,
+      .nSolidRects = 0,
       .name = name,
       };
     // Use an OutStream and inject it to the underlying 
@@ -43,8 +47,9 @@ namespace suite {
     std::chrono::duration<double> time = now - writeRectStart;
 
     stats_.writeRectEncodetime += time.count();
-    stats_.inputSize += pb->width() * pb->height() * 4;
-    stats_.outputSize += encoderOutstream->length();
+    stats_.inputSizeRects += pb->width() * pb->height() * 4;
+    stats_.outputSizeRects += encoderOutstream->length();
+    stats_.nRects++;
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream
@@ -68,8 +73,9 @@ namespace suite {
     std::chrono::duration<double> time = now - writeSolidRectStart;
 
     stats_.writeSolidRectEncodetime += time.count();
-    stats_.inputSize += width * height * 4;
-    stats_.outputSize += encoderOutstream->length();
+    stats_.inputSizeSolidRects += width * height * 4;
+    stats_.outputSizeSolidRects += encoderOutstream->length();
+    stats_.nSolidRects++;
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream

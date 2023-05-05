@@ -96,27 +96,44 @@ void Benchmark::runBenchmark()
     std::cout << "Encoder set: " << encoderRequested << ".\n"
               << "\tEncoder(s) used:\n";
     double totalEncodingtime = 0;
-    int tableWidth = 20;
+    int tableWidth = 30;
+    int precision = 5;
     for(const auto& es : encoderStats) {
        struct encoderStats stats = es.second;
 
-        std::cout << "\t\t" << stats.name << " encoder: (seconds)\n\t\t\t"
-                  << std::setprecision(5) << std::fixed 
+        // FIXME: Wrap this monstrosity in smaller functions :^)
+        std::cout << "\n\t\t" << stats.name << " encoder: (seconds)\n\t\t\t"
+                  << std::setprecision(precision) << std::fixed 
                   << std::setw(tableWidth) << std::setfill(' ') << std::left
                   << "writeRect: " << std::right << stats.writeRectEncodetime
                   << "\n\t\t\t" << std::left  << std::setw(tableWidth)
                   << "writeSolidRect: " << std::right 
-                  << (stats.writeSolidRectEncodetime != 0 ? 
-                        std::to_string(stats.writeSolidRectEncodetime)
-                            : "-" ) // FIXME: the string is 1 char too long
-                  << "\n\t\t\t"
-                  << std::setw(tableWidth) << std::left
+                  << stats.compressionRatioSolidRects()
+                  << "\n\t\t\t" << std::setw(tableWidth) << std::left
                   << "total: " << std::right << stats.writeRectEncodetime 
                                               + stats.writeSolidRectEncodetime
-                    << "\n\t\t\t" << std::setw(tableWidth) << std::left 
-                    << "Compression ratio: " << std::right
-                    <<  stats.outputSize / (double) stats.inputSize 
-                    << std::endl;
+                  << "\n\t\t\t" << std::setfill('-')
+                  << std::setw(tableWidth+precision+2)
+                  << std::left << "" << std::setfill(' ')
+                  << "\n\t\t\t" << std::setw(tableWidth) << std::left  
+                  << "# rects: " << std::right << stats.nRects
+                  << "\n\t\t\t" << std::setw(tableWidth) << std::left
+                  << "# solidRects: " << std::right << stats.nSolidRects 
+                  << "\n\t\t\t" << std::setfill('-') 
+                  << std::setw(tableWidth+precision+2)
+                  << std::left << "" << std::setfill(' ')
+                  << "\n\t\t\t" << std::setw(tableWidth) << std::left
+                  << "Compression ratio rects: " << std::right
+                  << stats.compressionRatioRects()
+                  << "\n\t\t\t" << std::setw(tableWidth) << std::left
+                  << "Compression ratio solidRects: " << std::right 
+                  << stats.compressionRatioSolidRects() << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left
+                  << "Compression ratio combined: " 
+                  << stats.compressionRatioCombined() << "\n\t\t\t"
+                  << std::setfill('-') << std::setw(tableWidth)
+                  << std::setw(tableWidth+precision+2)
+                  << std::left << "" << std::setfill(' ') << "\n";
 
       totalEncodingtime += stats.writeRectEncodetime 
                          + stats.writeSolidRectEncodetime;

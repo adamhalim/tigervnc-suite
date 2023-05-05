@@ -14,9 +14,29 @@ namespace suite {
   struct encoderStats {
     double writeRectEncodetime;
     double writeSolidRectEncodetime;
-    int inputSize;
-    int outputSize;
+    int inputSizeRects;
+    int outputSizeRects;
+    int inputSizeSolidRects;
+    int outputSizeSolidRects;
+    int nRects;
+    int nSolidRects;
     std::string name;
+
+    double compressionRatioRects() 
+    {
+      return (double) outputSizeRects / inputSizeRects; 
+    }
+
+    double compressionRatioSolidRects()
+    {
+       return (double) outputSizeSolidRects / inputSizeSolidRects;
+    }
+
+    double compressionRatioCombined()
+    {
+      return (double) (outputSizeRects + outputSizeSolidRects)
+                    / (inputSizeRects + inputSizeSolidRects);
+    }
   };
 
   class TimedEncoder 
