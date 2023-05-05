@@ -3,6 +3,10 @@
 #include "codec/timed/TimedEncoder.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
+#include "rfb/encodings.h"
+#include <map>
+#include <stdexcept>
+#include <string>
 
 namespace suite {
     
@@ -41,15 +45,36 @@ namespace suite {
     return "Unknown Encoder Class";
   }
 
+  inline std::string encodingToString(const int encoding)
+  {
+    switch (encoding) {
+      case rfb::encodingRaw:
+        return "Raw";
+      case rfb::encodingCopyRect:
+        return "CopyRect";
+      case rfb::encodingRRE:
+         return "RRE";
+      case rfb::encodingCoRRE:
+        return "CoRRE";
+      case rfb::encodingHextile:
+        return "Hextile";
+      case rfb::encodingTight:
+        return "Tight";
+      case rfb::encodingZRLE:
+        return "ZRLE";
+    }
+    return std::to_string(encoding);
+  }
+
     class Manager : public rfb::EncodeManager 
     {
     public:
       Manager(class rfb::SConnection *conn);
       ~Manager();
 
-      std::vector<encoderStats> stats();
+      std::map<const int, encoderStats> stats();
     protected:
-      std::vector<TimedEncoder*> timedEncoders;
+      std::map<const int, TimedEncoder*> timedEncoders;
     };
 }
 #endif // __SUITE_MANAGER_H__
