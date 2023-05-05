@@ -10,6 +10,9 @@ namespace suite {
                                   : RREEncoder(conn_),
                                     TimedEncoder(encoderClassName(encoderRRE))
   {
+    os = conn->getOutStream();
+    is = conn->getInStream();
+    conn_ = conn;
   }
 
   TimedRREEncoder::~TimedRREEncoder()
@@ -19,17 +22,17 @@ namespace suite {
   void TimedRREEncoder::writeRect(const PixelBuffer* pb,
                                     const Palette& palette)
   {
-    startWriteRectTimer();
+    startWriteRectTimer(this->conn);
     RREEncoder::writeRect(pb, palette);
-    stopWriteRectTimer();
+    stopWriteRectTimer(pb);
   }
 
   void TimedRREEncoder::writeSolidRect(int width, int height,
                                 const PixelFormat& pf,
                                 const rdr::U8* colour)
   {
-    startWriteSolidRectTimer();
+    startWriteSolidRectTimer(this->conn);
     RREEncoder::writeSolidRect(width, height, pf, colour);
-    stopWriteSolidRectTimer();
+    stopWriteSolidRectTimer(width, height);
   }
 }

@@ -10,6 +10,9 @@ namespace suite {
                               : HextileEncoder(conn_), 
                                 TimedEncoder(encoderClassName(encoderHextile))
   {
+    os = conn->getOutStream();
+    is = conn->getInStream();
+    conn_ = conn;
   }
 
   TimedHextileEncoder::~TimedHextileEncoder()
@@ -19,17 +22,17 @@ namespace suite {
   void TimedHextileEncoder::writeRect(const PixelBuffer* pb,
                                     const Palette& palette)
   {
-    startWriteRectTimer();
+    startWriteRectTimer(this->conn);
     HextileEncoder::writeRect(pb, palette);
-    stopWriteRectTimer();
+    stopWriteRectTimer(pb);
   }
 
   void TimedHextileEncoder::writeSolidRect(int width, int height,
                                 const PixelFormat& pf,
                                 const rdr::U8* colour)
   {
-    startWriteSolidRectTimer();
+    startWriteSolidRectTimer(this->conn);
     HextileEncoder::writeSolidRect(width, height, pf, colour);
-    stopWriteSolidRectTimer();
+    stopWriteSolidRectTimer(width, height);
   }
 }

@@ -10,6 +10,7 @@ namespace suite {
                                  : RawEncoder(conn_),
                                    TimedEncoder(encoderClassName(encoderRaw))
   {
+    conn_ = conn;
   }
 
   TimedRawEncoder::~TimedRawEncoder()
@@ -19,17 +20,17 @@ namespace suite {
   void TimedRawEncoder::writeRect(const PixelBuffer* pb,
                                     const Palette& palette)
   {
-    startWriteRectTimer();
+    startWriteRectTimer(this->conn);
     RawEncoder::writeRect(pb, palette);
-    stopWriteRectTimer();
+    stopWriteRectTimer(pb);
   }
 
   void TimedRawEncoder::writeSolidRect(int width, int height,
                                 const PixelFormat& pf,
                                 const rdr::U8* colour)
   {
-    startWriteSolidRectTimer();
+    startWriteSolidRectTimer(this->conn);
     RawEncoder::writeSolidRect(width, height, pf, colour);
-    stopWriteSolidRectTimer();
+    stopWriteSolidRectTimer(width, height);
   }
 }
