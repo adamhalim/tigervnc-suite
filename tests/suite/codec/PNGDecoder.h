@@ -1,5 +1,5 @@
-#ifndef __PNG_DECODER_H__
-#define __PNG_DECODER_H__
+#ifndef __SUITE_PNG_DECODER_H__
+#define __SUITE_PNG_DECODER_H__
 
 #include "ImageDecoder.h"
 
@@ -28,4 +28,4 @@ namespace suite {
 }
 
 
-#endif
+#endif // __SUITE_PNG_DECODER_H__

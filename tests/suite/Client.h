@@ -1,5 +1,5 @@
-#ifndef __CCONN_H__
-#define __CCONN_H__
+#ifndef __SUITE_CLIENT_H__
+#define __SUITE_CLIENT_H__
 
 #include "rfb/CConnection.h"
 #include "Server.h"
@@ -41,4 +41,4 @@ namespace suite {
   };
 }
 
-#endif
+#endif // __SUITE_CLIENT_H__

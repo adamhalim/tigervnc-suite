@@ -1,5 +1,5 @@
-#ifndef __IMAGE_DECODER_H__
-#define __IMAGE_DECODER_H__
+#ifndef __SUITE_IMAGE_DECODER_H__
+#define __SUITE_IMAGE_DECODER_H__
 
 #include "Image.h"
 #include <chrono>
@@ -38,7 +38,7 @@ namespace suite {
     {
       #if _DEBUG
         start = std::chrono::system_clock::now();
-        frameCount = 0;
+        pixelCount = 0;
       #endif
     };
     virtual ~ImageDecoder() {};
@@ -56,24 +56,24 @@ namespace suite {
     const std::string name;
   protected:
     // Measures encoding/decoding performance.
-    void measureFPS()
+    void measurePixelRate(int width, int height, int channels)
     {
       // FIXME: This method has to be called explicitly by derived classes.
       // Is there a way to do this automatically?
       #if _DEBUG
-      frameCount++;
-      const int FRAME_SAMPLE_SIZE = 100;
-      if (frameCount % FRAME_SAMPLE_SIZE == 0) {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::chrono::duration<double> time = (now - start);
-        std::cout << FRAME_SAMPLE_SIZE / time.count() << " fps\n";
+      pixelCount += (width * height * channels);
+      auto now = std::chrono::system_clock::now();
+      std::chrono::duration<double> time = now - start;
+      if (time.count() > 1) {
+        printf("%.2f Mpx/s\n", pixelCount / (time.count() * 10e6));
         start = now;
+        pixelCount = 0;
       }
-      #endif
+      #endif // _DEBUG
     }
   private:
-    int frameCount;
+    unsigned long pixelCount;
     std::chrono::system_clock::time_point start;
   };
 }
-#endif
+#endif // __SUITE_IMAGE_DECODER_H__

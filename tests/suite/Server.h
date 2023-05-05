@@ -1,11 +1,12 @@
-#ifndef __SCONN_H__
-#define __SCONN_H__
+#ifndef __SUITE_SERVER_H__
+#define __SUITE_SERVER_H__
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
 #include "Manager.h"
 #include "rfb/UpdateTracker.h"
 #include "rfb/encodings.h"
+#include <map>
 
 namespace suite {
 
@@ -33,6 +34,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(Image* image, int x = 0, int y = 0);
 
+      std::map<const int, encoderStats> stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;
@@ -43,4 +45,4 @@ namespace suite {
     };
 
   }
-#endif
+#endif // __SUITE_SERVER_H__

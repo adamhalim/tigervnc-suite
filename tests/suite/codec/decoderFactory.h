@@ -1,6 +1,5 @@
-#ifndef __DECODER_FACTORY_H__
-#define __DECODER_FACTORY_H__
-#endif
+#ifndef __SUITE_DECODER_FACTORY_H__
+#define __SUITE_DECODER_FACTORY_H__
 
 #include "ImageDecoder.h"
 
@@ -8,3 +7,5 @@ namespace suite {
   ImageDecoder* constructDecoder(decoderEnum decoder);
   ImageDecoder* constructDecoder(std::string decoder);
 }
+
+#endif // __SUITE_DECODER_FACTORY_H__

@@ -1,5 +1,5 @@
-#ifndef __DUMMYINSTREAM_H__
-#define __DUMMYINSTREAM_H__
+#ifndef __SUITE_DUMMYINSTREAM_H__
+#define __SUITE_DUMMYINSTREAM_H__
 #include "rdr/MemInStream.h"
 #include "rdr/InStream.h"
 
@@ -14,4 +14,4 @@ private:
   static const int BUF_SIZE = 10 << 20; // 10MB
   rdr::U8* buf[BUF_SIZE]; 
 };
-#endif
+#endif // __SUITE_DUMMYINSTREAM_H__

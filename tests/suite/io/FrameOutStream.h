@@ -1,5 +1,5 @@
-#ifndef __FRAME_OUT_STREAM_H__
-#define __FRAME_OUT_STREAM_H__
+#ifndef __SUITE_FRAME_OUT_STREAM_H__
+#define __SUITE_FRAME_OUT_STREAM_H__
 
 #include "ImageUpdate.h"
 #include "../codec/ImageDecoder.h"
@@ -67,4 +67,4 @@ namespace suite {
 }
 
 
-#endif
+#endif // __SUITE_FRAME_OUT_STREAM_H__

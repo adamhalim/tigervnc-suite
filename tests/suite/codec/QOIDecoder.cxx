@@ -24,7 +24,7 @@ namespace suite {
 
   int bufSize = desc.width * desc.height * desc.channels;
   Image* image = new Image(desc.width, desc.height, data, bufSize);
-  measureFPS();
+  measurePixelRate(desc.width, desc.height, desc.channels);
   return image;
  }
 
@@ -39,7 +39,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   int bufSize = desc.width * desc.height * desc.channels;
   Image* image = new Image(width, height, decodedImage, bufSize,
                             x_offset, y_offset);
-  measureFPS();
+  measurePixelRate(width, height, desc.channels);
   return image;
 }
  void QOIDecoder::encodeImageTofile(const rdr::U8 *data, int width, int height,
@@ -57,7 +57,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   if (!size)
     throw std::ios_base::failure("error encoding image");
 
-  measureFPS();
+  measurePixelRate(width, height, desc.channels);
  }
 
  Image* QOIDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
@@ -76,7 +76,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
     throw std::ios_base::failure("error encoding image");
   Image* image = new Image(desc.width, desc.height, encodedData,
                            size, x_offset, y_offset);
-  measureFPS();
+  measurePixelRate(width, height, desc.channels);
   return image;
  }
 }

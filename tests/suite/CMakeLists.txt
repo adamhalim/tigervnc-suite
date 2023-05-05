@@ -18,6 +18,14 @@ target_sources(suite PRIVATE
   codec/decoderFactory.cxx
   codec/lib/fpng.cpp
   codec/lib/qoi.h
+  codec/timed/TimedEncoder.cxx
+  codec/timed/TimedRawEncoder.cxx
+  codec/timed/TimedRREEncoder.cxx
+  codec/timed/TimedHextileEncoder.cxx
+  codec/timed/TimedTightEncoder.cxx
+  codec/timed/TimedTightJPEGEncoder.cxx
+  codec/timed/TimedZRLEEncoder.cxx
+  io/FrameInStream.cxx
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
 )

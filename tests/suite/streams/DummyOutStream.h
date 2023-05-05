@@ -1,5 +1,5 @@
-#ifndef __DUMMY_OUT_STREAM_H__
-#define __DUMMY_OUT_STREAM_H__
+#ifndef __SUITE_DUMMY_OUT_STREAM_H__
+#define __SUITE_DUMMY_OUT_STREAM_H__
 #include "rdr/MemOutStream.h"
 #include "rdr/OutStream.h"
 
@@ -14,4 +14,4 @@ public:
   rdr::U8* dump();
   bool write(rdr::U8* data, size_t length);
 };
-#endif
+#endif // __SUITE_DUMMY_OUT_STREAM_H__
