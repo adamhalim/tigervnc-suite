@@ -1,4 +1,8 @@
 #include "Server.h"
+#include "Manager.h"
+#include "codec/timed/TimedEncoder.h"
+#include "codec/timed/timedEncoderFactory.h"
+#include "rfb/SConnection.h"
 #include "rfb/SMsgWriter.h"
 
 namespace suite {
@@ -9,12 +13,18 @@ namespace suite {
     manager = new Manager(this);
   }
 
-  Server::Server(int width, int height, std::array<rfb::Encoder*,
+  Server::Server(int width, int height, std::array<EncoderClass,
                                                    ENCODERS_COUNT> encoders,
                                                    rfb::PixelFormat pf)
   {
+    auto encoders_ = std::array<rfb::Encoder*, ENCODERS_COUNT>();
+
+    for (int i = 0; i < ENCODERS_COUNT; i++) {
+      encoders_[i] = constructEncoder(encoders[i], this); 
+    }
+
     init(width, height, pf);
-    manager = new Manager(this, encoders);
+    manager = new Manager(this, encoders_);
   }
 
   void Server::init(int width, int height, rfb::PixelFormat pf)

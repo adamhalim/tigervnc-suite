@@ -1,5 +1,6 @@
 #ifndef __SUITE_SERVER_H__
 #define __SUITE_SERVER_H__
+#include "codec/timed/TimedEncoder.h"
 #include "rfb/PixelFormat.h"
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
@@ -25,7 +26,7 @@ namespace suite {
     {
     public:
       Server(int width, int height, rfb::PixelFormat pf = fbPF);
-      Server(int width, int height, std::array<rfb::Encoder*,
+      Server(int width, int height, std::array<EncoderClass,
                                                ENCODERS_COUNT> encoders,
                                     rfb::PixelFormat pf = fbPF);
       ~Server();
