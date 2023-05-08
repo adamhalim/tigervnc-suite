@@ -34,7 +34,21 @@ namespace suite {
     }
   }
 
+  Manager::Manager(rfb::SConnection* conn, 
+                   std::array<rfb::Encoder*, ENCODERS_COUNT> encoders_) 
+                 : EncodeManager(conn)
+  {
+    for (Encoder* e : encoders) {
+      delete e;
+    }
 
+    std::vector<Encoder*> encoders(std::begin(encoders_), std::end(encoders_));
+    this->encoders = encoders;
+
+    for (int i = 0; i < ENCODERS_COUNT; i++) {
+      TimedEncoder* timedEncoder = dynamic_cast<TimedEncoder*>(encoders[i]);
+      timedEncoders[timedEncoder->encoderClass] = timedEncoder;
+    }
   }
 
   Manager::~Manager()

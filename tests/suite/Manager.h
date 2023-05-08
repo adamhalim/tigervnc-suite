@@ -7,9 +7,9 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <array>
 
 namespace suite {
-    
 
   using namespace enumEncoder;
 
@@ -57,10 +57,14 @@ namespace suite {
     return std::to_string(encoding);
   }
 
+    static const int ENCODERS_COUNT = 6;
+
     class Manager : public rfb::EncodeManager 
     {
     public:
       Manager(class rfb::SConnection *conn);
+      Manager(class rfb::SConnection *conn,
+              std::array<rfb::Encoder*, ENCODERS_COUNT> encoders);
       ~Manager();
 
       std::map<EncoderClass, encoderStats> stats();
