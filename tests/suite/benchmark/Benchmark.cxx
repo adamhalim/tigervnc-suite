@@ -145,7 +145,12 @@ void Benchmark::runBenchmark()
                   << stats.compressionRatioCombined() << "\n\t\t\t"
                   << std::setfill('-') << std::setw(tableWidth)
                   << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ') << "\n";
+                  << std::left << "" << std::setfill(' ') << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left
+                  << "Score (time * compression ratio):" << std::right << stats.score() << "\n\t\t\t"
+                  << std::setfill('-')  << std::setw(tableWidth+precision+2)
+                  << std::left << "" << std::endl;
+
 
       totalEncodingtime += stats.writeRectEncodetime 
                          + stats.writeSolidRectEncodetime;

@@ -68,6 +68,13 @@ namespace suite {
            / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6);
     }
 
+    // Returns a "score" which is a function of time 
+    // per compressed data
+    double score()
+    {
+      return (writeRectEncodetime + writeSolidRectEncodetime)
+           * (compressionRatioCombined());
+    }
   };
 
   class TimedEncoder 
