@@ -37,6 +37,23 @@ namespace suite {
       return (double) (outputSizeRects + outputSizeSolidRects)
                     / (inputSizeRects + inputSizeSolidRects);
     }
+
+    double megaPixelsPerSecondRects()
+    {
+      return inputSizeRects / (writeRectEncodetime * 10e6);
+    }
+  
+    double megaPixelsPerSecondSolidRects()
+    {
+      return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6);
+    }
+
+    double megaPixelsPerSecondCombined()
+    {
+      return (inputSizeRects + inputSizeSolidRects) 
+           / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6);
+    }
+
   };
 
   class TimedEncoder 

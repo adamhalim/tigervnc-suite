@@ -96,7 +96,7 @@ void Benchmark::runBenchmark()
     std::cout << "Encoder set: " << encoderRequested << ".\n"
               << "\tEncoder(s) used:\n";
     double totalEncodingtime = 0;
-    int tableWidth = 30;
+    int tableWidth = 35;
     int precision = 5;
     for(const auto& es : encoderStats) {
        struct encoderStats stats = es.second;
@@ -123,7 +123,19 @@ void Benchmark::runBenchmark()
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ')
                   << "\n\t\t\t" << std::setw(tableWidth) << std::left
-                  << "Compression ratio rects: " << std::right
+                  << "MPx/s (rects):" << std::right 
+                  << stats.megaPixelsPerSecondRects() << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left
+                  << "MPx/s (solidRects:)" << std::right 
+                  << stats.megaPixelsPerSecondSolidRects() << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left 
+                  << "MPx/s (combined)" << std::right
+                  << stats.megaPixelsPerSecondCombined() << "\n\t\t\t"
+                  << std::setfill('-') 
+                  << std::setw(tableWidth+precision+2)
+                  << std::left << "" << std::setfill(' ') << "\n\t\t\t"
+                  << std::setw(tableWidth) << std::left
+                  << "Compression ratio rects: "
                   << stats.compressionRatioRects()
                   << "\n\t\t\t" << std::setw(tableWidth) << std::left
                   << "Compression ratio solidRects: " << std::right 
