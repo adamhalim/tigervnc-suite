@@ -11,6 +11,20 @@
 #include <string>
 namespace suite {
 
+    // Copied from EncodeManager.cxx
+  namespace enumEncoder {
+    enum EncoderClass {
+      encoderRaw,
+      encoderRRE,
+      encoderHextile,
+      encoderTight,
+      encoderTightJPEG,
+      encoderZRLE,
+      encoderClassMax,
+    };
+  }
+  using namespace enumEncoder;
+
   struct encoderStats {
     double writeRectEncodetime;
     double writeSolidRectEncodetime;
@@ -59,13 +73,14 @@ namespace suite {
   class TimedEncoder 
   {
   public:
-    TimedEncoder(std::string name);
+    TimedEncoder(EncoderClass encoderclass);
     ~TimedEncoder();
 
     void startWriteRectTimer(rfb::SConnection* sconn);
     void stopWriteRectTimer(const rfb::PixelBuffer* pb);
     void startWriteSolidRectTimer(rfb::SConnection* sconn);
     void stopWriteSolidRectTimer(int width, int height);
+    const EncoderClass encoderClass;
     encoderStats stats() { return stats_; };
   protected:
     rdr::MemOutStream *encoderOutstream;

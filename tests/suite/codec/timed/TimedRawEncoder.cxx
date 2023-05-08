@@ -1,14 +1,12 @@
 #include "TimedRawEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
-#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedRawEncoder::TimedRawEncoder(SConnection* conn_) 
-                                 : RawEncoder(conn_),
-                                   TimedEncoder(encoderClassName(encoderRaw))
+                                 : RawEncoder(conn_), TimedEncoder(encoderRaw)
   {
     conn_ = conn;
   }

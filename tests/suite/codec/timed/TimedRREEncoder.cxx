@@ -1,14 +1,12 @@
 #include "TimedRREEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
-#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedRREEncoder::TimedRREEncoder(SConnection* conn_) 
-                                  : RREEncoder(conn_),
-                                    TimedEncoder(encoderClassName(encoderRRE))
+                                  : RREEncoder(conn_), TimedEncoder(encoderRRE)
   {
     os = conn->getOutStream();
     is = conn->getInStream();

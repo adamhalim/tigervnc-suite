@@ -88,7 +88,7 @@ void Benchmark::runBenchmark()
     // FIXME: Refactor this to a separate function
     std::string encoderRequested = encodingToString(s.first);
     Server* server = s.second;
-    std::map<const int, encoderStats> encoderStats = server->stats();
+    std::map<EncoderClass, encoderStats> encoderStats = server->stats();
 
     if(!encoderStats.size())
       continue; // FIXME: throw/log error?

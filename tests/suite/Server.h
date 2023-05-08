@@ -34,7 +34,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(Image* image, int x = 0, int y = 0);
 
-      std::map<const int, encoderStats> stats();
+      std::map<EncoderClass, encoderStats> stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;

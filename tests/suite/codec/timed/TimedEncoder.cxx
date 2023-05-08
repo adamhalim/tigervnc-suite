@@ -2,11 +2,13 @@
 #include "rdr/MemOutStream.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
+#include "../../Manager.h"
 #include <chrono>
 
 namespace suite {
 
-  TimedEncoder::TimedEncoder(std::string name)
+  TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
+                           : encoderClass(encoderclass)
   {
     stats_ = encoderStats{ 
       .writeRectEncodetime = 0,
@@ -17,7 +19,7 @@ namespace suite {
       .outputSizeSolidRects = 0,
       .nRects = 0,
       .nSolidRects = 0,
-      .name = name,
+      .name = encoderClassName(encoderclass),
       };
     // Use an OutStream and inject it to the underlying 
     // SConn just before writeRect() and writeSolidRect()

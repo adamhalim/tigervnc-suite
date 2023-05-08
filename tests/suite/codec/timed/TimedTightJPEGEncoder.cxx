@@ -1,14 +1,13 @@
 #include "TimedTightJPEGEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
-#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedTightJPEGEncoder::TimedTightJPEGEncoder(SConnection* conn_) 
                             : TightJPEGEncoder(conn_), 
-                              TimedEncoder(encoderClassName(encoderTightJPEG))
+                              TimedEncoder(encoderTightJPEG)
   {
     os = conn->getOutStream();
     is = conn->getInStream();

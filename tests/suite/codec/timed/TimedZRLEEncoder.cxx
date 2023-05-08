@@ -1,14 +1,13 @@
 #include "TimedZRLEEncoder.h"
 #include "TimedEncoder.h"
 #include "rfb/SConnection.h"
-#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedZRLEEncoder::TimedZRLEEncoder(SConnection* conn_) 
-                                  : ZRLEEncoder(conn_),
-                                    TimedEncoder(encoderClassName(encoderZRLE))
+                                  : ZRLEEncoder(conn_), 
+                                    TimedEncoder(encoderZRLE)
   {
     os = conn->getOutStream();
     is = conn->getInStream();

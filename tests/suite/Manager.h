@@ -11,16 +11,7 @@
 namespace suite {
     
 
-  // Copied from EncodeManager.cxx
-  enum EncoderClass {
-    encoderRaw,
-    encoderRRE,
-    encoderHextile,
-    encoderTight,
-    encoderTightJPEG,
-    encoderZRLE,
-    encoderClassMax,
-  };
+  using namespace enumEncoder;
 
   // Copied from EncodeManager.cxx
   inline const char *encoderClassName(EncoderClass klass)
@@ -72,9 +63,9 @@ namespace suite {
       Manager(class rfb::SConnection *conn);
       ~Manager();
 
-      std::map<const int, encoderStats> stats();
+      std::map<EncoderClass, encoderStats> stats();
     protected:
-      std::map<const int, TimedEncoder*> timedEncoders;
+      std::map<EncoderClass, TimedEncoder*> timedEncoders;
     };
 }
 #endif // __SUITE_MANAGER_H__
