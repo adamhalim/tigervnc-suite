@@ -1,5 +1,6 @@
 #ifndef __SUITE_SERVER_H__
 #define __SUITE_SERVER_H__
+#include "rfb/PixelFormat.h"
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
@@ -24,6 +25,9 @@ namespace suite {
     {
     public:
       Server(int width, int height, rfb::PixelFormat pf = fbPF);
+      Server(int width, int height, std::array<rfb::Encoder*,
+                                               ENCODERS_COUNT> encoders,
+                                    rfb::PixelFormat pf = fbPF);
       ~Server();
 
       void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb);
@@ -42,6 +46,7 @@ namespace suite {
       Manager *manager;
       rfb::SimpleUpdateTracker updates;
       rfb::ManagedPixelBuffer* pb;
+      void init(int width, int height, rfb::PixelFormat pf);
     };
 
   }

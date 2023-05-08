@@ -5,12 +5,25 @@ namespace suite {
 
   Server::Server(int width, int height, rfb::PixelFormat pf)
   {
+    init(width, height, pf);
+    manager = new Manager(this);
+  }
+
+  Server::Server(int width, int height, std::array<rfb::Encoder*,
+                                                   ENCODERS_COUNT> encoders,
+                                                   rfb::PixelFormat pf)
+  {
+    init(width, height, pf);
+    manager = new Manager(this, encoders);
+  }
+
+  void Server::init(int width, int height, rfb::PixelFormat pf)
+  {
     out = new DummyOutStream();
     in = new DummyInStream();
     setStreams(in, out);
     setWriter(new rfb::SMsgWriter(&client, out));
 
-    manager = new Manager(this);
     this->updates = rfb::SimpleUpdateTracker();
 
     setPixelFormat(fbPF);
