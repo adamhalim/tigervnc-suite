@@ -7,6 +7,7 @@
 #include "rfb/Encoder.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
+#include "encoderStats.h"
 #include <chrono>
 #include <stdexcept>
 #include <string>
@@ -67,66 +68,6 @@ namespace suite {
     }
   }
   using namespace enumEncoder;
-
-  struct frameData
-  {
-    uint timeRequired;
-    uint timeSpent;
-  };
-
-
-  struct encoderStats {
-    double writeRectEncodetime;
-    double writeSolidRectEncodetime;
-    int inputSizeRects;
-    int outputSizeRects;
-    int inputSizeSolidRects;
-    int outputSizeSolidRects;
-    int nRects;
-    int nSolidRects;
-    std::string name;
-    std::vector<frameData> framesData;
-
-    double compressionRatioRects() 
-    {
-      return (double) outputSizeRects / inputSizeRects; 
-    }
-
-    double compressionRatioSolidRects()
-    {
-       return (double) outputSizeSolidRects / inputSizeSolidRects;
-    }
-
-    double compressionRatioCombined()
-    {
-      return (double) (outputSizeRects + outputSizeSolidRects)
-                    / (inputSizeRects + inputSizeSolidRects);
-    }
-
-    double megaPixelsPerSecondRects()
-    {
-      return inputSizeRects / (writeRectEncodetime * 10e6);
-    }
-  
-    double megaPixelsPerSecondSolidRects()
-    {
-      return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6);
-    }
-
-    double megaPixelsPerSecondCombined()
-    {
-      return (inputSizeRects + inputSizeSolidRects) 
-           / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6);
-    }
-
-    // Returns a "score" which is a function of time 
-    // per compressed data
-    double score()
-    {
-      return (writeRectEncodetime + writeSolidRectEncodetime)
-           * (compressionRatioCombined());
-    }
-  };
 
   class TimedEncoder
   {

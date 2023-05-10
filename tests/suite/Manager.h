@@ -4,6 +4,7 @@
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
 #include "rfb/encodings.h"
+#include "codec/timed/encoderStats.h"
 #include <map>
 #include <stdexcept>
 #include <string>
