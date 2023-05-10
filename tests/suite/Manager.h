@@ -68,10 +68,19 @@ namespace suite {
       Manager(class rfb::SConnection *conn, EncoderSettings settings);
       ~Manager();
 
+      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                       const rfb::RenderedCursor* renderedCursor);
+
+      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                       const rfb::RenderedCursor* renderedCursor,
+                       uint frameTime);
+
       std::map<EncoderClass, encoderStats> stats();
     protected:
       std::map<EncoderClass, TimedEncoder*> timedEncoders;
       const bool SINGLE_ENCODER;
+    private:
+      TimedEncoder* timedEncoder_;
     };
 }
 #endif // __SUITE_MANAGER_H__

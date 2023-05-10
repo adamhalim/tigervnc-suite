@@ -13,6 +13,7 @@
 #include "rfb/encodings.h"
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 namespace suite {
 
@@ -51,6 +52,7 @@ namespace suite {
       encoders[static_cast<EncoderClass>(i)] = 
                dynamic_cast<Encoder*>(timedEncoder);
     }
+    timedEncoder_ = timedEncoder;
   }
 
   Manager::~Manager()
@@ -65,6 +67,33 @@ namespace suite {
                       (constructTimedEncoder(encoderRaw, conn));
       }
     }
+  }
+
+  void Manager::writeUpdate(const rfb::UpdateInfo& ui,
+                            const rfb::PixelBuffer* pb,
+                            const rfb::RenderedCursor* renderedCursor)
+  {
+    EncodeManager::writeUpdate(ui, pb, renderedCursor);
+  }
+
+  void Manager::writeUpdate(const rfb::UpdateInfo& ui,
+                            const rfb::PixelBuffer* pb,
+                            const rfb::RenderedCursor* renderedCursor,
+                            uint frameTime)
+  {
+    auto start = std::chrono::system_clock::now();
+    writeUpdate(ui, pb, renderedCursor);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> time = end - start;
+
+    // We keep track of the time it takes to encode an entire frame,
+    // and how much time there is left until the next frame occurs
+    // (as it was recorded).
+    frameData data {
+      .timeRequired = frameTime,
+      .timeSpent = (uint) (time.count() * 10e3),
+    };
+    timedEncoder_->addFrameData(data);
   }
 
   std::map<EncoderClass, encoderStats> Manager::stats() {

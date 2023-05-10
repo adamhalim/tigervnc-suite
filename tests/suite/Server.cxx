@@ -57,7 +57,7 @@ namespace suite {
     updates.add_changed(rect);
     updates.getUpdateInfo(&ui, changed);
 
-    writeUpdate(ui, pb);
+    manager->writeUpdate(ui, pb, NULL, image->frameTime);
   }
 
   void Server::writeUpdate(const rfb::UpdateInfo& ui,

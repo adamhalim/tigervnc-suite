@@ -3,6 +3,7 @@
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
 #include "../../Manager.h"
+#include "../../Server.h"
 #include <chrono>
 
 namespace suite {
@@ -83,5 +84,10 @@ namespace suite {
     // & reset our MemOutStream
     conn_->setStreams(is, os);
     encoderOutstream->clear();
+  }
+
+  void TimedEncoder::addFrameData(frameData data)
+  {
+    stats_.framesData.push_back(data);
   }
 }

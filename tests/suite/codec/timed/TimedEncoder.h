@@ -10,6 +10,7 @@
 #include <chrono>
 #include <stdexcept>
 #include <string>
+#include <vector>
 namespace suite {
 
     // Copied from EncodeManager.cxx
@@ -67,6 +68,13 @@ namespace suite {
   }
   using namespace enumEncoder;
 
+  struct frameData
+  {
+    uint timeRequired;
+    uint timeSpent;
+  };
+
+
   struct encoderStats {
     double writeRectEncodetime;
     double writeSolidRectEncodetime;
@@ -77,6 +85,7 @@ namespace suite {
     int nRects;
     int nSolidRects;
     std::string name;
+    std::vector<frameData> framesData;
 
     double compressionRatioRects() 
     {
@@ -137,6 +146,7 @@ namespace suite {
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
                                 const rdr::U8* colour)=0;
+    void addFrameData(frameData data);
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;
