@@ -156,3 +156,41 @@ void Benchmark::runBenchmark()
   delete server;
   }
 }
+
+EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
+                                           PseudoEncodingLevel quality,
+                                           PseudoEncodingLevel compression)
+{
+  EncoderSettings settings {
+    .encoderClass = encoderClass,
+    .rfbEncoding = rfb::encodingRaw,
+    .quality = quality,
+    .compression = compression,
+  };
+
+  switch(encoderClass) {
+      case encoderRaw:
+        settings.rfbEncoding = rfb::encodingRaw;
+        break;
+      case encoderRRE:
+        settings.rfbEncoding = rfb::encodingRRE;
+        break;
+      case encoderHextile:
+        settings.rfbEncoding = rfb::encodingHextile;
+        break;
+      case encoderTight:
+        settings.rfbEncoding = rfb::encodingTight;
+        break;
+      case encoderTightJPEG:
+        if (quality == NONE)
+          settings.quality = TWO;
+        settings.rfbEncoding = rfb::encodingTight;
+        break;
+      case encoderZRLE:
+        settings.rfbEncoding = rfb::encodingZRLE;
+        break;
+      default:
+        throw std::logic_error("EncoderClass not implemented");
+  }
+  return settings;
+}

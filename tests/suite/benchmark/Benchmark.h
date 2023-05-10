@@ -30,6 +30,9 @@ namespace suite {
   private:
     const rdr::S32* encodings_;
     const size_t encodingsLength_;
+    static EncoderSettings encoderSettings(EncoderClass encoderClass, 
+                                        PseudoEncodingLevel quality = NONE,
+                                        PseudoEncodingLevel compression = TWO);
   };
 }
 #endif // __SUITE_BENCHMARK_H__
