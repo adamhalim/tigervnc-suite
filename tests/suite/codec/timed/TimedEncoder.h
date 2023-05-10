@@ -8,6 +8,7 @@
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
 #include <chrono>
+#include <stdexcept>
 #include <string>
 namespace suite {
 
@@ -22,6 +23,47 @@ namespace suite {
       encoderZRLE,
       encoderClassMax,
     };
+
+    enum PseudoEncodingLevel {
+      NONE = -1,
+      ZERO,
+      ONE,
+      TWO,
+      THREE,
+      FOUR,
+      FIVE,
+      SIX,
+      SEVEN,
+      EIGHT,
+      NINE
+    };
+
+    struct EncoderSettings {
+      EncoderClass encoderClass;
+      int rfbEncoding;
+      PseudoEncodingLevel quality;
+      PseudoEncodingLevel compression;
+    };
+
+    inline std::string encoderClasstoString(EncoderClass encoderClass)
+    {
+      switch (encoderClass) {
+        case encoderRaw:
+          return "Raw";
+        case encoderRRE:
+          return "RRE";
+        case encoderHextile:
+          return "Hextile";
+        case encoderTight:
+          return "Tight";
+        case encoderTightJPEG:
+          return "TightJPEG";
+        case encoderZRLE:
+          return "ZRLE";
+        default:
+          throw std::logic_error("EncoderClass not implemented");
+      }
+    }
   }
   using namespace enumEncoder;
 
