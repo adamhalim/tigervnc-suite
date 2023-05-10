@@ -9,9 +9,6 @@ namespace suite {
                               : HextileEncoder(conn_), 
                                 TimedEncoder(encoderHextile)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedHextileEncoder::~TimedHextileEncoder()

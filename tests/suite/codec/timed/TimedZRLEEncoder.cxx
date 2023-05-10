@@ -9,9 +9,6 @@ namespace suite {
                                   : ZRLEEncoder(conn_), 
                                     TimedEncoder(encoderZRLE)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedZRLEEncoder::~TimedZRLEEncoder()

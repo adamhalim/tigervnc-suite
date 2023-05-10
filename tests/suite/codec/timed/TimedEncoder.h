@@ -131,12 +131,11 @@ namespace suite {
     void stopWriteSolidRectTimer(int width, int height);
     const EncoderClass encoderClass;
     encoderStats stats() { return stats_; };
-  protected:
+  private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;
     rdr::InStream* is;
     rfb::SConnection* conn_;
-  private:
     encoderStats stats_;
     std::chrono::system_clock::time_point writeRectStart;
     std::chrono::system_clock::time_point writeSolidRectStart;

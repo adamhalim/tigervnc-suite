@@ -6,11 +6,9 @@
 namespace suite {
 
   TimedRREEncoder::TimedRREEncoder(SConnection* conn_) 
-                                  : RREEncoder(conn_), TimedEncoder(encoderRRE)
+                                  : RREEncoder(conn_),
+                                    TimedEncoder(encoderRRE)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedRREEncoder::~TimedRREEncoder()

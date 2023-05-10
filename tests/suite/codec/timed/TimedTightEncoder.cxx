@@ -12,9 +12,6 @@ namespace suite {
                                 : TightEncoder(conn_), 
                                   TimedEncoder(encoderTight)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedTightEncoder::~TimedTightEncoder()

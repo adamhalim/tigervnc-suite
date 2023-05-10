@@ -9,9 +9,6 @@ namespace suite {
                             : TightJPEGEncoder(conn_), 
                               TimedEncoder(encoderTightJPEG)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedTightJPEGEncoder::~TimedTightJPEGEncoder()

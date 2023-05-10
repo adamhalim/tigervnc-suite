@@ -8,7 +8,6 @@ namespace suite {
   TimedRawEncoder::TimedRawEncoder(SConnection* conn_) 
                                  : RawEncoder(conn_), TimedEncoder(encoderRaw)
   {
-    conn_ = conn;
   }
 
   TimedRawEncoder::~TimedRawEncoder()
