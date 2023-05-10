@@ -25,6 +25,7 @@ target_sources(suite PRIVATE
   codec/timed/TimedTightEncoder.cxx
   codec/timed/TimedTightJPEGEncoder.cxx
   codec/timed/TimedZRLEEncoder.cxx
+  codec/timed/timedEncoderFactory.cxx
   io/FrameInStream.cxx
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx

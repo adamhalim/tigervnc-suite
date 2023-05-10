@@ -7,20 +7,11 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <array>
 
 namespace suite {
-    
 
-  // Copied from EncodeManager.cxx
-  enum EncoderClass {
-    encoderRaw,
-    encoderRRE,
-    encoderHextile,
-    encoderTight,
-    encoderTightJPEG,
-    encoderZRLE,
-    encoderClassMax,
-  };
+  using namespace enumEncoder;
 
   // Copied from EncodeManager.cxx
   inline const char *encoderClassName(EncoderClass klass)
@@ -66,15 +57,21 @@ namespace suite {
     return std::to_string(encoding);
   }
 
+    static const int ENCODERS_COUNT = 6;
+
     class Manager : public rfb::EncodeManager 
     {
     public:
       Manager(class rfb::SConnection *conn);
+      // Creates an EncodingManager that only uses the specified Encoder
+      // for all encodings.
+      Manager(class rfb::SConnection *conn, EncoderSettings settings);
       ~Manager();
 
-      std::map<const int, encoderStats> stats();
+      std::map<EncoderClass, encoderStats> stats();
     protected:
-      std::map<const int, TimedEncoder*> timedEncoders;
+      std::map<EncoderClass, TimedEncoder*> timedEncoders;
+      const bool SINGLE_ENCODER;
     };
 }
 #endif // __SUITE_MANAGER_H__

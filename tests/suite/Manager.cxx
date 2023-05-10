@@ -6,6 +6,7 @@
 #include "codec/timed/TimedRawEncoder.h"
 #include "codec/timed/TimedTightJPEGEncoder.h"
 #include "codec/timed/TimedZRLEEncoder.h"
+#include "codec/timed/timedEncoderFactory.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/Encoder.h"
 #include "rfb/SConnection.h"
@@ -15,7 +16,8 @@
 
 namespace suite {
 
-  Manager::Manager(rfb::SConnection *conn) : EncodeManager(conn)
+  Manager::Manager(rfb::SConnection *conn) : EncodeManager(conn),
+                                             SINGLE_ENCODER(false)
   {
     for(Encoder* encoder : encoders) {
       delete encoder;
@@ -28,30 +30,45 @@ namespace suite {
     encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn);
     encoders[encoderZRLE] = new TimedZRLEEncoder(conn);
 
+    for (uint i = 0; i < encoders.size(); i++) {
+      timedEncoders[static_cast<EncoderClass>(i)] = 
+              dynamic_cast<TimedEncoder*>(encoders[i]);
+    }
+  }
 
-    // Since Tight & TightJPEG share the same encode value (7), 
-    // we can't just loop through the encoders. We use EncoderClass as an 
-    // identifier instead of Encoder.encoding
-    timedEncoders[encoderRaw] =
-             dynamic_cast<TimedEncoder*>(encoders[encoderRaw]);
-    timedEncoders[encoderRRE] = 
-              dynamic_cast<TimedEncoder*>(encoders[encoderRRE]);
-    timedEncoders[encoderHextile] =
-              dynamic_cast<TimedEncoder*>(encoders[encoderHextile]);
-    timedEncoders[encoderTight] =
-              dynamic_cast<TimedEncoder*>(encoders[encoderTight]);
-    timedEncoders[encoderTightJPEG] = 
-              dynamic_cast<TimedEncoder*>(encoders[encoderTightJPEG]);
-    timedEncoders[encoderZRLE] =
-              dynamic_cast<TimedEncoder*>(encoders[encoderZRLE]);
+  Manager::Manager(rfb::SConnection* conn, EncoderSettings settings) 
+                                         : EncodeManager(conn),
+                                           SINGLE_ENCODER(true)
+  {
+    for (Encoder* e : encoders) {
+      delete e;
+    }
+
+    EncoderClass encoderClass = settings.encoderClass;
+    TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn);
+    timedEncoders[encoderClass] = timedEncoder;
+    for (uint i = 0; i < ENCODERS_COUNT; i++) {
+      encoders[static_cast<EncoderClass>(i)] = 
+               dynamic_cast<Encoder*>(timedEncoder);
+    }
   }
 
   Manager::~Manager()
   {
+    // Ugly hack, EncodeManager's destructor will call delete on all
+    // elements in encoders. Since we sometimes use the same pointer for
+    // all elements in encoders, we need to make sure there is something
+    // to be freed. 
+    if (SINGLE_ENCODER) {
+      for (uint i = 1; i < ENCODERS_COUNT; i++) {
+        encoders[i] = dynamic_cast<Encoder*>
+                      (constructTimedEncoder(encoderRaw, conn));
+      }
+    }
   }
 
-  std::map<const int, encoderStats> Manager::stats() {
-    std::map<const int, encoderStats> stats;
+  std::map<EncoderClass, encoderStats> Manager::stats() {
+    std::map<EncoderClass, encoderStats> stats;
     for(auto const& encoder : timedEncoders) {
       if (encoder.second->stats().writeRectEncodetime ||
           encoder.second->stats().writeSolidRectEncodetime)

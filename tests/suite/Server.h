@@ -1,5 +1,7 @@
 #ifndef __SUITE_SERVER_H__
 #define __SUITE_SERVER_H__
+#include "codec/timed/TimedEncoder.h"
+#include "rfb/PixelFormat.h"
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
@@ -24,6 +26,8 @@ namespace suite {
     {
     public:
       Server(int width, int height, rfb::PixelFormat pf = fbPF);
+      Server(int width, int height, EncoderSettings settings,
+                                    rfb::PixelFormat pf = fbPF);
       ~Server();
 
       void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb);
@@ -34,7 +38,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(Image* image, int x = 0, int y = 0);
 
-      std::map<const int, encoderStats> stats();
+      std::map<EncoderClass, encoderStats> stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;
@@ -42,6 +46,7 @@ namespace suite {
       Manager *manager;
       rfb::SimpleUpdateTracker updates;
       rfb::ManagedPixelBuffer* pb;
+      void init(int width, int height, rfb::PixelFormat pf);
     };
 
   }

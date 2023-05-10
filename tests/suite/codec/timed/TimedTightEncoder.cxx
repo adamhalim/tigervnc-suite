@@ -4,18 +4,14 @@
 #include "rdr/MemOutStream.h"
 #include "rdr/OutStream.h"
 #include "rfb/SConnection.h"
-#include "../../Manager.h"
 #include <iostream>
 
 namespace suite {
 
   TimedTightEncoder::TimedTightEncoder(SConnection* conn_) 
-                                : TightEncoder(conn_),
-                                  TimedEncoder(encoderClassName(encoderTight))
+                                : TightEncoder(conn_), 
+                                  TimedEncoder(encoderTight)
   {
-    os = conn->getOutStream();
-    is = conn->getInStream();
-    conn_ = conn;
   }
 
   TimedTightEncoder::~TimedTightEncoder()

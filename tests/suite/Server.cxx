@@ -1,16 +1,32 @@
 #include "Server.h"
+#include "Manager.h"
+#include "codec/timed/TimedEncoder.h"
+#include "codec/timed/timedEncoderFactory.h"
+#include "rfb/SConnection.h"
 #include "rfb/SMsgWriter.h"
 
 namespace suite {
 
   Server::Server(int width, int height, rfb::PixelFormat pf)
   {
+    init(width, height, pf);
+    manager = new Manager(this);
+  }
+
+  Server::Server(int width, int height, EncoderSettings settings,
+                                        rfb::PixelFormat pf)
+  {
+    init(width, height, pf);
+    manager = new Manager(this, settings);
+  }
+
+  void Server::init(int width, int height, rfb::PixelFormat pf)
+  {
     out = new DummyOutStream();
     in = new DummyInStream();
     setStreams(in, out);
     setWriter(new rfb::SMsgWriter(&client, out));
 
-    manager = new Manager(this);
     this->updates = rfb::SimpleUpdateTracker();
 
     setPixelFormat(fbPF);
@@ -51,7 +67,7 @@ namespace suite {
   }
 
 
-  std::map<const int, encoderStats> Server::stats()
+  std::map<EncoderClass, encoderStats> Server::stats()
   {
     return manager->stats();
   }
