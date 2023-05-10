@@ -63,13 +63,15 @@ namespace suite {
     {
     public:
       Manager(class rfb::SConnection *conn);
-      Manager(class rfb::SConnection *conn,
-              std::array<rfb::Encoder*, ENCODERS_COUNT> encoders);
+      // Creates an EncodingManager that only uses the specified Encoder
+      // for all encodings.
+      Manager(class rfb::SConnection *conn, EncoderSettings settings);
       ~Manager();
 
       std::map<EncoderClass, encoderStats> stats();
     protected:
       std::map<EncoderClass, TimedEncoder*> timedEncoders;
+      const bool SINGLE_ENCODER;
     };
 }
 #endif // __SUITE_MANAGER_H__

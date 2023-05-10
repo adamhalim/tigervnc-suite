@@ -26,8 +26,7 @@ namespace suite {
     {
     public:
       Server(int width, int height, rfb::PixelFormat pf = fbPF);
-      Server(int width, int height, std::array<EncoderClass,
-                                               ENCODERS_COUNT> encoders,
+      Server(int width, int height, EncoderSettings settings,
                                     rfb::PixelFormat pf = fbPF);
       ~Server();
 

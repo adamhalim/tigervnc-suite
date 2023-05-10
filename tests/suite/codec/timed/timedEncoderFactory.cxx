@@ -9,11 +9,11 @@
 #include <stdexcept>
 
 namespace suite {
-  rfb::Encoder* constructEncoder(EncoderClass encoder, rfb::SConnection* sconn)
+  TimedEncoder* constructTimedEncoder(EncoderClass encoder, rfb::SConnection* sconn)
   {
     switch(encoder) {
       case encoderRaw:
-        return new TimedRawEncoder(sconn);  
+        return new TimedRawEncoder(sconn);
       case encoderRRE:
         return new TimedRREEncoder(sconn);
       case encoderHextile:

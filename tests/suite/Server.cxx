@@ -13,18 +13,11 @@ namespace suite {
     manager = new Manager(this);
   }
 
-  Server::Server(int width, int height, std::array<EncoderClass,
-                                                   ENCODERS_COUNT> encoders,
-                                                   rfb::PixelFormat pf)
+  Server::Server(int width, int height, EncoderSettings settings,
+                                        rfb::PixelFormat pf)
   {
-    auto encoders_ = std::array<rfb::Encoder*, ENCODERS_COUNT>();
-
-    for (int i = 0; i < ENCODERS_COUNT; i++) {
-      encoders_[i] = constructEncoder(encoders[i], this); 
-    }
-
     init(width, height, pf);
-    manager = new Manager(this, encoders_);
+    manager = new Manager(this, settings);
   }
 
   void Server::init(int width, int height, rfb::PixelFormat pf)
