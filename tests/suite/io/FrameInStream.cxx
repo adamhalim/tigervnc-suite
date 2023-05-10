@@ -17,6 +17,7 @@ namespace suite {
 
   FrameInStream::~FrameInStream()
   {
+    delete decoder;
   }
 
   Image* FrameInStream::readImage(std::istream& is)
