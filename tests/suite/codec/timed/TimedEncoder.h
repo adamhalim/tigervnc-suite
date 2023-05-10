@@ -119,7 +119,7 @@ namespace suite {
     }
   };
 
-  class TimedEncoder 
+  class TimedEncoder
   {
   public:
     TimedEncoder(EncoderClass encoderclass);
@@ -131,6 +131,12 @@ namespace suite {
     void stopWriteSolidRectTimer(int width, int height);
     const EncoderClass encoderClass;
     encoderStats stats() { return stats_; };
+    virtual bool isSupported() { return true; };
+    virtual void writeRect(const rfb::PixelBuffer* pb,
+                           const rfb::Palette& palette)=0;
+    virtual void writeSolidRect(int width, int height,
+                                const rfb::PixelFormat& pf,
+                                const rdr::U8* colour)=0;
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;
