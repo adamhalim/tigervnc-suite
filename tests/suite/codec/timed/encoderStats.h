@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <iomanip>
+#include <iostream>
 
 namespace suite {
 
@@ -63,6 +65,61 @@ namespace suite {
     {
       return (writeRectEncodetime + writeSolidRectEncodetime)
            * (compressionRatioCombined());
+    }
+
+    void print()
+    {
+      int tableWidth = 35;
+      int precision = 5;
+      std::cout << "\n\t" << name << " encoder: (seconds)\n\t\t"
+                << std::setprecision(precision) << std::fixed 
+                << std::setw(tableWidth) << std::setfill(' ') << std::left
+                << "writeRect: " << std::right << writeRectEncodetime
+                << "\n\t\t" << std::left  << std::setw(tableWidth)
+                << "writeSolidRect: " << std::right 
+                << compressionRatioSolidRects()
+                << "\n\t\t" << std::setw(tableWidth) << std::left
+                << "total: " << std::right << writeRectEncodetime 
+                                            + writeSolidRectEncodetime
+                << "\n\t\t" << std::setfill('-')
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << std::setfill(' ')
+                << "\n\t\t" << std::setw(tableWidth) << std::left  
+                << "# rects: " << std::right << nRects
+                << "\n\t\t" << std::setw(tableWidth) << std::left
+                << "# solidRects: " << std::right << nSolidRects 
+                << "\n\t\t" << std::setfill('-') 
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << std::setfill(' ')
+                << "\n\t\t" << std::setw(tableWidth) << std::left
+                << "MPx/s (rects):" << std::right 
+                << megaPixelsPerSecondRects() << "\n\t\t"
+                << std::setw(tableWidth) << std::left
+                << "MPx/s (solidRects:)" << std::right 
+                << megaPixelsPerSecondSolidRects() << "\n\t\t"
+                << std::setw(tableWidth) << std::left 
+                << "MPx/s (combined)" << std::right
+                << megaPixelsPerSecondCombined() << "\n\t\t"
+                << std::setfill('-') 
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << std::setfill(' ') << "\n\t\t"
+                << std::setw(tableWidth) << std::left
+                << "Compression ratio rects: "
+                << compressionRatioRects()
+                << "\n\t\t" << std::setw(tableWidth) << std::left
+                << "Compression ratio solidRects: " << std::right 
+                << compressionRatioSolidRects() << "\n\t\t"
+                << std::setw(tableWidth) << std::left
+                << "Compression ratio combined: " 
+                << compressionRatioCombined() << "\n\t\t"
+                << std::setfill('-') << std::setw(tableWidth)
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << std::setfill(' ') << "\n\t\t"
+                << std::setw(tableWidth) << std::left
+                << "Score (time * compression ratio):" << std::right
+                << score() << "\n\t\t" << std::setfill('-') 
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << std::endl;
     }
   };
 }

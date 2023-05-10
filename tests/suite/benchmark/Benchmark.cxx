@@ -10,7 +10,6 @@
 #include <ios>
 #include <stdexcept>
 #include <sys/stat.h>
-#include <iomanip>
 
 using namespace suite;
 
@@ -110,61 +109,9 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     if(!encoderStats.size())
       continue; // FIXME: throw/log error?
 
-    int tableWidth = 35;
-    int precision = 5;
     for(const auto& es : encoderStats) {
        struct encoderStats stats = es.second;
-
-        // FIXME: Wrap this monstrosity in smaller functions :^)
-        std::cout << "\n\t" << stats.name << " encoder: (seconds)\n\t\t"
-                  << std::setprecision(precision) << std::fixed 
-                  << std::setw(tableWidth) << std::setfill(' ') << std::left
-                  << "writeRect: " << std::right << stats.writeRectEncodetime
-                  << "\n\t\t" << std::left  << std::setw(tableWidth)
-                  << "writeSolidRect: " << std::right 
-                  << stats.compressionRatioSolidRects()
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "total: " << std::right << stats.writeRectEncodetime 
-                                              + stats.writeSolidRectEncodetime
-                  << "\n\t\t" << std::setfill('-')
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ')
-                  << "\n\t\t" << std::setw(tableWidth) << std::left  
-                  << "# rects: " << std::right << stats.nRects
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "# solidRects: " << std::right << stats.nSolidRects 
-                  << "\n\t\t" << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ')
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "MPx/s (rects):" << std::right 
-                  << stats.megaPixelsPerSecondRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "MPx/s (solidRects:)" << std::right 
-                  << stats.megaPixelsPerSecondSolidRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left 
-                  << "MPx/s (combined)" << std::right
-                  << stats.megaPixelsPerSecondCombined() << "\n\t\t"
-                  << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ') << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Compression ratio rects: "
-                  << stats.compressionRatioRects()
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "Compression ratio solidRects: " << std::right 
-                  << stats.compressionRatioSolidRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Compression ratio combined: " 
-                  << stats.compressionRatioCombined() << "\n\t\t"
-                  << std::setfill('-') << std::setw(tableWidth)
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ') << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Score (time * compression ratio):" << std::right
-                  << stats.score() << "\n\t\t" << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::endl;
+       stats.print();
     }
   delete server;
   }
