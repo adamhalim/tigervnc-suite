@@ -6,13 +6,13 @@
 namespace suite {
   ImageDecoder* constructDecoder(decoderEnum decoder)
   {
-  switch (decoder) {
+    switch (decoder) {
     case PPM:
-      return (ImageDecoder*)new PPMDecoder();
+      return (ImageDecoder*) new PPMDecoder();
     case PNG:
-      return (ImageDecoder*)new PNGDecoder();
+      return (ImageDecoder*) new PNGDecoder();
     case QOI:
-      return (ImageDecoder*)new QOIDecoder();
+      return (ImageDecoder*) new QOIDecoder();
     default:
       throw std::logic_error("decoder not imlpemented");
     }

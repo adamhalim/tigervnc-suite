@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
   Benchmark *b;
   try {
-   b = new Benchmark(filename);
+    b = new Benchmark(filename);
   } catch (rfb::Exception &e) {
     std::cerr << "Error: " << e.str() << std::endl;
     exit(1);

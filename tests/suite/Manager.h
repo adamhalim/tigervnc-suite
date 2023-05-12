@@ -40,20 +40,20 @@ namespace suite {
   inline std::string encodingToString(const int encoding)
   {
     switch (encoding) {
-      case rfb::encodingRaw:
-        return "Raw";
-      case rfb::encodingCopyRect:
-        return "CopyRect";
-      case rfb::encodingRRE:
-         return "RRE";
-      case rfb::encodingCoRRE:
-        return "CoRRE";
-      case rfb::encodingHextile:
-        return "Hextile";
-      case rfb::encodingTight:
-        return "Tight";
-      case rfb::encodingZRLE:
-        return "ZRLE";
+    case rfb::encodingRaw:
+      return "Raw";
+    case rfb::encodingCopyRect:
+      return "CopyRect";
+    case rfb::encodingRRE:
+        return "RRE";
+    case rfb::encodingCoRRE:
+      return "CoRRE";
+    case rfb::encodingHextile:
+      return "Hextile";
+    case rfb::encodingTight:
+      return "Tight";
+    case rfb::encodingZRLE:
+      return "ZRLE";
     }
     return std::to_string(encoding);
   }

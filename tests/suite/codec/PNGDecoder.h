@@ -12,15 +12,15 @@ namespace suite {
 
     Image *decodeImageFromFile(std::string filename);
     Image* decodeImageFromMemory(rdr::U8* data, int width, int height,
-                                          int size,
-                                          int x_offset = 0,
-                                          int y_offset = 0);
+                                 int size,
+                                 int x_offset = 0,
+                                 int y_offset = 0);
 
     void encodeImageTofile(const rdr::U8* data, int width,
-                            int height, std::string filename);
+                           int height, std::string filename);
 
     Image* encodeImageToMemory(const rdr::U8* data, int width, int height,
-                                int x_offset = 0, int y_offset = 0);
+                               int x_offset = 0, int y_offset = 0);
   private:
     // Sets all bits in alpha channel to 255
     rdr::U8* addAlphaPadding(const rdr::U8* data, int width, int height);

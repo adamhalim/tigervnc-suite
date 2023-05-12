@@ -15,7 +15,7 @@ namespace suite {
   }
 
   void TimedRawEncoder::writeRect(const PixelBuffer* pb,
-                                    const Palette& palette)
+                                  const Palette& palette)
   {
     startWriteRectTimer(this->conn);
     RawEncoder::writeRect(pb, palette);
@@ -23,8 +23,8 @@ namespace suite {
   }
 
   void TimedRawEncoder::writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
-                                const rdr::U8* colour)
+                                       const PixelFormat& pf,
+                                       const rdr::U8* colour)
   {
     startWriteSolidRectTimer(this->conn);
     RawEncoder::writeSolidRect(width, height, pf, colour);

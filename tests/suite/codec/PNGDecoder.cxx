@@ -30,7 +30,7 @@ namespace suite {
     int height;
     int channels;
 
-    rdr::U8* data = (rdr::U8*)stbi_load(filename.c_str(), &width, &height,
+    rdr::U8* data = (rdr::U8*) stbi_load(filename.c_str(), &width, &height,
                                         &channels, 0);
     int bufSize = width * height * channels;
 
@@ -102,7 +102,7 @@ namespace suite {
     int bufSize = width * height * 4;
     rdr::U8* paddedBuf = new rdr::U8[bufSize];
 
-    for(int i = 0; i < bufSize; i += 4) {
+    for (int i = 0; i < bufSize; i += 4) {
       paddedBuf[i] = data[i]; 
       paddedBuf[i + 1] = data[i+1]; 
       paddedBuf[i + 2] = data[i+2]; 

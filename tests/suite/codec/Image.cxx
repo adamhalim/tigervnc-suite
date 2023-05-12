@@ -8,9 +8,9 @@ namespace suite {
 
   Image::Image(int width, int height, rdr::U8* buffer,
                int size, int x_offset, int y_offset, uint frameTime)
-                : width(width), height(height), x_offset(x_offset),
-                  y_offset(y_offset), size(size), frameTime(frameTime), 
-                  buffer(buffer)
+             : width(width), height(height), x_offset(x_offset),
+               y_offset(y_offset), size(size), frameTime(frameTime), 
+               buffer(buffer)
   {
   }
 

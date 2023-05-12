@@ -9,8 +9,8 @@
 namespace suite {
 
   TimedTightEncoder::TimedTightEncoder(SConnection* conn_) 
-                                : TightEncoder(conn_), 
-                                  TimedEncoder(encoderTight)
+                                     : TightEncoder(conn_),
+                                       TimedEncoder(encoderTight)
   {
   }
 
@@ -27,8 +27,8 @@ namespace suite {
   }
 
   void TimedTightEncoder::writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
-                                const rdr::U8* colour)
+                                         const PixelFormat& pf,
+                                         const rdr::U8* colour)
   {
     startWriteSolidRectTimer(this->conn);
     TightEncoder::writeSolidRect(width, height, pf, colour);

@@ -20,9 +20,8 @@ namespace suite {
   Manager::Manager(rfb::SConnection *conn) : EncodeManager(conn),
                                              SINGLE_ENCODER(false)
   {
-    for(Encoder* encoder : encoders) {
+    for (Encoder* encoder : encoders)
       delete encoder;
-    }
 
     encoders[encoderRaw] = new TimedRawEncoder(conn);
     encoders[encoderRRE] = new TimedRREEncoder(conn);
@@ -33,7 +32,7 @@ namespace suite {
 
     for (uint i = 0; i < encoders.size(); i++) {
       timedEncoders[static_cast<EncoderClass>(i)] = 
-              dynamic_cast<TimedEncoder*>(encoders[i]);
+                    dynamic_cast<TimedEncoder*>(encoders[i]);
     }
   }
 
@@ -41,9 +40,8 @@ namespace suite {
                                          : EncodeManager(conn),
                                            SINGLE_ENCODER(true)
   {
-    for (Encoder* e : encoders) {
+    for (Encoder* e : encoders)
       delete e;
-    }
 
     EncoderClass encoderClass = settings.encoderClass;
     TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn);
@@ -98,7 +96,7 @@ namespace suite {
 
   std::map<EncoderClass, encoderStats> Manager::stats() {
     std::map<EncoderClass, encoderStats> stats;
-    for(auto const& encoder : timedEncoders) {
+    for (auto const& encoder : timedEncoders) {
       if (encoder.second->stats().writeRectEncodetime ||
           encoder.second->stats().writeSolidRectEncodetime)
           stats[encoder.first] = encoder.second->stats();

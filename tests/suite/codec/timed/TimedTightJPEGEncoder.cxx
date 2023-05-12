@@ -6,8 +6,8 @@
 namespace suite {
 
   TimedTightJPEGEncoder::TimedTightJPEGEncoder(SConnection* conn_) 
-                            : TightJPEGEncoder(conn_), 
-                              TimedEncoder(encoderTightJPEG)
+                                             : TightJPEGEncoder(conn_),
+                                               TimedEncoder(encoderTightJPEG)
   {
   }
 
@@ -16,7 +16,7 @@ namespace suite {
   }
 
   void TimedTightJPEGEncoder::writeRect(const PixelBuffer* pb,
-                                    const Palette& palette)
+                                        const Palette& palette)
   {
     startWriteRectTimer(this->conn);
     TightJPEGEncoder::writeRect(pb, palette);
@@ -24,8 +24,8 @@ namespace suite {
   }
 
   void TimedTightJPEGEncoder::writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
-                                const rdr::U8* colour)
+                                             const PixelFormat& pf,
+                                             const rdr::U8* colour)
   {
     startWriteSolidRectTimer(this->conn);
     TightJPEGEncoder::writeSolidRect(width, height, pf, colour);

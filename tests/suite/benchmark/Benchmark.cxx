@@ -84,7 +84,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
   }
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
-  while(file.peek() != EOF) {
+  while (file.peek() != EOF) {
     Image* image = is.readImage(file);
 
     // For each encoding we want to test, we load an image and loop through 
@@ -100,16 +100,16 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
   std::cout << "Benchmarking complete!\n";
 
   // Loop through each server and print the corresponding statistics
-  for(auto &s : servers) {
+  for (auto &s : servers) {
     // FIXME: Refactor this to a separate function
     std::string encoderRequested = encoderClasstoString(s.first);
     Server* server = s.second;
     std::map<EncoderClass, encoderStats> encoderStats = server->stats();
 
-    if(!encoderStats.size())
+    if (!encoderStats.size())
       continue; // FIXME: throw/log error?
 
-    for(const auto& es : encoderStats) {
+    for (const auto& es : encoderStats) {
        struct encoderStats stats = es.second;
        stats.print();
     }
@@ -128,29 +128,29 @@ EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
     .compression = compression,
   };
 
-  switch(encoderClass) {
-      case encoderRaw:
-        settings.rfbEncoding = rfb::encodingRaw;
-        break;
-      case encoderRRE:
-        settings.rfbEncoding = rfb::encodingRRE;
-        break;
-      case encoderHextile:
-        settings.rfbEncoding = rfb::encodingHextile;
-        break;
-      case encoderTight:
-        settings.rfbEncoding = rfb::encodingTight;
-        break;
-      case encoderTightJPEG:
-        if (quality == NONE)
-          settings.quality = TWO;
-        settings.rfbEncoding = rfb::encodingTight;
-        break;
-      case encoderZRLE:
-        settings.rfbEncoding = rfb::encodingZRLE;
-        break;
-      default:
-        throw std::logic_error("EncoderClass not implemented");
+  switch (encoderClass) {
+  case encoderRaw:
+    settings.rfbEncoding = rfb::encodingRaw;
+    break;
+  case encoderRRE:
+    settings.rfbEncoding = rfb::encodingRRE;
+    break;
+  case encoderHextile:
+    settings.rfbEncoding = rfb::encodingHextile;
+    break;
+  case encoderTight:
+    settings.rfbEncoding = rfb::encodingTight;
+    break;
+  case encoderTightJPEG:
+    if (quality == NONE)
+      settings.quality = TWO;
+    settings.rfbEncoding = rfb::encodingTight;
+    break;
+  case encoderZRLE:
+    settings.rfbEncoding = rfb::encodingZRLE;
+    break;
+  default:
+    throw std::logic_error("EncoderClass not implemented");
   }
   return settings;
 }

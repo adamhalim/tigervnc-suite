@@ -9,9 +9,9 @@ int main(int argc, char* argv[])
   if(argc < 3) {
 
     std::string decoderString;
-    std::for_each(decodersMap.begin(), decodersMap.end(), [&](const auto &s){
+    std::for_each(decodersMap.begin(), decodersMap.end(), [&](const auto &s) {
       decoderString += s.first + " ";
-  });
+    });
     std::cerr << "Error, incorrect arguments\n" 
               << "Usage:\n\t"
               << argv[0] << " <X display> <output filename> " 

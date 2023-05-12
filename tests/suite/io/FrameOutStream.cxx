@@ -6,7 +6,7 @@
 namespace suite {
 
   FrameOutStream::FrameOutStream(std::string filename, ImageDecoder* decoder)
-                                : headerWritten(false), decoder(decoder->name)
+                               : headerWritten(false), decoder(decoder->name)
   {
     file.open(filename.c_str());
     if (!file.is_open())

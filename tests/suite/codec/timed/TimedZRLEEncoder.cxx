@@ -6,8 +6,8 @@
 namespace suite {
 
   TimedZRLEEncoder::TimedZRLEEncoder(SConnection* conn_) 
-                                  : ZRLEEncoder(conn_), 
-                                    TimedEncoder(encoderZRLE)
+                                   : ZRLEEncoder(conn_),
+                                     TimedEncoder(encoderZRLE)
   {
   }
 
@@ -16,7 +16,7 @@ namespace suite {
   }
 
   void TimedZRLEEncoder::writeRect(const PixelBuffer* pb,
-                                    const Palette& palette)
+                                   const Palette& palette)
   {
     startWriteRectTimer(this->conn);
     ZRLEEncoder::writeRect(pb, palette);
@@ -24,8 +24,8 @@ namespace suite {
   }
 
   void TimedZRLEEncoder::writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
-                                const rdr::U8* colour)
+                                        const PixelFormat& pf,
+                                        const rdr::U8* colour)
   {
     startWriteSolidRectTimer(this->conn);
     ZRLEEncoder::writeSolidRect(width, height, pf, colour);
