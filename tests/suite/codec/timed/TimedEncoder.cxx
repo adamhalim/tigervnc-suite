@@ -86,7 +86,7 @@ namespace suite {
     encoderOutstream->clear();
   }
 
-  void TimedEncoder::addFrameData(frameData data)
+  void TimedEncoder::addWriteUpdate(writeUpdateStats data)
   {
     stats_.framesData.push_back(data);
   }

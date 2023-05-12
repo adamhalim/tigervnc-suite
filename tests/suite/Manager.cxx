@@ -89,11 +89,11 @@ namespace suite {
     // We keep track of the time it takes to encode an entire frame,
     // and how much time there is left until the next frame occurs
     // (as it was recorded).
-    frameData data {
+    writeUpdateStats data {
       .timeRequired = frameTime,
       .timeSpent = (uint) (time.count() * 10e3),
     };
-    timedEncoder_->addFrameData(data);
+    timedEncoder_->addWriteUpdate(data);
   }
 
   std::map<EncoderClass, encoderStats> Manager::stats() {

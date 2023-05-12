@@ -87,7 +87,7 @@ namespace suite {
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
                                 const rdr::U8* colour)=0;
-    void addFrameData(frameData data);
+    void addWriteUpdate(writeUpdateStats data);
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;

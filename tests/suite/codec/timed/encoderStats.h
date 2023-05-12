@@ -10,7 +10,7 @@
 
 namespace suite {
 
-  struct frameData
+  struct writeUpdateStats
   {
     uint timeRequired;
     uint timeSpent;
@@ -34,7 +34,7 @@ namespace suite {
     int nRects;
     int nSolidRects;
     std::string name;
-    std::vector<frameData> framesData;
+    std::vector<writeUpdateStats> framesData;
     static const int BPP = 4;
 
     double compressionRatioRects() 
@@ -84,32 +84,32 @@ namespace suite {
 
     double medianTimeSpent()
     {
-      return medianFrameDataValue([](const frameData& lhs,
-                                     const frameData& rhs) {
+      return medianFrameDataValue([](const writeUpdateStats& lhs,
+                                     const writeUpdateStats& rhs) {
         return lhs.timeSpent < rhs.timeSpent;
       });
     }
 
     double medianTimeRequired()
     {
-      return medianFrameDataValue([](const frameData& lhs,
-                                     const frameData& rhs) {
+      return medianFrameDataValue([](const writeUpdateStats& lhs,
+                                     const writeUpdateStats& rhs) {
         return lhs.timeRequired < rhs.timeRequired;
       });
     }
 
     double medianEncodingtime()
     {
-      return medianFrameDataValue([](const frameData& lhs,
-                                     const frameData& rhs) {
+      return medianFrameDataValue([](const writeUpdateStats& lhs,
+                                     const writeUpdateStats& rhs) {
         return lhs.encodingMargin() < rhs.encodingMargin();
       });
     }
 
-    double medianFrameDataValue(bool comparator(const frameData& lhs,
-                                                const frameData& rhs))
+    double medianFrameDataValue(bool comparator(const writeUpdateStats& lhs,
+                                                const writeUpdateStats& rhs))
     {
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       std::nth_element(copy.begin(), copy.begin() + 1, copy.end(), comparator);
       return copy[(int) (copy.size() / 2)].timeSpent;
     }
@@ -117,27 +117,27 @@ namespace suite {
 
     double meanTimeSpent()
     {
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
-      for(frameData& f : framesData)
+      for(writeUpdateStats& f : framesData)
         sum += f.timeSpent;
       return sum / copy.size();
     }
 
     double meanTimeRequired()
     {
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
-      for(frameData& f : framesData)
+      for(writeUpdateStats& f : framesData)
         sum += f.timeRequired;
       return sum / copy.size();
     }
 
     double meanEncodingMargin()
     {
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
-      for(frameData& f : framesData)
+      for(writeUpdateStats& f : framesData)
         sum += f.encodingMargin();
       return sum / copy.size();
     }
@@ -145,7 +145,7 @@ namespace suite {
     double varianceTimeSpent()
     {
       const double mean = meanTimeSpent();
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       const int size = copy.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
@@ -160,7 +160,7 @@ namespace suite {
     double varianceTimeRequired()
     {
       const double mean = meanTimeRequired();
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       const int size = copy.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
@@ -174,7 +174,7 @@ namespace suite {
     double varianceEncodingMargin()
     {
       const double mean = meanEncodingMargin();
-      std::vector<frameData> copy = framesData;
+      std::vector<writeUpdateStats> copy = framesData;
       const int size = copy.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
@@ -189,7 +189,7 @@ namespace suite {
     double stdTimeRequired() { return std::sqrt(varianceTimeRequired()); }
     double stdEncodingMargin() { return std::sqrt(varianceEncodingMargin()); }
 
-    // frameData statistics functions end //
+    // writeUpdateStats functions end //
 
   public:
     void print()
