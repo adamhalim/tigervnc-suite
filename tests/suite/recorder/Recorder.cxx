@@ -2,6 +2,9 @@
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
 #include <X11/Xlib.h>
+#include <sys/select.h>
+#include <chrono>
+#include <thread>
 
 namespace suite {
 
@@ -66,6 +69,13 @@ namespace suite {
       if (events.size()) {
         handleEvents(events);
       }
+
+        // Sleep to reduce CPU usage when idle
+        struct timespec timespec;
+        timespec.tv_sec = 0;
+        timespec.tv_nsec = 1;
+        if (pselect(0, 0, 0, 0, &timespec, 0) < 0)
+          std::abort();
     }
   }
 
