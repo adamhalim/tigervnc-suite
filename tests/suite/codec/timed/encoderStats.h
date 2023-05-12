@@ -1,6 +1,8 @@
 #ifndef __SUITE_ENCODERSTATS_H__
 #define __SUITE_ENCODERSTATS_H__
 
+#include <algorithm>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <iomanip>
@@ -12,6 +14,13 @@ namespace suite {
   {
     uint timeRequired;
     uint timeSpent;
+
+    // Was the frame encoded within the time budget?
+    bool encodedInTime() const { return timeSpent <= timeRequired; }
+    // How much time (in milliseconds) do we have left, or did we surpass
+    // the budget with?
+    int encodingMargin() const { return timeRequired - timeSpent; }
+
   };
 
   struct encoderStats {
@@ -67,7 +76,122 @@ namespace suite {
       return (writeRectEncodetime + writeSolidRectEncodetime)
            * (compressionRatioCombined());
     }
+  
+  private:
+    // --- frameData statistics functions ----
+    // Note that these are EncodeManager specfic, which include
+    // RFB protocol overhead.
 
+    double medianTimeSpent()
+    {
+      return medianFrameDataValue([](const frameData& lhs,
+                                     const frameData& rhs) {
+        return lhs.timeSpent < rhs.timeSpent;
+      });
+    }
+
+    double medianTimeRequired()
+    {
+      return medianFrameDataValue([](const frameData& lhs,
+                                     const frameData& rhs) {
+        return lhs.timeRequired < rhs.timeRequired;
+      });
+    }
+
+    double medianEncodingtime()
+    {
+      return medianFrameDataValue([](const frameData& lhs,
+                                     const frameData& rhs) {
+        return lhs.encodingMargin() < rhs.encodingMargin();
+      });
+    }
+
+    double medianFrameDataValue(bool comparator(const frameData& lhs,
+                                                const frameData& rhs))
+    {
+      std::vector<frameData> copy = framesData;
+      std::nth_element(copy.begin(), copy.begin() + 1, copy.end(), comparator);
+      return copy[(int) (copy.size() / 2)].timeSpent;
+    }
+
+
+    double meanTimeSpent()
+    {
+      std::vector<frameData> copy = framesData;
+      double sum = 0;
+      for(frameData& f : framesData)
+        sum += f.timeSpent;
+      return sum / copy.size();
+    }
+
+    double meanTimeRequired()
+    {
+      std::vector<frameData> copy = framesData;
+      double sum = 0;
+      for(frameData& f : framesData)
+        sum += f.timeRequired;
+      return sum / copy.size();
+    }
+
+    double meanEncodingMargin()
+    {
+      std::vector<frameData> copy = framesData;
+      double sum = 0;
+      for(frameData& f : framesData)
+        sum += f.encodingMargin();
+      return sum / copy.size();
+    }
+
+    double varianceTimeSpent()
+    {
+      const double mean = meanTimeSpent();
+      std::vector<frameData> copy = framesData;
+      const int size = copy.size();
+      double variance = 0;
+      for(int i = 0; i < size; i++) 
+        variance += (copy[i].timeSpent - mean) * (copy[i].timeSpent - mean);
+
+      // divide by N-1 for unbiased variance
+      // https://en.wikipedia.org/wiki/Bessel%27s_correction
+      variance /= (size - 1); 
+      return variance;
+    }
+
+    double varianceTimeRequired()
+    {
+      const double mean = meanTimeRequired();
+      std::vector<frameData> copy = framesData;
+      const int size = copy.size();
+      double variance = 0;
+      for(int i = 0; i < size; i++) 
+        variance += (copy[i].timeRequired - mean)
+                  * (copy[i].timeRequired - mean);
+
+      variance /= (size - 1); 
+      return variance;
+    }
+
+    double varianceEncodingMargin()
+    {
+      const double mean = meanEncodingMargin();
+      std::vector<frameData> copy = framesData;
+      const int size = copy.size();
+      double variance = 0;
+      for(int i = 0; i < size; i++) 
+        variance += (copy[i].encodingMargin() - mean)
+                  * (copy[i].encodingMargin() - mean);
+
+      variance /= (size - 1); 
+      return variance;
+    }
+
+    double stdTimeSpent() { return std::sqrt(varianceTimeSpent()); }
+    double stdTimeRequired() { return std::sqrt(varianceTimeRequired()); }
+    double stdEncodingMargin() { return std::sqrt(varianceEncodingMargin()); }
+
+    // frameData statistics functions end //
+
+  public:
     void print()
     {
       int tableWidth = 35;
