@@ -26,6 +26,7 @@ namespace suite {
     int nSolidRects;
     std::string name;
     std::vector<frameData> framesData;
+    static const int BPP = 4;
 
     double compressionRatioRects() 
     {
@@ -45,18 +46,18 @@ namespace suite {
 
     double megaPixelsPerSecondRects()
     {
-      return inputSizeRects / (writeRectEncodetime * 10e6);
+      return inputSizeRects / (writeRectEncodetime * 10e6 * BPP);
     }
   
     double megaPixelsPerSecondSolidRects()
     {
-      return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6);
+      return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6 * BPP);
     }
 
     double megaPixelsPerSecondCombined()
     {
       return (inputSizeRects + inputSizeSolidRects) 
-           / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6);
+           / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6 * BPP);
     }
 
     // Returns a "score" which is a function of time 
