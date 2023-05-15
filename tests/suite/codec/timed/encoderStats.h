@@ -13,7 +13,7 @@ namespace suite {
   struct writeUpdateStats
   {
     uint timeRequired;
-    uint timeSpent;
+    double timeSpent;
 
     // Was the frame encoded within the time budget?
     bool encodedInTime() const { return timeSpent <= timeRequired; }
