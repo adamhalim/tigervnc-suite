@@ -33,6 +33,7 @@ namespace suite {
     int outputSizeSolidRects;
     int nRects;
     int nSolidRects;
+    double delayedFrames;
     std::string name;
     std::vector<writeUpdateStats> framesData;
     static const int BPP = 4;
@@ -75,6 +76,11 @@ namespace suite {
     {
       return (writeRectEncodetime + writeSolidRectEncodetime)
            * (compressionRatioCombined());
+    }
+
+    double delayedFramesRatio()
+    {
+      return delayedFrames * 100 / framesData.size();
     }
   
   private:
