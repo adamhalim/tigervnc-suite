@@ -117,39 +117,35 @@ namespace suite {
 
     double meanTimeSpent()
     {
-      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
       for(writeUpdateStats& f : framesData)
         sum += f.timeSpent;
-      return sum / copy.size();
+      return sum / framesData.size();
     }
 
     double meanTimeRequired()
     {
-      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
       for(writeUpdateStats& f : framesData)
         sum += f.timeRequired;
-      return sum / copy.size();
+      return sum / framesData.size();
     }
 
     double meanEncodingMargin()
     {
-      std::vector<writeUpdateStats> copy = framesData;
       double sum = 0;
       for(writeUpdateStats& f : framesData)
         sum += f.encodingMargin();
-      return sum / copy.size();
+      return sum / framesData.size();
     }
 
     double varianceTimeSpent()
     {
       const double mean = meanTimeSpent();
-      std::vector<writeUpdateStats> copy = framesData;
-      const int size = copy.size();
+      const int size = framesData.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
-        variance += (copy[i].timeSpent - mean) * (copy[i].timeSpent - mean);
+        variance += (framesData[i].timeSpent - mean) * (framesData[i].timeSpent - mean);
 
       // divide by N-1 for unbiased variance
       // https://en.wikipedia.org/wiki/Bessel%27s_correction
@@ -160,12 +156,11 @@ namespace suite {
     double varianceTimeRequired()
     {
       const double mean = meanTimeRequired();
-      std::vector<writeUpdateStats> copy = framesData;
-      const int size = copy.size();
+      const int size = framesData.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
-        variance += (copy[i].timeRequired - mean)
-                  * (copy[i].timeRequired - mean);
+        variance += (framesData[i].timeRequired - mean)
+                  * (framesData[i].timeRequired - mean);
 
       variance /= (size - 1); 
       return variance;
@@ -174,12 +169,11 @@ namespace suite {
     double varianceEncodingMargin()
     {
       const double mean = meanEncodingMargin();
-      std::vector<writeUpdateStats> copy = framesData;
-      const int size = copy.size();
+      const int size = framesData.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
-        variance += (copy[i].encodingMargin() - mean)
-                  * (copy[i].encodingMargin() - mean);
+        variance += (framesData[i].encodingMargin() - mean)
+                  * (framesData[i].encodingMargin() - mean);
 
       variance /= (size - 1); 
       return variance;
