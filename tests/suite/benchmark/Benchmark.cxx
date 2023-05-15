@@ -85,7 +85,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
   while (file.peek() != EOF) {
-    Image* image = is.readImage(file);
+    const Image* image = is.readImage(file);
 
     // For each encoding we want to test, we load an image and loop through 
     // all servers

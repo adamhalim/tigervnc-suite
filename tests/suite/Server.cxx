@@ -44,7 +44,7 @@ namespace suite {
     delete pb;
   }
 
-  void Server::loadImage(Image *image, int x, int y)
+  void Server::loadImage(const Image *image, int x, int y)
   {
     rfb::Rect rect(x,y, x + image->width, y + image->height);
     int stride;

@@ -27,7 +27,7 @@ namespace suite {
     return *this;
   }
 
-  rdr::U8* Image::getBuffer()
+  rdr::U8* Image::getBuffer() const
   {
     return buffer;
   }

@@ -21,7 +21,7 @@ namespace suite {
           uint frameTime = 0);
     virtual ~Image();
     virtual Image& operator+=(Pixel const &pixel);
-    virtual rdr::U8* getBuffer();
+    virtual rdr::U8* getBuffer() const;
     const int width, height, x_offset, y_offset;
     uint size, frameTime;
     void setBuffer(rdr::U8 *buffer, int size);
