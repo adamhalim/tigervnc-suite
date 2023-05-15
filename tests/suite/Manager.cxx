@@ -89,7 +89,7 @@ namespace suite {
     // (as it was recorded).
     writeUpdateStats data {
       .timeRequired = frameTime,
-      .timeSpent = (uint) (time.count() * 10e3),
+      .timeSpent = (uint) (time.count() * 10e2),
     };
     timedEncoder_->addWriteUpdate(data);
   }
