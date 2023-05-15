@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 #include <string>
 #include <vector>
 #include <iomanip>
@@ -23,6 +24,29 @@ namespace suite {
 
   };
 
+  struct writeRectStats {
+    double timeSpent;
+    int pixelCount;
+    double delayedFrames;
+
+    friend bool operator<(const writeRectStats& lhs, const writeRectStats& rhs)
+    {
+      return lhs.timeSpent < rhs.timeSpent;
+    }
+  };
+
+  struct writeRectsStats {
+    std::vector<writeRectStats> writeRects;
+    std::vector<writeRectStats> writeSolidRects;
+  };
+
+  struct writeUpdateStatistics {
+    double meanWriteUpdate;
+    double medianWriteRect;
+    double varianceWriteUpdate;
+    double stdWriteUpdate;
+  };
+
   struct encoderStats {
 
     double writeRectEncodetime;
@@ -35,7 +59,8 @@ namespace suite {
     int nSolidRects;
     double delayedFrames;
     std::string name;
-    std::vector<writeUpdateStats> framesData;
+    std::vector<writeUpdateStats> framesData;     // EncodeManager::writeUpdate
+    std::map<uint,writeRectsStats> writeUpdates;  // Encoder::writeRect
     static const int BPP = 4;
 
     double compressionRatioRects() 
@@ -151,7 +176,8 @@ namespace suite {
       const int size = framesData.size();
       double variance = 0;
       for(int i = 0; i < size; i++) 
-        variance += (framesData[i].timeSpent - mean) * (framesData[i].timeSpent - mean);
+        variance += (framesData[i].timeSpent - mean)
+                  * (framesData[i].timeSpent - mean);
 
       // divide by N-1 for unbiased variance
       // https://en.wikipedia.org/wiki/Bessel%27s_correction
@@ -191,11 +217,61 @@ namespace suite {
 
     // writeUpdateStats functions end //
 
+  private:
+    // --- writeRectStats statistics functions ---
+
+    struct writeUpdateStatistics writeUpdateStatistics()
+    {
+      std::vector<double> mPxPerSecond;
+      double sumMPxPerSecond = 0;
+      for (const auto& update : writeUpdates) {
+        double timeSum = 0;
+        double pixels = 0;
+
+        // Sum all updates belonging to the same writeUpdate
+        for (const auto& rects : update.second.writeRects) {
+          timeSum += rects.timeSpent;
+          pixels += rects.pixelCount;
+        }
+
+        for (const auto& solidRects : update.second.writeSolidRects) {
+          timeSum += solidRects.timeSpent;
+          pixels += solidRects.pixelCount;
+        }
+
+        double mps = pixels / (timeSum * 10e6);
+        sumMPxPerSecond += mps;
+        mPxPerSecond.push_back(mps);
+      }
+
+      std::nth_element(mPxPerSecond.begin(),
+                       mPxPerSecond.begin() + 1, mPxPerSecond.end());
+      double median = mPxPerSecond[mPxPerSecond.size() / 2];
+
+      double mean = sumMPxPerSecond / mPxPerSecond.size();
+      double variance = 0;
+      for (uint i = 0; i < mPxPerSecond.size(); i++)
+        variance += (mPxPerSecond[i] - mean) * (mPxPerSecond[i] - mean);
+
+      variance /= (mPxPerSecond.size() - 1);
+      
+      struct writeUpdateStatistics stats {
+        .meanWriteUpdate = mean,
+        .medianWriteRect = median,
+        .varianceWriteUpdate = variance,
+        .stdWriteUpdate = std::sqrt(variance),
+      };
+      return stats;
+    }
+
+    // writeRectStats functions end //
+
   public:
     void print()
     {
-      int tableWidth = 35;
+      int tableWidth = 40;
       int precision = 5;
+      struct writeUpdateStatistics stats = writeUpdateStatistics();
       std::cout << "\n\t" << name << " encoder: (seconds)\n\t\t"
                 << std::setprecision(precision) << std::fixed 
                 << std::setw(tableWidth) << std::setfill(' ') << std::left
@@ -244,7 +320,34 @@ namespace suite {
                 << "Score (time * compression ratio):" << std::right
                 << score() << "\n\t\t" << std::setfill('-') 
                 << std::setw(tableWidth+precision+2)
-                << std::left << "" << std::endl;
+                << std::left << "" << "\n\t\t" << std::setw(tableWidth)
+                << std::setfill(' ')
+                << "EncodeManager writeUpdate mean (ms):" << std::right 
+                <<  meanTimeSpent() << "\n\t\t" << std::left 
+                << std::setfill(' ') << std::setw(tableWidth)
+                << "EncodeManager writeUpdate median:" << std::right 
+                << medianTimeSpent() << "\n\t\t"
+                << std::left << std::setfill(' ') << std::setw(tableWidth)
+                << "EncodeManager writeUpdate variance:" << std::right 
+                << varianceTimeSpent() << "\n\t\t" << std::left 
+                << std::setfill(' ') << std::setw(tableWidth)
+                << "EncodeManager writeUpdate mean margin:" << std::right 
+                << meanEncodingMargin() << "\n\t\t" << std::setw(tableWidth)
+                << std::setfill(' ') << std::left 
+                << "EncodeManager delayed frames (%):" << delayedFramesRatio()
+                << "\n\t\t" << std::setfill('-') 
+                << std::setw(tableWidth+precision+2)
+                << std::left << "" << "\n\t\t" << std::setw(tableWidth)
+                << std::setfill(' ')
+                << "Encoder writeUpdate mean (MPx/s):" << std::right
+                << stats.meanWriteUpdate << "\n\t\t" << std::left 
+                << std::setfill(' ') << std::setw(tableWidth)
+                << "Encoder writeUpdate median:" << std::right
+                << stats.medianWriteRect << "\n\t\t"
+                << std::left << std::setfill(' ') << std::setw(tableWidth)
+                << "Encoder writeUpdate variance:" << std::right 
+                << stats.varianceWriteUpdate
+                << std::endl;
     }
   };
 }

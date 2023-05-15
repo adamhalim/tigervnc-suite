@@ -1,4 +1,5 @@
 #include "TimedEncoder.h"
+#include "encoderStats.h"
 #include "rdr/MemOutStream.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
@@ -9,7 +10,8 @@
 namespace suite {
 
   TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
-                           : encoderClass(encoderclass)
+                           : encoderClass(encoderclass),
+                             currentWriteUpdate(0)
   {
     stats_ = encoderStats{ 
       .writeRectEncodetime = 0,
@@ -55,6 +57,13 @@ namespace suite {
     stats_.outputSizeRects += encoderOutstream->length();
     stats_.nRects++;
 
+    // Keep track of rects belonging to the same writeUpdate().
+    writeRectStats stats {
+      .timeSpent = time.count(),
+      .pixelCount = pb->width() * pb->height(),
+    };
+    stats_.writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
+
     // Return the original OutStream after encoding
     // & reset our MemOutStream
     conn_->setStreams(is, os);
@@ -80,6 +89,13 @@ namespace suite {
     stats_.inputSizeSolidRects += width * height * 4;
     stats_.outputSizeSolidRects += encoderOutstream->length();
     stats_.nSolidRects++;
+
+    // Keep track of rects belonging to the same writeUpdate().
+    writeRectStats stats {
+      .timeSpent = time.count(),
+      .pixelCount = width * height,
+    };
+    stats_.writeUpdates[currentWriteUpdate].writeSolidRects.push_back(stats);
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream

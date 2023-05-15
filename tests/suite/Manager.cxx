@@ -92,6 +92,10 @@ namespace suite {
       .timeSpent = time.count() * 10e2,
     };
     timedEncoder_->addWriteUpdate(data);
+
+    // Increment the currentWriteUpdate index so we can keep track
+    // of which writeRect() belongs to which writeUpdate.
+    timedEncoder_->currentWriteUpdate++;
   }
 
   std::map<EncoderClass, encoderStats> Manager::stats() {

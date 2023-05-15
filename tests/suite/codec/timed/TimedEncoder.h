@@ -88,6 +88,7 @@ namespace suite {
                                 const rfb::PixelFormat& pf,
                                 const rdr::U8* colour)=0;
     void addWriteUpdate(writeUpdateStats data);
+    uint currentWriteUpdate;
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;
