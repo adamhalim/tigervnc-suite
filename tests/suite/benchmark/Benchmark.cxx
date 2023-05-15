@@ -71,14 +71,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     // All encoders in the server will be of one encoder type.
     Server* s = new Server(this->width(), this->height(), setting);
 
-    if (setting.encoderClass == encoderTightJPEG) {
-      const int encodings[2] = { setting.rfbEncoding,
-                                 setting.quality + 
-                                 rfb::pseudoEncodingQualityLevel0 };
-      s->setEncodings(2, encodings);
-    } else {
-      s->setEncodings(1, &setting.rfbEncoding);
-    }
+    s->setEncodings(setting.encodingSize, setting.rfbEncoding);
     servers[setting.encoderClass] = s;
       
   }
@@ -121,33 +114,43 @@ EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
                                            PseudoEncodingLevel quality,
                                            PseudoEncodingLevel compression)
 {
+  int* encodings = new int[2];
+  encodings[0] = rfb::encodingRaw;
+  encodings[1] = rfb::pseudoEncodingCompressLevel0 + compression;
   EncoderSettings settings {
     .encoderClass = encoderClass,
-    .rfbEncoding = rfb::encodingRaw,
+    .rfbEncoding = encodings,
+    .encodingSize = 2,
     .quality = quality,
     .compression = compression,
   };
 
   switch (encoderClass) {
   case encoderRaw:
-    settings.rfbEncoding = rfb::encodingRaw;
+    encodings[0] = rfb::encodingRaw;
     break;
   case encoderRRE:
-    settings.rfbEncoding = rfb::encodingRRE;
+    encodings[0] = rfb::encodingRRE;
     break;
   case encoderHextile:
-    settings.rfbEncoding = rfb::encodingHextile;
+    encodings[0] = rfb::encodingHextile;
     break;
   case encoderTight:
-    settings.rfbEncoding = rfb::encodingTight;
+    encodings[0] = rfb::encodingTight;
     break;
   case encoderTightJPEG:
     if (quality == NONE)
       settings.quality = TWO;
-    settings.rfbEncoding = rfb::encodingTight;
+    delete [] encodings;
+    encodings = new int[3];
+    encodings[0] = rfb::encodingTight;
+    encodings[1] = rfb::pseudoEncodingQualityLevel0 + quality;
+    encodings[2] = rfb::pseudoEncodingCompressLevel0 + compression;
+    settings.rfbEncoding = encodings;
+    settings.encodingSize = 3;
     break;
   case encoderZRLE:
-    settings.rfbEncoding = rfb::encodingZRLE;
+    encodings[0] = rfb::encodingZRLE;
     break;
   default:
     throw std::logic_error("EncoderClass not implemented");

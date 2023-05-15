@@ -42,7 +42,8 @@ namespace suite {
 
     struct EncoderSettings {
       EncoderClass encoderClass;
-      int rfbEncoding;
+      int *rfbEncoding;
+      size_t encodingSize;
       PseudoEncodingLevel quality;
       PseudoEncodingLevel compression;
     };
