@@ -22,3 +22,6 @@ target_link_libraries(unicode rfb)
 
 add_executable(emulatemb emulatemb.cxx ../../vncviewer/EmulateMB.cxx)
 target_link_libraries(emulatemb rfb  ${GETTEXT_LIBRARIES})
+
+add_executable(rectarea rectarea.cxx ../suite/recorder/util.cxx)
+target_link_libraries(rectarea rfb)
