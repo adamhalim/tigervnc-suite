@@ -36,7 +36,7 @@ namespace suite {
       virtual void setDesktopSize(int fb_width, int fb_height,
                                   const rfb::ScreenSet& layout);
       // Loads an Image onto the framebuffer at x, y
-      virtual void loadImage(Image* image, int x = 0, int y = 0);
+      virtual void loadImage(const Image* image, int x = 0, int y = 0);
 
       std::map<EncoderClass, encoderStats> stats();
     public:

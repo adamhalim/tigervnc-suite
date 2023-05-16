@@ -7,9 +7,10 @@
 namespace suite {
 
   Image::Image(int width, int height, rdr::U8* buffer,
-               int size, int x_offset, int y_offset)
-                : width(width), height(height), x_offset(x_offset),
-                  y_offset(y_offset), size(size), buffer(buffer)
+               int size, int x_offset, int y_offset, uint frameTime)
+             : width(width), height(height), x_offset(x_offset),
+               y_offset(y_offset), size(size), frameTime(frameTime), 
+               buffer(buffer)
   {
   }
 
@@ -26,7 +27,7 @@ namespace suite {
     return *this;
   }
 
-  rdr::U8* Image::getBuffer()
+  rdr::U8* Image::getBuffer() const
   {
     return buffer;
   }

@@ -12,8 +12,8 @@ namespace suite {
   {
   public:
     Benchmark(std::string filename, const rdr::S32* e = encodings,
-                                    const size_t len = sizeof(encodings) /
-                                                       sizeof(*encodings));
+                                    const size_t len = sizeof(encodings)
+                                                     / sizeof(*encodings));
     ~Benchmark();
 
     // Runs decoding benchmark on the server.

@@ -2,11 +2,14 @@
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
 #include <X11/Xlib.h>
+#include <sys/select.h>
+#include <chrono>
+#include <thread>
 
 namespace suite {
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
-                    std::string display) : decoder(decoder)
+                     std::string display) : decoder(decoder)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -26,7 +29,7 @@ namespace suite {
     fs = new FrameOutStream(filename, decoder);
 
     int xdamageErrorBase;
-    if(!XDamageQueryExtension(dpy, &xdamageEventBase, &xdamageErrorBase)) {
+    if (!XDamageQueryExtension(dpy, &xdamageEventBase, &xdamageErrorBase)) {
       std::cerr << "DAMAGE extension not present" << std::endl;
       exit(1);
     }
@@ -66,13 +69,20 @@ namespace suite {
       if (events.size()) {
         handleEvents(events);
       }
+
+        // Sleep to reduce CPU usage when idle
+        struct timespec timespec;
+        timespec.tv_sec = 0;
+        timespec.tv_nsec = 1;
+        if (pselect(0, 0, 0, 0, &timespec, 0) < 0)
+          std::abort();
     }
   }
 
   void Recorder::handleEvents(std::vector<XEvent>& events)
   {
     rfb::Rect damagedRect;
-    for(XEvent event : events) {
+    for (XEvent event : events) {
       if (event.type == xdamageEventBase) {
         XDamageNotifyEvent* dev;
         rfb::Rect rect;
@@ -97,9 +107,9 @@ namespace suite {
 
     // Save changed rectangle
     suite::Image* image = decoder->encodeImageToMemory(data, 
-                                                        width, height,
-                                                        damagedRect.tl.x,
-                                                        damagedRect.tl.y);
+                                                       width, height,
+                                                       damagedRect.tl.x,
+                                                       damagedRect.tl.y);
     suite::ImageUpdate* update = new suite::ImageUpdate(image);
     fs->addUpdate(update);
     delete update;

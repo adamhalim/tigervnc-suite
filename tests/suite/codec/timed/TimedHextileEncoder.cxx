@@ -6,8 +6,8 @@
 namespace suite {
 
   TimedHextileEncoder::TimedHextileEncoder(SConnection* conn_) 
-                              : HextileEncoder(conn_), 
-                                TimedEncoder(encoderHextile)
+                                         : HextileEncoder(conn_),
+                                           TimedEncoder(encoderHextile)
   {
   }
 
@@ -16,7 +16,7 @@ namespace suite {
   }
 
   void TimedHextileEncoder::writeRect(const PixelBuffer* pb,
-                                    const Palette& palette)
+                                      const Palette& palette)
   {
     startWriteRectTimer(this->conn);
     HextileEncoder::writeRect(pb, palette);
@@ -24,8 +24,8 @@ namespace suite {
   }
 
   void TimedHextileEncoder::writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
-                                const rdr::U8* colour)
+                                           const PixelFormat& pf,
+                                           const rdr::U8* colour)
   {
     startWriteSolidRectTimer(this->conn);
     HextileEncoder::writeSolidRect(width, height, pf, colour);

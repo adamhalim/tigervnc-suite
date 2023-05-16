@@ -10,7 +10,6 @@
 #include <ios>
 #include <stdexcept>
 #include <sys/stat.h>
-#include <iomanip>
 
 using namespace suite;
 
@@ -72,21 +71,14 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     // All encoders in the server will be of one encoder type.
     Server* s = new Server(this->width(), this->height(), setting);
 
-    if (setting.encoderClass == encoderTightJPEG) {
-      const int encodings[2] = { setting.rfbEncoding,
-                                 setting.quality + 
-                                 rfb::pseudoEncodingQualityLevel0 };
-      s->setEncodings(2, encodings);
-    } else {
-      s->setEncodings(1, &setting.rfbEncoding);
-    }
+    s->setEncodings(setting.encodingSize, setting.rfbEncoding);
     servers[setting.encoderClass] = s;
       
   }
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
-  while(file.peek() != EOF) {
-    Image* image = is.readImage(file);
+  while (file.peek() != EOF) {
+    const Image* image = is.readImage(file);
 
     // For each encoding we want to test, we load an image and loop through 
     // all servers
@@ -101,70 +93,18 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
   std::cout << "Benchmarking complete!\n";
 
   // Loop through each server and print the corresponding statistics
-  for(auto &s : servers) {
+  for (auto &s : servers) {
     // FIXME: Refactor this to a separate function
     std::string encoderRequested = encoderClasstoString(s.first);
     Server* server = s.second;
     std::map<EncoderClass, encoderStats> encoderStats = server->stats();
 
-    if(!encoderStats.size())
+    if (!encoderStats.size())
       continue; // FIXME: throw/log error?
 
-    int tableWidth = 35;
-    int precision = 5;
-    for(const auto& es : encoderStats) {
+    for (const auto& es : encoderStats) {
        struct encoderStats stats = es.second;
-
-        // FIXME: Wrap this monstrosity in smaller functions :^)
-        std::cout << "\n\t" << stats.name << " encoder: (seconds)\n\t\t"
-                  << std::setprecision(precision) << std::fixed 
-                  << std::setw(tableWidth) << std::setfill(' ') << std::left
-                  << "writeRect: " << std::right << stats.writeRectEncodetime
-                  << "\n\t\t" << std::left  << std::setw(tableWidth)
-                  << "writeSolidRect: " << std::right 
-                  << stats.compressionRatioSolidRects()
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "total: " << std::right << stats.writeRectEncodetime 
-                                              + stats.writeSolidRectEncodetime
-                  << "\n\t\t" << std::setfill('-')
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ')
-                  << "\n\t\t" << std::setw(tableWidth) << std::left  
-                  << "# rects: " << std::right << stats.nRects
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "# solidRects: " << std::right << stats.nSolidRects 
-                  << "\n\t\t" << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ')
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "MPx/s (rects):" << std::right 
-                  << stats.megaPixelsPerSecondRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "MPx/s (solidRects:)" << std::right 
-                  << stats.megaPixelsPerSecondSolidRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left 
-                  << "MPx/s (combined)" << std::right
-                  << stats.megaPixelsPerSecondCombined() << "\n\t\t"
-                  << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ') << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Compression ratio rects: "
-                  << stats.compressionRatioRects()
-                  << "\n\t\t" << std::setw(tableWidth) << std::left
-                  << "Compression ratio solidRects: " << std::right 
-                  << stats.compressionRatioSolidRects() << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Compression ratio combined: " 
-                  << stats.compressionRatioCombined() << "\n\t\t"
-                  << std::setfill('-') << std::setw(tableWidth)
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::setfill(' ') << "\n\t\t"
-                  << std::setw(tableWidth) << std::left
-                  << "Score (time * compression ratio):" << std::right
-                  << stats.score() << "\n\t\t" << std::setfill('-') 
-                  << std::setw(tableWidth+precision+2)
-                  << std::left << "" << std::endl;
+       stats.print();
     }
   delete server;
   }
@@ -174,36 +114,46 @@ EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
                                            PseudoEncodingLevel quality,
                                            PseudoEncodingLevel compression)
 {
+  int* encodings = new int[2];
+  encodings[0] = rfb::encodingRaw;
+  encodings[1] = rfb::pseudoEncodingCompressLevel0 + compression;
   EncoderSettings settings {
     .encoderClass = encoderClass,
-    .rfbEncoding = rfb::encodingRaw,
+    .rfbEncoding = encodings,
+    .encodingSize = 2,
     .quality = quality,
     .compression = compression,
   };
 
-  switch(encoderClass) {
-      case encoderRaw:
-        settings.rfbEncoding = rfb::encodingRaw;
-        break;
-      case encoderRRE:
-        settings.rfbEncoding = rfb::encodingRRE;
-        break;
-      case encoderHextile:
-        settings.rfbEncoding = rfb::encodingHextile;
-        break;
-      case encoderTight:
-        settings.rfbEncoding = rfb::encodingTight;
-        break;
-      case encoderTightJPEG:
-        if (quality == NONE)
-          settings.quality = TWO;
-        settings.rfbEncoding = rfb::encodingTight;
-        break;
-      case encoderZRLE:
-        settings.rfbEncoding = rfb::encodingZRLE;
-        break;
-      default:
-        throw std::logic_error("EncoderClass not implemented");
+  switch (encoderClass) {
+  case encoderRaw:
+    encodings[0] = rfb::encodingRaw;
+    break;
+  case encoderRRE:
+    encodings[0] = rfb::encodingRRE;
+    break;
+  case encoderHextile:
+    encodings[0] = rfb::encodingHextile;
+    break;
+  case encoderTight:
+    encodings[0] = rfb::encodingTight;
+    break;
+  case encoderTightJPEG:
+    if (quality == NONE)
+      settings.quality = TWO;
+    delete [] encodings;
+    encodings = new int[3];
+    encodings[0] = rfb::encodingTight;
+    encodings[1] = rfb::pseudoEncodingQualityLevel0 + quality;
+    encodings[2] = rfb::pseudoEncodingCompressLevel0 + compression;
+    settings.rfbEncoding = encodings;
+    settings.encodingSize = 3;
+    break;
+  case encoderZRLE:
+    encodings[0] = rfb::encodingZRLE;
+    break;
+  default:
+    throw std::logic_error("EncoderClass not implemented");
   }
   return settings;
 }

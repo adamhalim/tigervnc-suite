@@ -5,7 +5,8 @@
 #include "rfb/SConnection.h"
 
 namespace suite {
-  TimedEncoder* constructTimedEncoder(EncoderClass encoder, rfb::SConnection* conn);
+  TimedEncoder* constructTimedEncoder(EncoderClass encoder,
+                                      rfb::SConnection* conn);
 }
 
 #endif // __SUITE_TIMEDENCODERFACTORY_H__

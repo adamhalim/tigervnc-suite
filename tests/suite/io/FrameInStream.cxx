@@ -39,7 +39,7 @@ namespace suite {
     Image* image = decoder->decodeImageFromMemory(data, width, height, size,
                                                   x_offset, y_offset);
     delete [] data;
-
+    image->frameTime = frameTime;
     return image;
   }
 

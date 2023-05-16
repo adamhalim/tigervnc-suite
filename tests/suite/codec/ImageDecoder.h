@@ -48,10 +48,10 @@ namespace suite {
                                          int size, int x_offest = 0,
                                          int y_offset = 0) = 0;
     virtual void encodeImageTofile(const rdr::U8* data, int width, int height,
-                                                    std::string filename) = 0;
+                                   std::string filename) = 0;
     virtual Image* encodeImageToMemory(const rdr::U8* data, int width,
-                                      int height, int offset_x = 0,
-                                      int offset_y  = 0) = 0;
+                                       int height, int offset_x = 0,
+                                       int offset_y  = 0) = 0;
     const decoderEnum type;
     const std::string name;
   protected:

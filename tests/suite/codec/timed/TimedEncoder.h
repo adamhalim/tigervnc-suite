@@ -7,9 +7,11 @@
 #include "rfb/Encoder.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
+#include "encoderStats.h"
 #include <chrono>
 #include <stdexcept>
 #include <string>
+#include <vector>
 namespace suite {
 
     // Copied from EncodeManager.cxx
@@ -40,7 +42,8 @@ namespace suite {
 
     struct EncoderSettings {
       EncoderClass encoderClass;
-      int rfbEncoding;
+      int *rfbEncoding;
+      size_t encodingSize;
       PseudoEncodingLevel quality;
       PseudoEncodingLevel compression;
     };
@@ -67,58 +70,6 @@ namespace suite {
   }
   using namespace enumEncoder;
 
-  struct encoderStats {
-    double writeRectEncodetime;
-    double writeSolidRectEncodetime;
-    int inputSizeRects;
-    int outputSizeRects;
-    int inputSizeSolidRects;
-    int outputSizeSolidRects;
-    int nRects;
-    int nSolidRects;
-    std::string name;
-
-    double compressionRatioRects() 
-    {
-      return (double) outputSizeRects / inputSizeRects; 
-    }
-
-    double compressionRatioSolidRects()
-    {
-       return (double) outputSizeSolidRects / inputSizeSolidRects;
-    }
-
-    double compressionRatioCombined()
-    {
-      return (double) (outputSizeRects + outputSizeSolidRects)
-                    / (inputSizeRects + inputSizeSolidRects);
-    }
-
-    double megaPixelsPerSecondRects()
-    {
-      return inputSizeRects / (writeRectEncodetime * 10e6);
-    }
-  
-    double megaPixelsPerSecondSolidRects()
-    {
-      return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6);
-    }
-
-    double megaPixelsPerSecondCombined()
-    {
-      return (inputSizeRects + inputSizeSolidRects) 
-           / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6);
-    }
-
-    // Returns a "score" which is a function of time 
-    // per compressed data
-    double score()
-    {
-      return (writeRectEncodetime + writeSolidRectEncodetime)
-           * (compressionRatioCombined());
-    }
-  };
-
   class TimedEncoder
   {
   public:
@@ -137,6 +88,8 @@ namespace suite {
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
                                 const rdr::U8* colour)=0;
+    void addWriteUpdate(writeUpdateStats data);
+    uint currentWriteUpdate;
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;

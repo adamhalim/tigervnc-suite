@@ -1,14 +1,17 @@
 #include "TimedEncoder.h"
+#include "encoderStats.h"
 #include "rdr/MemOutStream.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
 #include "../../Manager.h"
+#include "../../Server.h"
 #include <chrono>
 
 namespace suite {
 
   TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
-                           : encoderClass(encoderclass)
+                           : encoderClass(encoderclass),
+                             currentWriteUpdate(0)
   {
     stats_ = encoderStats{ 
       .writeRectEncodetime = 0,
@@ -19,6 +22,7 @@ namespace suite {
       .outputSizeSolidRects = 0,
       .nRects = 0,
       .nSolidRects = 0,
+      .delayedFrames = 0,
       .name = encoderClassName(encoderclass),
       };
     // Use an OutStream and inject it to the underlying 
@@ -53,6 +57,13 @@ namespace suite {
     stats_.outputSizeRects += encoderOutstream->length();
     stats_.nRects++;
 
+    // Keep track of rects belonging to the same writeUpdate().
+    writeRectStats stats {
+      .timeSpent = time.count(),
+      .pixelCount = pb->width() * pb->height(),
+    };
+    stats_.writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
+
     // Return the original OutStream after encoding
     // & reset our MemOutStream
     conn_->setStreams(is, os);
@@ -79,9 +90,22 @@ namespace suite {
     stats_.outputSizeSolidRects += encoderOutstream->length();
     stats_.nSolidRects++;
 
+    // Keep track of rects belonging to the same writeUpdate().
+    writeRectStats stats {
+      .timeSpent = time.count(),
+      .pixelCount = width * height,
+    };
+    stats_.writeUpdates[currentWriteUpdate].writeSolidRects.push_back(stats);
+
     // Return the original OutStream after encoding
     // & reset our MemOutStream
     conn_->setStreams(is, os);
     encoderOutstream->clear();
+  }
+
+  void TimedEncoder::addWriteUpdate(writeUpdateStats data)
+  {
+    stats_.delayedFrames += !data.encodedInTime();
+    stats_.framesData.push_back(data);
   }
 }

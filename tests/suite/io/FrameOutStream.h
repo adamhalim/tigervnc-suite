@@ -53,7 +53,7 @@ namespace suite {
 
     void addUpdate(ImageUpdate* update);
     void addUpdate(rdr::U8* data, int width, int height, int x_offset, 
-                  int y_offset, int size);
+                   int y_offset, int size);
                   
     void writeHeader(int width, int height);
   private:

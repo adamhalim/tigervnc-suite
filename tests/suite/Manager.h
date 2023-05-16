@@ -4,6 +4,7 @@
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
 #include "rfb/encodings.h"
+#include "codec/timed/encoderStats.h"
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -39,20 +40,20 @@ namespace suite {
   inline std::string encodingToString(const int encoding)
   {
     switch (encoding) {
-      case rfb::encodingRaw:
-        return "Raw";
-      case rfb::encodingCopyRect:
-        return "CopyRect";
-      case rfb::encodingRRE:
-         return "RRE";
-      case rfb::encodingCoRRE:
-        return "CoRRE";
-      case rfb::encodingHextile:
-        return "Hextile";
-      case rfb::encodingTight:
-        return "Tight";
-      case rfb::encodingZRLE:
-        return "ZRLE";
+    case rfb::encodingRaw:
+      return "Raw";
+    case rfb::encodingCopyRect:
+      return "CopyRect";
+    case rfb::encodingRRE:
+        return "RRE";
+    case rfb::encodingCoRRE:
+      return "CoRRE";
+    case rfb::encodingHextile:
+      return "Hextile";
+    case rfb::encodingTight:
+      return "Tight";
+    case rfb::encodingZRLE:
+      return "ZRLE";
     }
     return std::to_string(encoding);
   }
@@ -68,10 +69,19 @@ namespace suite {
       Manager(class rfb::SConnection *conn, EncoderSettings settings);
       ~Manager();
 
+      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                       const rfb::RenderedCursor* renderedCursor);
+
+      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                       const rfb::RenderedCursor* renderedCursor,
+                       uint frameTime);
+
       std::map<EncoderClass, encoderStats> stats();
     protected:
       std::map<EncoderClass, TimedEncoder*> timedEncoders;
       const bool SINGLE_ENCODER;
+    private:
+      TimedEncoder* timedEncoder_;
     };
 }
 #endif // __SUITE_MANAGER_H__
