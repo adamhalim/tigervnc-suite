@@ -1,5 +1,5 @@
 #include "Recorder.h"
-#include "../../unix/x0vncserver/XPixelBuffer.h"
+#include "util.h"
 #include "tx/TXWindow.h"
 #include "x0vncserver/Image.h"
 #include <X11/Xlib.h>
@@ -120,13 +120,6 @@ namespace suite {
     return rect;
   }
 
-  rfb::Rect Recorder::boundingRect(std::vector<rfb::Rect>& rects)
-  {
-    rfb::Rect damagedRect;
-    for (rfb::Rect rect : rects)
-      damagedRect = damagedRect.union_boundary(rect);
-    return damagedRect;
-  }
 
   void Recorder::stopRecording()
   {

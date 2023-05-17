@@ -23,3 +23,12 @@ int rectTotalArea(std::vector<rfb::Rect>& rects)
   intersectonArea += rects.back().area();
   return intersectonArea;
 }
+
+rfb::Rect boundingRect(std::vector<rfb::Rect>& rects)
+{
+  rfb::Rect boundingRect;
+  for (rfb::Rect rect : rects)
+    boundingRect = boundingRect.union_boundary(rect);
+  return boundingRect;
+}
+
