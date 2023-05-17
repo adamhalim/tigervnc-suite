@@ -24,7 +24,8 @@ namespace suite {
     void stopRecording();
 
     void handleEvents(std::vector<XEvent>& events);
-  protected:
+    protected:
+    rfb::Rect rectFromEvent(XEvent& event);
     Damage damage;
     int xdamageEventBase;
 

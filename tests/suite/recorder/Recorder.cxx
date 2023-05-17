@@ -81,15 +81,7 @@ namespace suite {
     rfb::Rect damagedRect;
     for (XEvent event : events) {
       if (event.type == xdamageEventBase) {
-        XDamageNotifyEvent* dev;
-        rfb::Rect rect;
-        // Get damage from window
-        dev = (XDamageNotifyEvent*)&event;
-        rect.setXYWH(dev->area.x, dev->area.y,
-                    dev->area.width, dev->area.height);
-        rect = rect.translate(rfb::Point(-geo->offsetLeft(),
-                                         -geo->offsetTop()));
-        damagedRect = damagedRect.union_boundary(rect);
+        damagedRect = damagedRect.union_boundary(rectFromEvent(event));
       }
     }
 
@@ -112,6 +104,19 @@ namespace suite {
     fs->addUpdate(update);
     delete update;
     delete damagedImage;
+  }
+
+  rfb::Rect Recorder::rectFromEvent(XEvent& event)
+  {
+    XDamageNotifyEvent* dev;
+    rfb::Rect rect;
+    // Get damage from window
+    dev = (XDamageNotifyEvent*)&event;
+    rect.setXYWH(dev->area.x, dev->area.y,
+                 dev->area.width, dev->area.height);
+    rect = rect.translate(rfb::Point(-geo->offsetLeft(),
+                                     -geo->offsetTop()));
+    return rect;
   }
 
   void Recorder::stopRecording()
