@@ -3,6 +3,7 @@
 
 #include "../../unix/x0vncserver/Geometry.h"
 #include "../io/FrameOutStream.h"
+#include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
 #include <X11/extensions/Xdamage.h>
 #include <X11/Xlib.h>
