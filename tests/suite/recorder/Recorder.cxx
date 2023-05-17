@@ -78,13 +78,11 @@ namespace suite {
 
   void Recorder::handleEvents(std::vector<XEvent>& events)
   {
-    rfb::Rect damagedRect;
-    for (XEvent event : events) {
-      if (event.type == xdamageEventBase) {
-        damagedRect = damagedRect.union_boundary(rectFromEvent(event));
-      }
-    }
-
+    std::vector<rfb::Rect> rects;
+    for (uint i = 0; i < events.size(); i++)
+      rects.push_back(rectFromEvent(events[i]));
+    
+    rfb::Rect damagedRect = boundingRect(rects);
     const int width = damagedRect.br.x - damagedRect.tl.x;
     const int height = damagedRect.br.y - damagedRect.tl.y;
     const int x_offset = damagedRect.tl.x;
@@ -108,6 +106,9 @@ namespace suite {
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)
   {
+    if (!(event.type == xdamageEventBase)) 
+      return rfb::Rect{};
+
     XDamageNotifyEvent* dev;
     rfb::Rect rect;
     // Get damage from window
@@ -117,6 +118,14 @@ namespace suite {
     rect = rect.translate(rfb::Point(-geo->offsetLeft(),
                                      -geo->offsetTop()));
     return rect;
+  }
+
+  rfb::Rect Recorder::boundingRect(std::vector<rfb::Rect>& rects)
+  {
+    rfb::Rect damagedRect;
+    for (rfb::Rect rect : rects)
+      damagedRect = damagedRect.union_boundary(rect);
+    return damagedRect;
   }
 
   void Recorder::stopRecording()
