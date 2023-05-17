@@ -1,6 +1,7 @@
 #include "Recorder.h"
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
+#include "x0vncserver/Image.h"
 #include <X11/Xlib.h>
 #include <sys/select.h>
 #include <chrono>
@@ -9,7 +10,7 @@
 namespace suite {
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
-                     std::string display) : decoder(decoder)
+                     std::string display) : factory(false), decoder(decoder)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -47,16 +48,12 @@ namespace suite {
 
   void Recorder::startRecording()
   {
-    ImageFactory factory(false);
-    rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, geo->getRect());
-
     try {
-      fs->writeHeader(pb->width(), pb->height());
+      fs->writeHeader(geo->width(), geo->height());
     } catch (std::logic_error &e) {
       // FIXME: Handle cases where startRecording() is called twice?
       throw;
     }
-    delete pb;
 
     // FIXME: stopRecording() should stop the loop
     while (true) {
@@ -96,24 +93,25 @@ namespace suite {
       }
     }
 
-    ImageFactory factory(false);
-    rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, damagedRect);
+    const int width = damagedRect.br.x - damagedRect.tl.x;
+    const int height = damagedRect.br.y - damagedRect.tl.y;
+    const int x_offset = damagedRect.tl.x;
+    const int y_offset = damagedRect.tl.y;
 
-    // Get framebuffer for damaged rectangle
-    int stride;
-    const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
-    int width = damagedRect.br.x - damagedRect.tl.x;
-    int height = damagedRect.br.y - damagedRect.tl.y;
+    // Get the damaged region from the display
+    ::Image* damagedImage = factory.newImage(dpy, width, height);
+    damagedImage->get(DefaultRootWindow(dpy), x_offset, y_offset);
+    const rdr::U8* data = (rdr::U8*) damagedImage->xim->data;
 
     // Save changed rectangle
     suite::Image* image = decoder->encodeImageToMemory(data, 
                                                        width, height,
-                                                       damagedRect.tl.x,
-                                                       damagedRect.tl.y);
+                                                       x_offset,
+                                                       y_offset);
     suite::ImageUpdate* update = new suite::ImageUpdate(image);
     fs->addUpdate(update);
     delete update;
-    delete pb;
+    delete damagedImage;
   }
 
   void Recorder::stopRecording()

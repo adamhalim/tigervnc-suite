@@ -32,6 +32,7 @@ namespace suite {
     Display* dpy;
     FrameOutStream* fs;
     Geometry* geo;
+    ImageFactory factory;
     ImageDecoder* decoder;
   };
 }
