@@ -20,8 +20,8 @@ int rectTotalArea(std::vector<rfb::Rect>& rects)
 rfb::Rect boundingRect(std::vector<rfb::Rect>& rects)
 {
   rfb::Rect boundingRect;
-  for (rfb::Rect rect : rects)
-    boundingRect = boundingRect.union_boundary(rect);
+  for (unsigned int i = 0; i < rects.size(); i++)
+    boundingRect = boundingRect.union_boundary(rects[i]);
   return boundingRect;
 }
 
