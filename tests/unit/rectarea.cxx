@@ -157,7 +157,27 @@ namespace rectUnionArea {
 
     return TestEntry(testName, intersections, r3.area());
   }
+
+  TestEntry testNine()
+  {
+    const char* testName = "Test Nine";
+    std::vector<rfb::Rect> intersections;
+    rfb::Rect r1(0,0,50,50);
+    rfb::Rect r2(20,30,110,90);
+    rfb::Rect r3(40,40,150,150);
+    rfb::Rect r4(75,10,170,170);
+
+    intersections.push_back(r1);
+    intersections.push_back(r2);
+    intersections.push_back(r3);
+    intersections.push_back(r4);
+
+    return TestEntry(testName, intersections, (50*30+20*20) + (20*60+35*10)
+                                            + 110*110
+                                            + (95*30+20*130+75*20));
+  }
 }
+
 
 
 
@@ -184,4 +204,5 @@ int main()
   testTotalArea(rectUnionArea::testSix());
   testTotalArea(rectUnionArea::testSeven());
   testTotalArea(rectUnionArea::testEight());
+  testTotalArea(rectUnionArea::testNine());
 }
