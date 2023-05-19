@@ -25,3 +25,29 @@ rfb::Rect boundingRect(std::vector<rfb::Rect>& rects)
   return boundingRect;
 }
 
+// Calculates the IntersectionStats for a vector of rfb::Rects
+IntersectionStats detectInteresctions(std::vector<rfb::Rect>& rects)
+{
+  IntersectionStats stats;
+  int interesectArea = 0;
+  // Loop rects all events and calculate the intersections between them.
+  for (uint i = 0; i < rects.size() - 1; i++) {
+    rfb::Rect first = rects[i];
+    for (uint j = i + 1; j < rects.size(); j++) {
+      rfb::Rect second = rects[j];
+      rfb::Rect intersection = first.intersect(second);
+      interesectArea += intersection.area();
+    }
+  }
+
+  // Now, we want to grab the area of all rects in union, excluding
+  // any overlapping areas.
+  int rectAreaNoOverlap = 0;
+  rectAreaNoOverlap = rectTotalArea(rects);
+
+  int totalArea = boundingRect(rects).area();
+
+  stats.lostDataArea = interesectArea;
+  stats.overDimensionedArea = totalArea - rectAreaNoOverlap;
+  return stats;
+}
