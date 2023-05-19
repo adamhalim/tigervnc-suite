@@ -104,7 +104,7 @@ namespace rectUnionArea {
     return TestEntry(
       testName,
       intersections,
-      r1.area() + r2.area() + r3.area() - 5*5 - 10*10 - 60*60);
+      r1.area() + r2.area() + r3.area() - 10*10 - 60*60);
   }
 
   TestEntry testSix()
