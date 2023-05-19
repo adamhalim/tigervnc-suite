@@ -176,6 +176,20 @@ namespace rectUnionArea {
                                             + 110*110
                                             + (95*30+20*130+75*20));
   }
+
+  TestEntry testTen()
+  {
+    const char* testName = "Intersect Stats Test Ten";
+    std::vector<rfb::Rect> intersections;
+    rfb::Rect r1(0,0,50,50);
+    rfb::Rect r2(70,60,160,120);
+
+    intersections.push_back(r1);
+    intersections.push_back(r2);
+
+    return TestEntry(testName, intersections,
+                    r1.area() + r2.area());
+  }
 }
 
 namespace rectIntersectionStats {
@@ -362,6 +376,21 @@ namespace rectIntersectionStats {
                   + (75*110),
                     20*40 + 40*80 + 35*20 + 25*30 + 95*10);
   }
+
+  TestEntry testTen()
+  {
+    const char* testName = "Intersect Stats Test Ten";
+    std::vector<rfb::Rect> intersections;
+    rfb::Rect r1(0,0,50,50);
+    rfb::Rect r2(70,60,160,120);
+
+    intersections.push_back(r1);
+    intersections.push_back(r2);
+
+    return TestEntry(testName, intersections,
+                    0,
+                    110*50 + 90*10 + 70*70);
+  }
 }
 
 
@@ -411,6 +440,7 @@ int main()
   testTotalArea(rectUnionArea::testSeven());
   testTotalArea(rectUnionArea::testEight());
   testTotalArea(rectUnionArea::testNine());
+  testTotalArea(rectUnionArea::testTen());
   testIntersectionStats(rectIntersectionStats::testOne());
   testIntersectionStats(rectIntersectionStats::testTwo());
   testIntersectionStats(rectIntersectionStats::testThree());
@@ -420,4 +450,5 @@ int main()
   testIntersectionStats(rectIntersectionStats::testSeven());
   testIntersectionStats(rectIntersectionStats::testEight());
   testIntersectionStats(rectIntersectionStats::testNine());
+  testIntersectionStats(rectIntersectionStats::testTen());
 }
