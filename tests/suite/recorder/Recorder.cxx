@@ -82,7 +82,27 @@ namespace suite {
     for (uint i = 0; i < events.size(); i++)
       rects.push_back(rectFromEvent(events[i]));
     
-    rfb::Rect damagedRect = boundingRect(rects);
+
+    // Combine all rects into one bouding rect if we detect any overlap.
+    IntersectionStats stats = detectInteresctions(rects);
+    if (stats.lostDataArea) {
+      rfb::Rect damagedRect = boundingRect(rects);
+      handleDamagedRect(damagedRect);
+      return;
+    }
+
+    // If we don't have any overlapping rectangles,
+    // process each rect separately.
+    // NOTE: we can't be entirely sure that there are no overlapping regions
+    // at this point as more DAMAGE events could have occured between each
+    // handleDamagedRect() call.
+    for (rfb::Rect& rect : rects) {
+      handleDamagedRect(rect);
+    }
+  }
+
+  void Recorder::handleDamagedRect(rfb::Rect &damagedRect)
+  {
     const int width = damagedRect.br.x - damagedRect.tl.x;
     const int height = damagedRect.br.y - damagedRect.tl.y;
     const int x_offset = damagedRect.tl.x;

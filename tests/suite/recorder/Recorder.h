@@ -26,6 +26,7 @@ namespace suite {
 
     void handleEvents(std::vector<XEvent>& events);
     protected:
+    void handleDamagedRect(rfb::Rect &damagedRect);
     rfb::Rect rectFromEvent(XEvent& event);
     Damage damage;
     int xdamageEventBase;

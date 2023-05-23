@@ -2,6 +2,7 @@ add_executable(recorder record.cxx)
 
 target_sources(recorder PRIVATE
   Recorder.cxx
+  util.cxx
   ../io/FrameOutStream.cxx
   ../io/ImageUpdate.cxx
   ../codec/ImageDecoder.h
