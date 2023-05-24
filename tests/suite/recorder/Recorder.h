@@ -5,6 +5,7 @@
 #include "../io/FrameOutStream.h"
 #include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
+#include "util.h"
 #include <X11/extensions/Xdamage.h>
 #include <X11/Xlib.h>
 #include <string>
@@ -26,7 +27,7 @@ namespace suite {
 
     void handleEvents(std::vector<XEvent>& events);
     protected:
-    void handleDamagedRect(rfb::Rect &damagedRect);
+    void handleDamagedRect(rfb::Rect &damagedRect, IntersectionStats stats);
     rfb::Rect rectFromEvent(XEvent& event);
     Damage damage;
     int xdamageEventBase;

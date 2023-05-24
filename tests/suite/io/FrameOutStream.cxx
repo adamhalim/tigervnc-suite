@@ -22,6 +22,7 @@ namespace suite {
     if (!headerWritten)
       throw std::logic_error("header not written");
     Image* image = update->image;
+    const IntersectionStats stats = update->stats;
 
     // Keep track of time between frames
     auto now = std::chrono::steady_clock::now();
@@ -33,8 +34,8 @@ namespace suite {
     lock.lock();
     file << image->size << " " << image->width << " " << image->height << " "
          << image->x_offset << " " << image->y_offset << " "
-         << timeSinceLastFrame.count() 
-         << "\n";
+         << timeSinceLastFrame.count() << " " << stats.lostDataArea
+         << " " << stats.overDimensionedArea << "\n";
     file.write((char*)image->getBuffer(), image->size);
     file << "\n";
     lock.unlock();

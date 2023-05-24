@@ -87,7 +87,7 @@ namespace suite {
     IntersectionStats stats = detectInteresctions(rects);
     if (stats.lostDataArea) {
       rfb::Rect damagedRect = boundingRect(rects);
-      handleDamagedRect(damagedRect);
+      handleDamagedRect(damagedRect, stats);
       return;
     }
 
@@ -97,11 +97,12 @@ namespace suite {
     // at this point as more DAMAGE events could have occured between each
     // handleDamagedRect() call.
     for (rfb::Rect& rect : rects) {
-      handleDamagedRect(rect);
+      handleDamagedRect(rect, IntersectionStats{});
     }
   }
 
-  void Recorder::handleDamagedRect(rfb::Rect &damagedRect)
+  void Recorder::handleDamagedRect(rfb::Rect &damagedRect,
+                                   IntersectionStats stats)
   {
     const int width = damagedRect.br.x - damagedRect.tl.x;
     const int height = damagedRect.br.y - damagedRect.tl.y;
@@ -118,7 +119,7 @@ namespace suite {
                                                        width, height,
                                                        x_offset,
                                                        y_offset);
-    suite::ImageUpdate* update = new suite::ImageUpdate(image);
+    suite::ImageUpdate* update = new suite::ImageUpdate(image, stats);
     fs->addUpdate(update);
     delete update;
     delete damagedImage;
