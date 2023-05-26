@@ -115,7 +115,6 @@ namespace suite {
                                                        y_offset);
     suite::ImageUpdate* update = new suite::ImageUpdate(image, stats);
     fs->addUpdate(update);
-    delete update;
     delete damagedImage;
   }
 

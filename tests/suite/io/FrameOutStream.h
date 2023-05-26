@@ -51,6 +51,7 @@ namespace suite {
     FrameOutStream(std::string filename, ImageDecoder* decoder);
     ~FrameOutStream();
 
+    // Assumes ownership if ImageUpdate
     void addUpdate(ImageUpdate* update);
     void addUpdate(rdr::U8* data, int width, int height, int x_offset, 
                    int y_offset, int size);
@@ -62,6 +63,7 @@ namespace suite {
     bool headerWritten;
     const std::string decoder;
     std::chrono::steady_clock::time_point lastFrameTime;
+    ImageUpdate* previousUpdate;
   };
 
 }
