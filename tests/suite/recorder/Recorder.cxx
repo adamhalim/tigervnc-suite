@@ -3,6 +3,7 @@
 #include "tx/TXWindow.h"
 #include "x0vncserver/Image.h"
 #include <X11/Xlib.h>
+#include <ios>
 #include <sys/select.h>
 #include <chrono>
 #include <thread>
@@ -79,9 +80,14 @@ namespace suite {
   void Recorder::handleEvents(std::vector<XEvent>& events)
   {
     std::vector<rfb::Rect> rects;
-    for (uint i = 0; i < events.size(); i++)
-      rects.push_back(rectFromEvent(events[i]));
-    
+    for (uint i = 0; i < events.size(); i++) {
+      try {
+        rects.push_back(rectFromEvent(events[i]));
+      } catch (std::ios_base::failure &e) {}
+    }
+
+    if (!rects.size()) 
+      return;
 
     // Combine all rects into one bouding rect if we detect any overlap.
     IntersectionStats stats = detectInteresctions(rects);
@@ -128,7 +134,7 @@ namespace suite {
   rfb::Rect Recorder::rectFromEvent(XEvent& event)
   {
     if (!(event.type == xdamageEventBase)) 
-      return rfb::Rect{};
+      throw std::ios_base::failure("XEvent not DAMAGE event");
 
     XDamageNotifyEvent* dev;
     rfb::Rect rect;
