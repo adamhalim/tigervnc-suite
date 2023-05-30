@@ -153,61 +153,60 @@ namespace suite {
   {
       int tableWidth = 40;
       int precision = 5;
-      for (const auto& es : encoderStats) {
-        WriteUpdateStatistics writeStats = es.second->writeUpdateStatistics();
-        TimedEncoder* encoder = es.first;
-        EncoderStats* encoderStats = es.second;
+      for (const auto& e : encoders) {
+        EncoderStats* stats = e->stats();
+        WriteUpdateStatistics writeUpdates = stats->writeUpdateStatistics();
 
-        std::string encoderName = encoderClasstoString(encoder->encoderClass);
+        std::string encoderName = encoderClasstoString(e->encoderClass);
         std::cout << "\n\t" << encoderName << " encoder: (seconds)\n\t\t"
                   << std::setprecision(precision) << std::fixed 
                   << std::setw(tableWidth) << std::setfill(' ') << std::left
                   << "writeRect: " << std::right 
-                  << encoderStats->writeRectEncodetime
+                  << stats->writeRectEncodetime
                   << "\n\t\t" << std::left  << std::setw(tableWidth)
                   << "writeSolidRect: " << std::right 
-                  << encoderStats->compressionRatioSolidRects()
+                  << stats->compressionRatioSolidRects()
                   << "\n\t\t" << std::setw(tableWidth) << std::left
                   << "total: " << std::right 
-                               << encoderStats->writeRectEncodetime 
-                                + encoderStats->writeSolidRectEncodetime
+                               << stats->writeRectEncodetime 
+                                + stats->writeSolidRectEncodetime
                   << "\n\t\t" << std::setfill('-')
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ')
                   << "\n\t\t" << std::setw(tableWidth) << std::left  
-                  << "# rects: " << std::right << encoderStats->nRects
+                  << "# rects: " << std::right << stats->nRects
                   << "\n\t\t" << std::setw(tableWidth) << std::left
                   << "# solidRects: " << std::right 
-                  << encoderStats->nSolidRects << "\n\t\t" << std::setfill('-') 
+                  << stats->nSolidRects << "\n\t\t" << std::setfill('-') 
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ')
                   << "\n\t\t" << std::setw(tableWidth) << std::left
                   << "MPx/s (rects):" << std::right 
-                  << encoderStats->megaPixelsPerSecondRects() << "\n\t\t"
+                  << stats->megaPixelsPerSecondRects() << "\n\t\t"
                   << std::setw(tableWidth) << std::left
                   << "MPx/s (solidRects:)" << std::right 
-                  << encoderStats->megaPixelsPerSecondSolidRects() << "\n\t\t"
+                  << stats->megaPixelsPerSecondSolidRects() << "\n\t\t"
                   << std::setw(tableWidth) << std::left 
                   << "MPx/s (combined)" << std::right
-                  << encoderStats->megaPixelsPerSecondCombined() << "\n\t\t"
+                  << stats->megaPixelsPerSecondCombined() << "\n\t\t"
                   << std::setfill('-') 
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ') << "\n\t\t"
                   << std::setw(tableWidth) << std::left
                   << "Compression ratio rects: "
-                  << encoderStats->compressionRatioRects()
+                  << stats->compressionRatioRects()
                   << "\n\t\t" << std::setw(tableWidth) << std::left
                   << "Compression ratio solidRects: " << std::right 
-                  << encoderStats->compressionRatioSolidRects() << "\n\t\t"
+                  << stats->compressionRatioSolidRects() << "\n\t\t"
                   << std::setw(tableWidth) << std::left
                   << "Compression ratio combined: " 
-                  << encoderStats->compressionRatioCombined() << "\n\t\t"
+                  << stats->compressionRatioCombined() << "\n\t\t"
                   << std::setfill('-') << std::setw(tableWidth)
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ') << "\n\t\t"
                   << std::setw(tableWidth) << std::left
                   << "Score (time * compression ratio):" << std::right
-                  << encoderStats->score() << "\n\t\t" << std::setfill('-') 
+                  << stats->score() << "\n\t\t" << std::setfill('-') 
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << "\n\t\t" << std::setw(tableWidth)
                   << std::setfill(' ')
@@ -229,13 +228,13 @@ namespace suite {
                   << std::left << "" << "\n\t\t" << std::setw(tableWidth)
                   << std::setfill(' ')
                   << "Encoder writeUpdate mean (MPx/s):" << std::right
-                  << writeStats.meanWriteUpdate << "\n\t\t" << std::left 
+                  << writeUpdates.meanWriteUpdate << "\n\t\t" << std::left 
                   << std::setfill(' ') << std::setw(tableWidth)
                   << "Encoder writeUpdate median:" << std::right
-                  << writeStats.medianWriteRect << "\n\t\t"
+                  << writeUpdates.medianWriteRect << "\n\t\t"
                   << std::left << std::setfill(' ') << std::setw(tableWidth)
                   << "Encoder writeUpdate variance:" << std::right 
-                  << writeStats.varianceWriteUpdate
+                  << writeUpdates.varianceWriteUpdate
                   << std::endl;
       }
     }

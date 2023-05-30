@@ -24,7 +24,7 @@ namespace suite {
   struct ManagerStats {
     int delayedFrames;
     std::vector<WriteUpdate> writeUpdateStats;
-    std::map<TimedEncoder*, EncoderStats*> encoderStats;
+    std::vector<TimedEncoder*> encoders;
 
     double delayedFramesRatio();
     double medianWriteUpdateValue(bool comparator(const WriteUpdate& lhs,

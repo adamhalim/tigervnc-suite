@@ -99,7 +99,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     Server* server = s.second;
     ManagerStats managerStats = server->stats();
     
-    if (!managerStats.encoderStats.size())
+    if (!managerStats.encoders.size())
       continue; // FIXME: throw/log error?
 
     managerStats.print();

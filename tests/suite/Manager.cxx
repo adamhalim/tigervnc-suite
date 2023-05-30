@@ -34,7 +34,7 @@ namespace suite {
 
     for (uint i = 0; i < encoders.size(); i++) {
       TimedEncoder* timedEncoder = dynamic_cast<TimedEncoder*>(encoders[i]);
-      stats_.encoderStats[timedEncoder] = timedEncoder->stats();
+      stats_.encoders.push_back(timedEncoder);
     }
   }
 
@@ -48,7 +48,7 @@ namespace suite {
     EncoderClass encoderClass = settings.encoderClass;
     TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn,
                                                        this);
-    stats_.encoderStats[timedEncoder] = timedEncoder->stats();
+    stats_.encoders.push_back(timedEncoder);
     for (uint i = 0; i < ENCODERS_COUNT; i++) {
       encoders[static_cast<EncoderClass>(i)] = 
                dynamic_cast<Encoder*>(timedEncoder);
