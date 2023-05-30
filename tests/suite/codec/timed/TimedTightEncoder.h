@@ -13,7 +13,7 @@ namespace suite {
   class TimedTightEncoder : public TightEncoder, public TimedEncoder
   {
   public:
-    TimedTightEncoder(SConnection* conn_);
+    TimedTightEncoder(SConnection* conn_, Manager* manager);
     ~TimedTightEncoder();
 
     virtual void writeRect(const PixelBuffer* pb, const Palette& palette);

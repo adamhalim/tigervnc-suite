@@ -10,7 +10,7 @@ namespace suite {
   class TimedRawEncoder : public RawEncoder, public TimedEncoder
   {
   public:
-    TimedRawEncoder(SConnection* conn_);
+    TimedRawEncoder(SConnection* conn_, Manager* manager);
     ~TimedRawEncoder();
 
     virtual void writeRect(const PixelBuffer* pb, const Palette& palette);

@@ -35,13 +35,13 @@ target_sources(suite PRIVATE
   codec/timed/TimedTightJPEGEncoder.cxx
   codec/timed/TimedZRLEEncoder.cxx
   codec/timed/timedEncoderFactory.cxx
-  codec/timed/encoderStats.h
   io/FrameInStream.cxx
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
+  stats/ManagerStats.cxx
+  stats/EncoderStats.cxx
 )
 
-target_link_libraries(suite rfb ${FLTK_LIBRARIES})
 target_compile_features(suite PRIVATE cxx_std_11)
 
 find_package(OpenMP)

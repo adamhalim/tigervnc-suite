@@ -2,6 +2,7 @@
 #define __SUITE_SERVER_H__
 #include "codec/timed/TimedEncoder.h"
 #include "rfb/PixelFormat.h"
+#include "stats/ManagerStats.h"
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
@@ -38,7 +39,7 @@ namespace suite {
       // Loads an Image onto the framebuffer at x, y
       virtual void loadImage(const Image* image, int x = 0, int y = 0);
 
-      std::map<EncoderClass, encoderStats> stats();
+      ManagerStats stats();
     public:
       DummyInStream *in;
       DummyOutStream *out;

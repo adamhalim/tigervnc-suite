@@ -97,16 +97,13 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     // FIXME: Refactor this to a separate function
     std::string encoderRequested = encoderClasstoString(s.first);
     Server* server = s.second;
-    std::map<EncoderClass, encoderStats> encoderStats = server->stats();
-
-    if (!encoderStats.size())
+    ManagerStats managerStats = server->stats();
+    
+    if (!managerStats.encoderStats.size())
       continue; // FIXME: throw/log error?
 
-    for (const auto& es : encoderStats) {
-       struct encoderStats stats = es.second;
-       stats.print();
-    }
-  delete server;
+    managerStats.print();
+    delete server;
   }
 }
 

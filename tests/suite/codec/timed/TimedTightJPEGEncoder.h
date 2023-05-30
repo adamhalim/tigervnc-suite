@@ -10,7 +10,7 @@ namespace suite {
   class TimedTightJPEGEncoder : public TightJPEGEncoder, public TimedEncoder
   {
   public:
-    TimedTightJPEGEncoder(SConnection* conn_);
+    TimedTightJPEGEncoder(SConnection* conn_, Manager* manager);
     ~TimedTightJPEGEncoder();
 
     virtual void writeRect(const PixelBuffer* pb, const Palette& palette);

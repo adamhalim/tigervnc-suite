@@ -5,8 +5,9 @@
 
 namespace suite {
 
-  TimedRawEncoder::TimedRawEncoder(SConnection* conn_) 
-                                 : RawEncoder(conn_), TimedEncoder(encoderRaw)
+  TimedRawEncoder::TimedRawEncoder(SConnection* conn_, Manager* manager) 
+                                 : RawEncoder(conn_), 
+                                   TimedEncoder(encoderRaw, manager)
   {
   }
 

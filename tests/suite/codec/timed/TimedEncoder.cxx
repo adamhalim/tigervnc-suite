@@ -1,5 +1,4 @@
 #include "TimedEncoder.h"
-#include "encoderStats.h"
 #include "rdr/MemOutStream.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
@@ -9,11 +8,12 @@
 
 namespace suite {
 
-  TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
+  TimedEncoder::TimedEncoder(EncoderClass encoderclass, Manager* manager) 
                            : encoderClass(encoderclass),
-                             currentWriteUpdate(0)
+                             currentWriteUpdate(0),
+                             manager(manager)
   {
-    stats_ = encoderStats{ 
+    _stats = new EncoderStats {
       .writeRectEncodetime = 0,
       .writeSolidRectEncodetime = 0,
       .inputSizeRects = 0,
@@ -24,7 +24,7 @@ namespace suite {
       .nSolidRects = 0,
       .delayedFrames = 0,
       .name = encoderClassName(encoderclass),
-      };
+    };
     // Use an OutStream and inject it to the underlying 
     // SConn just before writeRect() and writeSolidRect()
     // so that we can keep track of how much data is written
@@ -35,6 +35,7 @@ namespace suite {
   TimedEncoder::~TimedEncoder()
   {
     delete encoderOutstream;
+    delete _stats;
   }
 
   void TimedEncoder::startWriteRectTimer(rfb::SConnection* sconn)
@@ -52,17 +53,20 @@ namespace suite {
     auto now = std::chrono::system_clock::now();
     std::chrono::duration<double> time = now - writeRectStart;
 
-    stats_.writeRectEncodetime += time.count();
-    stats_.inputSizeRects += pb->width() * pb->height() * 4;
-    stats_.outputSizeRects += encoderOutstream->length();
-    stats_.nRects++;
-
     // Keep track of rects belonging to the same writeUpdate().
-    writeRectStats stats {
+    WriteRect stats {
       .timeSpent = time.count(),
       .pixelCount = pb->width() * pb->height(),
     };
-    stats_.writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
+    _stats->writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
+
+    _stats->writeRectEncodetime += time.count();
+    _stats->inputSizeRects += pb->width() * pb->height() * 4;
+    _stats->outputSizeRects += encoderOutstream->length();
+    _stats->nRects++;
+
+    // NOTE: not thread safe
+    manager->setCurrentEncoder(this);
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream
@@ -85,27 +89,24 @@ namespace suite {
     auto now = std::chrono::system_clock::now();
     std::chrono::duration<double> time = now - writeSolidRectStart;
 
-    stats_.writeSolidRectEncodetime += time.count();
-    stats_.inputSizeSolidRects += width * height * 4;
-    stats_.outputSizeSolidRects += encoderOutstream->length();
-    stats_.nSolidRects++;
-
     // Keep track of rects belonging to the same writeUpdate().
-    writeRectStats stats {
+    WriteRect stats {
       .timeSpent = time.count(),
       .pixelCount = width * height,
     };
-    stats_.writeUpdates[currentWriteUpdate].writeSolidRects.push_back(stats);
+    _stats->writeUpdates[currentWriteUpdate].writeSolidRects.push_back(stats);
+
+    _stats->writeSolidRectEncodetime += time.count();
+    _stats->inputSizeSolidRects += width * height * 4;
+    _stats->outputSizeSolidRects += encoderOutstream->length();
+    _stats->nSolidRects++;
+
+    // NOTE: not thread safe
+    manager->setCurrentEncoder(this);
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream
     conn_->setStreams(is, os);
     encoderOutstream->clear();
-  }
-
-  void TimedEncoder::addWriteUpdate(writeUpdateStats data)
-  {
-    stats_.delayedFrames += !data.encodedInTime();
-    stats_.framesData.push_back(data);
   }
 }

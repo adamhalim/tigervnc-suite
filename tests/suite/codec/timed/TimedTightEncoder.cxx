@@ -8,9 +8,9 @@
 
 namespace suite {
 
-  TimedTightEncoder::TimedTightEncoder(SConnection* conn_) 
+  TimedTightEncoder::TimedTightEncoder(SConnection* conn_, Manager* manager) 
                                      : TightEncoder(conn_),
-                                       TimedEncoder(encoderTight)
+                                       TimedEncoder(encoderTight, manager)
   {
   }
 
