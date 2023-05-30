@@ -3,7 +3,9 @@
 
 #include "../../unix/x0vncserver/Geometry.h"
 #include "../io/FrameOutStream.h"
+#include "../../unix/x0vncserver/XPixelBuffer.h"
 #include "tx/TXWindow.h"
+#include "util.h"
 #include <X11/extensions/Xdamage.h>
 #include <X11/Xlib.h>
 #include <string>
@@ -24,7 +26,9 @@ namespace suite {
     void stopRecording();
 
     void handleEvents(std::vector<XEvent>& events);
-  protected:
+    protected:
+    void handleDamagedRect(rfb::Rect &damagedRect, IntersectionStats stats);
+    rfb::Rect rectFromEvent(XEvent& event);
     Damage damage;
     int xdamageEventBase;
 
@@ -32,6 +36,7 @@ namespace suite {
     Display* dpy;
     FrameOutStream* fs;
     Geometry* geo;
+    ImageFactory factory;
     ImageDecoder* decoder;
   };
 }

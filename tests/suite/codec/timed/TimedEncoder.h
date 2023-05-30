@@ -7,7 +7,7 @@
 #include "rfb/Encoder.h"
 #include "rfb/PixelBuffer.h"
 #include "rfb/SConnection.h"
-#include "encoderStats.h"
+#include "../../stats/EncoderStats.h"
 #include <chrono>
 #include <stdexcept>
 #include <string>
@@ -70,10 +70,14 @@ namespace suite {
   }
   using namespace enumEncoder;
 
+  // Forward declarations
+  class Manager;
+  struct WriteUpdate;
+
   class TimedEncoder
   {
   public:
-    TimedEncoder(EncoderClass encoderclass);
+    TimedEncoder(EncoderClass encoderclass, Manager* manager);
     ~TimedEncoder();
 
     void startWriteRectTimer(rfb::SConnection* sconn);
@@ -81,21 +85,21 @@ namespace suite {
     void startWriteSolidRectTimer(rfb::SConnection* sconn);
     void stopWriteSolidRectTimer(int width, int height);
     const EncoderClass encoderClass;
-    encoderStats stats() { return stats_; };
+    EncoderStats* stats() { return _stats; };
     virtual bool isSupported() { return true; };
     virtual void writeRect(const rfb::PixelBuffer* pb,
                            const rfb::Palette& palette)=0;
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
                                 const rdr::U8* colour)=0;
-    void addWriteUpdate(writeUpdateStats data);
     uint currentWriteUpdate;
   private:
     rdr::MemOutStream *encoderOutstream;
     rdr::OutStream* os;
     rdr::InStream* is;
     rfb::SConnection* conn_;
-    encoderStats stats_;
+    Manager* manager; // FIXME: Can we avoid needing a Manager* here?
+    EncoderStats* _stats;
     std::chrono::system_clock::time_point writeRectStart;
     std::chrono::system_clock::time_point writeSolidRectStart;
   };

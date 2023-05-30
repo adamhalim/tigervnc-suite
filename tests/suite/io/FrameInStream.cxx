@@ -26,11 +26,13 @@ namespace suite {
       throw std::logic_error("need to parse header before reading image");
 
     int size, width, height, x_offset, y_offset, frameTime;
+    IntersectionStats stats;
 
     if (is.peek() == EOF) 
       throw std::ios_base::failure("error reading from stream");
 
-    is >> size >> width >> height >> x_offset >> y_offset >> frameTime;
+    is >> size >> width >> height >> x_offset >> y_offset >> frameTime 
+       >> stats.lostDataArea >> stats.overDimensionedArea;
     is.ignore();
 
     rdr::U8* data = new rdr::U8[size];
@@ -40,6 +42,7 @@ namespace suite {
                                                   x_offset, y_offset);
     delete [] data;
     image->frameTime = frameTime;
+    image->stats = stats;
     return image;
   }
 

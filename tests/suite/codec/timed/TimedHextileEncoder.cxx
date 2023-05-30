@@ -5,9 +5,11 @@
 
 namespace suite {
 
-  TimedHextileEncoder::TimedHextileEncoder(SConnection* conn_) 
+  TimedHextileEncoder::TimedHextileEncoder(SConnection* conn_,
+                                           Manager* manager) 
                                          : HextileEncoder(conn_),
-                                           TimedEncoder(encoderHextile)
+                                           TimedEncoder(encoderHextile,
+                                                        manager)
   {
   }
 

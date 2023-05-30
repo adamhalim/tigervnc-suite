@@ -11,6 +11,8 @@
 #include "rfb/Encoder.h"
 #include "rfb/SConnection.h"
 #include "rfb/encodings.h"
+#include "stats/EncoderStats.h"
+#include "stats/ManagerStats.h"
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -23,16 +25,16 @@ namespace suite {
     for (Encoder* encoder : encoders)
       delete encoder;
 
-    encoders[encoderRaw] = new TimedRawEncoder(conn);
-    encoders[encoderRRE] = new TimedRREEncoder(conn);
-    encoders[encoderHextile] = new TimedHextileEncoder(conn);
-    encoders[encoderTight] = new TimedTightEncoder(conn);
-    encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn);
-    encoders[encoderZRLE] = new TimedZRLEEncoder(conn);
+    encoders[encoderRaw] = new TimedRawEncoder(conn, this);
+    encoders[encoderRRE] = new TimedRREEncoder(conn, this);
+    encoders[encoderHextile] = new TimedHextileEncoder(conn, this);
+    encoders[encoderTight] = new TimedTightEncoder(conn, this);
+    encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn, this);
+    encoders[encoderZRLE] = new TimedZRLEEncoder(conn, this);
 
     for (uint i = 0; i < encoders.size(); i++) {
-      timedEncoders[static_cast<EncoderClass>(i)] = 
-                    dynamic_cast<TimedEncoder*>(encoders[i]);
+      TimedEncoder* timedEncoder = dynamic_cast<TimedEncoder*>(encoders[i]);
+      stats_.encoders.push_back(timedEncoder);
     }
   }
 
@@ -44,13 +46,13 @@ namespace suite {
       delete e;
 
     EncoderClass encoderClass = settings.encoderClass;
-    TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn);
-    timedEncoders[encoderClass] = timedEncoder;
+    TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn,
+                                                       this);
+    stats_.encoders.push_back(timedEncoder);
     for (uint i = 0; i < ENCODERS_COUNT; i++) {
       encoders[static_cast<EncoderClass>(i)] = 
                dynamic_cast<Encoder*>(timedEncoder);
     }
-    timedEncoder_ = timedEncoder;
   }
 
   Manager::~Manager()
@@ -62,7 +64,7 @@ namespace suite {
     if (SINGLE_ENCODER) {
       for (uint i = 1; i < ENCODERS_COUNT; i++) {
         encoders[i] = dynamic_cast<Encoder*>
-                      (constructTimedEncoder(encoderRaw, conn));
+                      (constructTimedEncoder(encoderRaw, conn, this));
       }
     }
   }
@@ -87,24 +89,14 @@ namespace suite {
     // We keep track of the time it takes to encode an entire frame,
     // and how much time there is left until the next frame occurs
     // (as it was recorded).
-    writeUpdateStats data {
+    WriteUpdate update {
       .timeRequired = frameTime,
       .timeSpent = time.count() * 10e2,
     };
-    timedEncoder_->addWriteUpdate(data);
+    stats_.addWriteUpdate(update);
 
     // Increment the currentWriteUpdate index so we can keep track
     // of which writeRect() belongs to which writeUpdate.
-    timedEncoder_->currentWriteUpdate++;
-  }
-
-  std::map<EncoderClass, encoderStats> Manager::stats() {
-    std::map<EncoderClass, encoderStats> stats;
-    for (auto const& encoder : timedEncoders) {
-      if (encoder.second->stats().writeRectEncodetime ||
-          encoder.second->stats().writeSolidRectEncodetime)
-          stats[encoder.first] = encoder.second->stats();
-    }
-    return stats;
+    currentEncoder->currentWriteUpdate++;
   }
 }

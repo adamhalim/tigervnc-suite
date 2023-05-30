@@ -6,7 +6,8 @@
 
 namespace suite {
   TimedEncoder* constructTimedEncoder(EncoderClass encoder,
-                                      rfb::SConnection* conn);
+                                      rfb::SConnection* conn,
+                                      Manager* manager);
 }
 
 #endif // __SUITE_TIMEDENCODERFACTORY_H__

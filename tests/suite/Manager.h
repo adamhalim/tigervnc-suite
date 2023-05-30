@@ -1,10 +1,11 @@
 #ifndef __SUITE_MANAGER_H__
 #define __SUITE_MANAGER_H__
 #include "codec/timed/TimedEncoder.h"
+#include "stats/ManagerStats.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/SConnection.h"
 #include "rfb/encodings.h"
-#include "codec/timed/encoderStats.h"
+#include "stats/ManagerStats.h"
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -76,12 +77,14 @@ namespace suite {
                        const rfb::RenderedCursor* renderedCursor,
                        uint frameTime);
 
-      std::map<EncoderClass, encoderStats> stats();
+      ManagerStats stats() { return stats_; };
+
+      void setCurrentEncoder(TimedEncoder* encoder) { currentEncoder = encoder; }
+
     protected:
-      std::map<EncoderClass, TimedEncoder*> timedEncoders;
       const bool SINGLE_ENCODER;
-    private:
-      TimedEncoder* timedEncoder_;
+      ManagerStats stats_;
+      TimedEncoder* currentEncoder;
     };
 }
 #endif // __SUITE_MANAGER_H__

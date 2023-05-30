@@ -5,9 +5,11 @@
 
 namespace suite {
 
-  TimedTightJPEGEncoder::TimedTightJPEGEncoder(SConnection* conn_) 
+  TimedTightJPEGEncoder::TimedTightJPEGEncoder(SConnection* conn_, 
+                                               Manager* manager) 
                                              : TightJPEGEncoder(conn_),
-                                               TimedEncoder(encoderTightJPEG)
+                                               TimedEncoder(encoderTightJPEG,
+                                                            manager)
   {
   }
 

@@ -6,7 +6,8 @@
 namespace suite {
 
   FrameOutStream::FrameOutStream(std::string filename, ImageDecoder* decoder)
-                               : headerWritten(false), decoder(decoder->name)
+                               : headerWritten(false), decoder(decoder->name),
+                                 previousUpdate(0)
   {
     file.open(filename.c_str());
     if (!file.is_open())
@@ -15,17 +16,26 @@ namespace suite {
 
   FrameOutStream::~FrameOutStream()
   {
+    if (previousUpdate != NULL)
+      delete previousUpdate;
   }
 
   void FrameOutStream::addUpdate(ImageUpdate* update)
   {
     if (!headerWritten)
       throw std::logic_error("header not written");
-    Image* image = update->image;
+  
+    if (previousUpdate == NULL) {
+      previousUpdate = update;
+      return;
+    }
+
+    Image* image = previousUpdate->image;
+    const IntersectionStats stats = update->stats;
 
     // Keep track of time between frames
     auto now = std::chrono::steady_clock::now();
-    auto timeSinceLastFrame = std::chrono::duration_cast
+    auto timeBudget = std::chrono::duration_cast
                              <std::chrono::milliseconds>
                              (now - lastFrameTime);
     lastFrameTime = now;
@@ -33,11 +43,14 @@ namespace suite {
     lock.lock();
     file << image->size << " " << image->width << " " << image->height << " "
          << image->x_offset << " " << image->y_offset << " "
-         << timeSinceLastFrame.count() 
-         << "\n";
+         << timeBudget.count() << " " << stats.lostDataArea
+         << " " << stats.overDimensionedArea << "\n";
     file.write((char*)image->getBuffer(), image->size);
     file << "\n";
     lock.unlock();
+
+    delete previousUpdate;
+    previousUpdate = update;
   }
 
   void FrameOutStream::addUpdate(rdr::U8* data, int width, int height,

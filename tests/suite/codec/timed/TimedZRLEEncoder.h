@@ -11,7 +11,7 @@ namespace suite {
   class TimedZRLEEncoder : public ZRLEEncoder, public TimedEncoder
   {
   public:
-    TimedZRLEEncoder(SConnection* conn_);
+    TimedZRLEEncoder(SConnection* conn_, Manager* manager);
     ~TimedZRLEEncoder();
 
     virtual void writeRect(const PixelBuffer* pb, const Palette& palette);

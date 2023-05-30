@@ -1,7 +1,9 @@
 #include "Recorder.h"
-#include "../../unix/x0vncserver/XPixelBuffer.h"
+#include "util.h"
 #include "tx/TXWindow.h"
+#include "x0vncserver/Image.h"
 #include <X11/Xlib.h>
+#include <ios>
 #include <sys/select.h>
 #include <chrono>
 #include <thread>
@@ -9,7 +11,7 @@
 namespace suite {
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
-                     std::string display) : decoder(decoder)
+                     std::string display) : factory(false), decoder(decoder)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -47,16 +49,12 @@ namespace suite {
 
   void Recorder::startRecording()
   {
-    ImageFactory factory(false);
-    rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, geo->getRect());
-
     try {
-      fs->writeHeader(pb->width(), pb->height());
+      fs->writeHeader(geo->width(), geo->height());
     } catch (std::logic_error &e) {
       // FIXME: Handle cases where startRecording() is called twice?
       throw;
     }
-    delete pb;
 
     // FIXME: stopRecording() should stop the loop
     while (true) {
@@ -81,40 +79,61 @@ namespace suite {
 
   void Recorder::handleEvents(std::vector<XEvent>& events)
   {
-    rfb::Rect damagedRect;
-    for (XEvent event : events) {
-      if (event.type == xdamageEventBase) {
-        XDamageNotifyEvent* dev;
-        rfb::Rect rect;
-        // Get damage from window
-        dev = (XDamageNotifyEvent*)&event;
-        rect.setXYWH(dev->area.x, dev->area.y,
-                    dev->area.width, dev->area.height);
-        rect = rect.translate(rfb::Point(-geo->offsetLeft(),
-                                         -geo->offsetTop()));
-        damagedRect = damagedRect.union_boundary(rect);
-      }
+    std::vector<rfb::Rect> rects;
+    for (uint i = 0; i < events.size(); i++) {
+      try {
+        rects.push_back(rectFromEvent(events[i]));
+      } catch (std::ios_base::failure &e) {}
     }
 
-    ImageFactory factory(false);
-    rfb::PixelBuffer* pb = new XPixelBuffer(dpy, factory, damagedRect);
+    if (!rects.size()) 
+      return;
 
-    // Get framebuffer for damaged rectangle
-    int stride;
-    const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
-    int width = damagedRect.br.x - damagedRect.tl.x;
-    int height = damagedRect.br.y - damagedRect.tl.y;
+    // Combine all rects into one bouding rect if we detect any overlap.
+    IntersectionStats stats = detectInteresctions(rects);
+    rfb::Rect damagedRect = boundingRect(rects);
+    handleDamagedRect(damagedRect, stats);
+  }
+
+  void Recorder::handleDamagedRect(rfb::Rect &damagedRect,
+                                   IntersectionStats stats)
+  {
+    const int width = damagedRect.br.x - damagedRect.tl.x;
+    const int height = damagedRect.br.y - damagedRect.tl.y;
+    const int x_offset = damagedRect.tl.x;
+    const int y_offset = damagedRect.tl.y;
+
+    // Get the damaged region from the display
+    ::Image* damagedImage = factory.newImage(dpy, width, height);
+    damagedImage->get(DefaultRootWindow(dpy), x_offset, y_offset);
+    const rdr::U8* data = (rdr::U8*) damagedImage->xim->data;
 
     // Save changed rectangle
     suite::Image* image = decoder->encodeImageToMemory(data, 
                                                        width, height,
-                                                       damagedRect.tl.x,
-                                                       damagedRect.tl.y);
-    suite::ImageUpdate* update = new suite::ImageUpdate(image);
+                                                       x_offset,
+                                                       y_offset);
+    suite::ImageUpdate* update = new suite::ImageUpdate(image, stats);
     fs->addUpdate(update);
-    delete update;
-    delete pb;
+    delete damagedImage;
   }
+
+  rfb::Rect Recorder::rectFromEvent(XEvent& event)
+  {
+    if (!(event.type == xdamageEventBase)) 
+      throw std::ios_base::failure("XEvent not DAMAGE event");
+
+    XDamageNotifyEvent* dev;
+    rfb::Rect rect;
+    // Get damage from window
+    dev = (XDamageNotifyEvent*)&event;
+    rect.setXYWH(dev->area.x, dev->area.y,
+                 dev->area.width, dev->area.height);
+    rect = rect.translate(rfb::Point(-geo->offsetLeft(),
+                                     -geo->offsetTop()));
+    return rect;
+  }
+
 
   void Recorder::stopRecording()
   {
