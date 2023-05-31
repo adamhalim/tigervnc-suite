@@ -22,7 +22,6 @@ namespace suite {
       .outputSizeSolidRects = 0,
       .nRects = 0,
       .nSolidRects = 0,
-      .delayedFrames = 0,
       .name = encoderClassName(encoderclass),
     };
     // Use an OutStream and inject it to the underlying 
