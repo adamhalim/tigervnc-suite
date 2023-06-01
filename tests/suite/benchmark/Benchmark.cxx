@@ -120,6 +120,7 @@ EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
     .encodingSize = 2,
     .quality = quality,
     .compression = compression,
+    .name = encoderClasstoString(encoderClass),
   };
 
   switch (encoderClass) {
