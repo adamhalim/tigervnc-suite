@@ -23,6 +23,15 @@ namespace suite {
     rfb::pseudoEncodingQualityLevel0 + 8,
     rfb::pseudoEncodingCompressLevel0 + 2};
 
+  static const EncoderSettings defaultEncoderSettings = {
+    .encoderClass = enumEncoder::encoderTight,
+    .rfbEncoding = (int*) encodings,
+    .encodingSize = sizeof(encodings) / sizeof(*encodings),
+    .quality = enumEncoder::EIGHT,
+    .compression = enumEncoder::TWO,
+    .name = "Default",
+  };
+
     class Server : public rfb::SConnection
     {
     public:
@@ -40,6 +49,7 @@ namespace suite {
       virtual void loadImage(const Image* image, int x = 0, int y = 0);
 
       ManagerStats stats();
+      EncoderSettings settings;
     public:
       DummyInStream *in;
       DummyOutStream *out;
