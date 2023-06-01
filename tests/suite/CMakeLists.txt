@@ -36,6 +36,7 @@ target_sources(suite PRIVATE
   codec/timed/TimedZRLEEncoder.cxx
   codec/timed/timedEncoderFactory.cxx
   io/FrameInStream.cxx
+  io/statswriter.cxx
   streams/DummyInStream.cxx
   streams/DummyOutStream.cxx
   stats/ManagerStats.cxx

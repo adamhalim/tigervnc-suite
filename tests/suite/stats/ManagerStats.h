@@ -22,7 +22,7 @@ namespace suite {
   };
 
   struct ManagerStats {
-    int delayedFrames;
+    int delayedFrames = 0;
     std::vector<WriteUpdate> writeUpdateStats;
     std::vector<TimedEncoder*> encoders;
 

@@ -46,6 +46,7 @@ namespace suite {
       size_t encodingSize;
       PseudoEncodingLevel quality;
       PseudoEncodingLevel compression;
+      std::string name;
     };
 
     inline std::string encoderClasstoString(EncoderClass encoderClass)

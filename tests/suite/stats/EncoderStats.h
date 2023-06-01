@@ -11,7 +11,6 @@ namespace suite {
   struct WriteRect {
     double timeSpent;
     int pixelCount;
-    double delayedFrames;
 
     friend bool operator<(const WriteRect& lhs, const WriteRect& rhs)
     {
@@ -40,7 +39,6 @@ namespace suite {
     int outputSizeSolidRects;
     int nRects;
     int nSolidRects;
-    double delayedFrames;
     std::string name;
     std::map<int,WriteRects> writeUpdates;  // Encoder::writeRect
 

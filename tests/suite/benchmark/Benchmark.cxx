@@ -1,5 +1,6 @@
 #include "Benchmark.h"
 #include "../fileUtil.h"
+#include "../io/statswriter.h"
 #include "rdr/Exception.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/Exception.h"
@@ -34,9 +35,6 @@ Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
   this->width_ = width;
   this->height_ = height;
   try {
-    // FIXME: this Server is unused in this class, but we still want to enable
-    // debugging using the Client somehow. Maybe we always want to have a
-    // default server & encoding that can be used for debugging the output?
     this->server_ = new Server(width, height);
   } catch (rfb::Exception &e) {
     throw e;
@@ -88,6 +86,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       server->loadImage(image, image->x_offset, image->y_offset);
       server->out->clear();
     }
+    server_->loadImage(image, image->x_offset, image->y_offset);
     delete image;
   }
   std::cout << "Benchmarking complete!\n";
@@ -103,8 +102,10 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       continue; // FIXME: throw/log error?
 
     managerStats.print();
+    saveStats(server);
     delete server;
   }
+  saveStats(server_);
 }
 
 EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
@@ -120,6 +121,7 @@ EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
     .encodingSize = 2,
     .quality = quality,
     .compression = compression,
+    .name = encoderClasstoString(encoderClass),
   };
 
   switch (encoderClass) {
