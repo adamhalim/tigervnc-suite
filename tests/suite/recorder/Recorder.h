@@ -8,6 +8,7 @@
 #include "util.h"
 #include <X11/extensions/Xdamage.h>
 #include <X11/Xlib.h>
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -18,7 +19,8 @@ namespace suite {
   class Recorder
   {
   public:
-    Recorder(std::string filename, ImageDecoder* decoder, std::string display);
+    Recorder(std::string filename, ImageDecoder* decoder, std::string display,
+                                                          int framerate);
     ~Recorder();
 
     // Starts recording to file
@@ -38,6 +40,8 @@ namespace suite {
     Geometry* geo;
     ImageFactory factory;
     ImageDecoder* decoder;
+    const double interval;
+    const double intervalThreshold;
   };
 }
 
