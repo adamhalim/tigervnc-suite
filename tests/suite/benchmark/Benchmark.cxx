@@ -1,5 +1,6 @@
 #include "Benchmark.h"
 #include "../fileUtil.h"
+#include "../io/statswriter.h"
 #include "rdr/Exception.h"
 #include "rfb/EncodeManager.h"
 #include "rfb/Exception.h"
