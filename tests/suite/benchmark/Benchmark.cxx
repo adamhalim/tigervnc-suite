@@ -103,6 +103,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       continue; // FIXME: throw/log error?
 
     managerStats.print();
+    saveStats(server);
     delete server;
   }
 }
