@@ -16,9 +16,6 @@ target_sources(suite PRIVATE
   ../../vncviewer/PlatformPixelBuffer.cxx
   ../../vncviewer/Surface.cxx
   ../../vncviewer/Surface_X11.cxx
-  #../../unix/xserver/hw/vnc/XserverDesktop.cc
-  #../../unix/xserver/hw/vnc/vncBlockHandler.c
-  #../../common/os/os.cxx
   benchmark/Benchmark.cxx
   codec/PPMDecoder.cxx
   codec/PNGDecoder.cxx
