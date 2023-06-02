@@ -59,32 +59,31 @@ namespace suite {
     return std::to_string(encoding);
   }
 
-    static const int ENCODERS_COUNT = 6;
+  static const int ENCODERS_COUNT = 6;
 
-    class Manager : public rfb::EncodeManager 
-    {
-    public:
-      Manager(class rfb::SConnection *conn);
-      // Creates an EncodingManager that only uses the specified Encoder
-      // for all encodings.
-      Manager(class rfb::SConnection *conn, EncoderSettings settings);
-      ~Manager();
+  class Manager : public rfb::EncodeManager
+  {
+  public:
+    Manager(class rfb::SConnection *conn);
+    // Creates an EncodingManager that only uses the specified Encoder
+    // for all encodings.
+    Manager(class rfb::SConnection *conn, EncoderSettings settings);
+    ~Manager();
 
-      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
-                       const rfb::RenderedCursor* renderedCursor);
+    void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                     const rfb::RenderedCursor* renderedCursor);
 
-      void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
-                       const rfb::RenderedCursor* renderedCursor,
-                       uint frameTime);
+    void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb,
+                     const rfb::RenderedCursor* renderedCursor,
+                     uint frameTime);
 
-      ManagerStats stats() { return stats_; };
+    ManagerStats stats() { return stats_; };
+    void setCurrentEncoder(TimedEncoder* encoder) { currentEncoder = encoder; }
 
-      void setCurrentEncoder(TimedEncoder* encoder) { currentEncoder = encoder; }
-
-    protected:
-      const bool SINGLE_ENCODER;
-      ManagerStats stats_;
-      TimedEncoder* currentEncoder;
-    };
+  protected:
+    const bool SINGLE_ENCODER;
+    ManagerStats stats_;
+    TimedEncoder* currentEncoder;
+  };
 }
 #endif // __SUITE_MANAGER_H__
