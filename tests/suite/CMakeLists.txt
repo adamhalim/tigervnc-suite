@@ -45,10 +45,7 @@ target_sources(suite PRIVATE
 
 target_compile_features(suite PRIVATE cxx_std_11)
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(MyTarget PUBLIC OpenMP::OpenMP_CXX)
-endif()
+target_link_libraries(suite PRIVATE rfb ${FLTK_LIBRARIES})
 
 # Recording tool
 add_subdirectory(recorder)
