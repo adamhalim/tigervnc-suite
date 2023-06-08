@@ -14,35 +14,61 @@ namespace suite {
      The file structure is as follows:
 
       ______________________________________________________
-      |               encoding width height                | <-- File header 
+      |               encoding width height interval     \n| <-- File header 
       | imageSize width height x_offset y_offset frameTime | <-- Image metadata
+      |       lostArea overArea encodingTime margin      \n|
       |****************************************************|
       |****************************************************|
       |****************** RAW IMAGE DATA ******************| <-- Raw dump of 
       |****************************************************|     image data.
       |****************************************************|
-      |****************************************************|
+      |**************************************************\n|
       | imageSize width height x_offset y_offset frameTime | <-- Next image
+      |       lostArea overArea encodingTime margin      \n| 
       |****************************************************|
       |****************************************************| 
       |****************** RAW IMAGE DATA ******************|
-      |****************************************************|
+      |**************************************************\n|
       |____________________________________________________|
 
+      FileStructure: {
+        encoding:     Which encoder was used.
+        width:        Framebuffer width.
+        height:       Framebuffer height.
+        interval:     Specified interval between frame updates (milliseconds).
+        -----------------------------------------------------------------------
+        imageSize:    Image size in bytes.
+        width:        Image width.
+        height:       Image height.
+        x_offset:     Image top left x-coordinate.
+        y_offset:     Image top left y-coordinate.
+        frameTime:    Time until next frame update.
+
+        lostArea:     How large of an "area" that was lost due to multiple
+                      DAMAGE events detected between frame updates.
+
+        overArea:     How much area was overdimensioned by coalescing multiple
+                      DAMAGE events into a single bouding retangle.
+
+        encodingTime: How long it took to encode the update (milliseconds).
+
+        margin:       How many milliseconds we have to spare before the next
+                      framebuffer update is recorded. Negative number indicates
+                      how long we exceeded our interval.
+        -----------------------------------------------------------------------
+        RAW IMAGE DATA: encoded image data.
+      }
 
       The file metadata tells which encoding was used for the images, as well
-      as the framebuffer width & height. The header must be parsed first before
-      processing the rest of the file. The file header ends with a '\n'.
-      The image header has information about the next image stored in the file
-      and is marked by ending with a '\n'. frameTime is an integer in 
-      milliseconds that tells how much time passed since the last frame update.
-      On the next line, the image can be read by reading imageSize many bytes
-      from the file. Images are also terminated with a '\n'.
-      There is no way of knowing how many images are stores in the file
-      beforehand, you have to parse the whole file to know that.
-      Knowledge of which image encoding was used to write is necessary to
-      decode images in the file.
-
+      as the framebuffer width & height, as well as the interval between each
+      frame update. The header must be parsed first before processing the rest
+      of the file. The file header ends with a '\n'. The image header has
+      information about the next image stored in the file and is also marked by
+      ending with a '\n'. On the next line, the image can be read by reading
+      imageSize many bytes from the file, using the corresponding encoder.
+      The raw image is also terminated with a '\n'. There is no way of knowing
+      how many images are stores in the file beforehand, you have to parse the
+      whole file to know that.
   */
 
   class FrameOutStream
