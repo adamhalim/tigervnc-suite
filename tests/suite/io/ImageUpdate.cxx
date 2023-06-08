@@ -2,7 +2,7 @@
 
 namespace suite {
   ImageUpdate::ImageUpdate(Image* image,
-                           IntersectionStats stats) 
+                           ImageUpdateStats stats) 
                          : image(image), stats(stats)
   {
   }

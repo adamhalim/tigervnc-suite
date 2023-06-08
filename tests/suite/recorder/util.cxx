@@ -26,9 +26,9 @@ rfb::Rect boundingRect(std::vector<rfb::Rect>& rects)
 }
 
 // Calculates the IntersectionStats for a vector of rfb::Rects
-IntersectionStats detectInteresctions(std::vector<rfb::Rect>& rects)
+ImageUpdateStats detectInteresctions(std::vector<rfb::Rect>& rects)
 {
-  IntersectionStats stats;
+  ImageUpdateStats stats;
   int interesectArea = 0;
   // Loop rects all events and calculate the intersections between them.
   for (uint i = 0; i < rects.size() - 1; i++) {

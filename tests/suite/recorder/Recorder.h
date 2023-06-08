@@ -29,7 +29,7 @@ namespace suite {
 
     void handleEvents(std::vector<XEvent>& events);
     protected:
-    void handleDamagedRect(rfb::Rect &damagedRect, IntersectionStats stats);
+    void handleDamagedRect(rfb::Rect &damagedRect, ImageUpdateStats stats);
     rfb::Rect rectFromEvent(XEvent& event);
     Damage damage;
     int xdamageEventBase;

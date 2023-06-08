@@ -31,7 +31,7 @@ namespace suite {
     }
 
     Image* image = previousUpdate->image;
-    const IntersectionStats stats = update->stats;
+    const ImageUpdateStats stats = update->stats;
 
     // Keep track of time between frames
     auto now = std::chrono::steady_clock::now();

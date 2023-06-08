@@ -130,13 +130,13 @@ namespace suite {
       return;
 
     // Combine all rects into one bouding rect if we detect any overlap.
-    IntersectionStats stats = detectInteresctions(rects);
+    ImageUpdateStats stats = detectInteresctions(rects);
     rfb::Rect damagedRect = boundingRect(rects);
     handleDamagedRect(damagedRect, stats);
   }
 
   void Recorder::handleDamagedRect(rfb::Rect &damagedRect,
-                                   IntersectionStats stats)
+                                   ImageUpdateStats stats)
   {
     const int width = damagedRect.br.x - damagedRect.tl.x;
     const int height = damagedRect.br.y - damagedRect.tl.y;

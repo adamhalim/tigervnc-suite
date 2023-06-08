@@ -10,10 +10,10 @@ namespace suite {
   // FIXME: Add time data so that updates can be played in "realtime".
   struct ImageUpdate 
   {
-    ImageUpdate(Image* image, IntersectionStats stats = IntersectionStats{});
+    ImageUpdate(Image* image, ImageUpdateStats stats = ImageUpdateStats{});
     ~ImageUpdate();
     Image* image;
-    IntersectionStats stats;
+    ImageUpdateStats stats;
   };
 }
 

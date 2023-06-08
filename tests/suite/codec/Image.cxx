@@ -8,7 +8,7 @@ namespace suite {
 
   Image::Image(int width, int height, rdr::U8* buffer,
                int size, int x_offset, int y_offset, uint frameTime,
-               IntersectionStats stats)
+               ImageUpdateStats stats)
              : width(width), height(height), x_offset(x_offset),
                y_offset(y_offset), stats(stats), size(size), frameTime(frameTime), 
                buffer(buffer)
