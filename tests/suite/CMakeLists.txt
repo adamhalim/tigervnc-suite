@@ -16,9 +16,6 @@ target_sources(suite PRIVATE
   ../../vncviewer/PlatformPixelBuffer.cxx
   ../../vncviewer/Surface.cxx
   ../../vncviewer/Surface_X11.cxx
-  #../../unix/xserver/hw/vnc/XserverDesktop.cc
-  #../../unix/xserver/hw/vnc/vncBlockHandler.c
-  #../../common/os/os.cxx
   benchmark/Benchmark.cxx
   codec/PPMDecoder.cxx
   codec/PNGDecoder.cxx
@@ -45,10 +42,7 @@ target_sources(suite PRIVATE
 
 target_compile_features(suite PRIVATE cxx_std_11)
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(MyTarget PUBLIC OpenMP::OpenMP_CXX)
-endif()
+target_link_libraries(suite PRIVATE rfb ${FLTK_LIBRARIES})
 
 # Recording tool
 add_subdirectory(recorder)

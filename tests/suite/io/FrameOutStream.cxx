@@ -6,8 +6,7 @@
 namespace suite {
 
   FrameOutStream::FrameOutStream(std::string filename, ImageDecoder* decoder)
-                               : headerWritten(false), decoder(decoder->name),
-                                 previousUpdate(0)
+                               : headerWritten(false), decoder(decoder->name)
   {
     file.open(filename.c_str());
     if (!file.is_open())
@@ -16,8 +15,6 @@ namespace suite {
 
   FrameOutStream::~FrameOutStream()
   {
-    if (previousUpdate != NULL)
-      delete previousUpdate;
   }
 
   void FrameOutStream::addUpdate(ImageUpdate* update)
@@ -25,16 +22,12 @@ namespace suite {
     if (!headerWritten)
       throw std::logic_error("header not written");
   
-    if (previousUpdate == NULL) {
-      previousUpdate = update;
-      return;
-    }
-
-    Image* image = previousUpdate->image;
-    const IntersectionStats stats = update->stats;
+    Image* image = update->image;
+    const ImageUpdateStats stats = update->stats;
 
     // Keep track of time between frames
     auto now = std::chrono::steady_clock::now();
+    // FIXME: timeBudget is unused/unnecessary?
     auto timeBudget = std::chrono::duration_cast
                              <std::chrono::milliseconds>
                              (now - lastFrameTime);
@@ -44,13 +37,12 @@ namespace suite {
     file << image->size << " " << image->width << " " << image->height << " "
          << image->x_offset << " " << image->y_offset << " "
          << timeBudget.count() << " " << stats.lostDataArea
-         << " " << stats.overDimensionedArea << "\n";
+         << " " << stats.overDimensionedArea << " "  << stats.encodingTime
+         << " " << stats.margin << "\n";
     file.write((char*)image->getBuffer(), image->size);
     file << "\n";
     lock.unlock();
 
-    delete previousUpdate;
-    previousUpdate = update;
   }
 
   void FrameOutStream::addUpdate(rdr::U8* data, int width, int height,
@@ -61,11 +53,12 @@ namespace suite {
     addUpdate(update);
   }
 
-  void FrameOutStream::writeHeader(int width, int height)
+  void FrameOutStream::writeHeader(int width, int height, double interval)
   {
     if (headerWritten)
       throw std::logic_error("header already written");
-    file << decoder << " " << width << " " << height << "\n";
+    file << decoder << " " << width << " " << height << " "
+         << interval << "\n";
     headerWritten = true;
     lastFrameTime = std::chrono::steady_clock::now();
   }

@@ -6,7 +6,7 @@ using namespace suite;
 int main(int argc, char* argv[])
 {
 
-  if(argc < 3) {
+  if(argc < 4) {
 
     std::string decoderString;
     std::for_each(decodersMap.begin(), decodersMap.end(), [&](const auto &s) {
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     std::cerr << "Error, incorrect arguments\n" 
               << "Usage:\n\t"
               << argv[0] << " <X display> <output filename> " 
-              << "<encoder (default=QOI)>\n\t"
+              << "<framerate> <encoder (default=QOI)>\n\t"
               << "Available encoders: " << decoderString << std::endl;
     exit(1);
   }
@@ -23,11 +23,12 @@ int main(int argc, char* argv[])
   // FIXME: Validate display
   std::string display = argv[1];
   std::string filename = argv[2];
+  int framerate = atoi(argv[3]);
 
-  ImageDecoder* decoder = argc > 3 ? constructDecoder(argv[3])
+  ImageDecoder* decoder = argc > 4 ? constructDecoder(argv[4])
                                    : constructDecoder(QOI);
 
-  Recorder recorder = Recorder(filename, decoder, display);
+  Recorder recorder = Recorder(filename, decoder, display, framerate);
 
   recorder.startRecording();
 

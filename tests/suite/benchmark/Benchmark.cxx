@@ -28,14 +28,12 @@ Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
   std::ifstream file(filename);
   file = std::ifstream(filename);
 
-  int width;
-  int height;
-  std::tie(width, height) = is.parseHeader(file);
+  HeaderData header = is.parseHeader(file);
 
-  this->width_ = width;
-  this->height_ = height;
+  this->width_ = header.width;
+  this->height_ = header.height;
   try {
-    this->server_ = new Server(width, height);
+    this->server_ = new Server(header.width, header.height);
   } catch (rfb::Exception &e) {
     throw e;
   }
