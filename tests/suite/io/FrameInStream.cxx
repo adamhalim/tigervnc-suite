@@ -22,6 +22,13 @@ namespace suite {
 
   Image* FrameInStream::readImage(std::istream& is)
   {
+    RecorderStats s; // ignored
+    return readImage(is, s);
+  }
+
+  Image* FrameInStream::readImage(std::istream& is,
+                                  RecorderStats& recorderStats)
+  {
     if (!headerParsed)
       throw std::logic_error("need to parse header before reading image");
 
@@ -35,6 +42,8 @@ namespace suite {
        >> stats.lostDataArea >> stats.overDimensionedArea
        >> stats.encodingTime >> stats.margin;
     is.ignore();
+
+    recorderStats.stats.push_back(stats);
 
     rdr::U8* data = new rdr::U8[size];
     is.read((char*)data, size);

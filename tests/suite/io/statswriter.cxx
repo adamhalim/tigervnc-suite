@@ -17,6 +17,7 @@ namespace suite {
   // -=- statswriter.cxx - the stats are structured as follows:
   /* 
     |--root
+      recorderstats.txt
       |--1  
         |--EncoderSetting-compressionlevel(-qualitylevel)
         |-- encodersettings.txt
@@ -44,7 +45,7 @@ namespace suite {
           |--     .
   */
 
-  void saveStats(Server *server)
+  void saveEncodingStats(Server *server)
   {
     counter++;
 
@@ -81,6 +82,23 @@ namespace suite {
       std::string encoderDir = createEncoderDir(es, dir);
       saveEncoderStats(es, encoderDir);
       saveEncoderWriteUpdates(es, encoderDir);
+    }
+  }
+
+  void saveRecordingStats(RecorderStats &stats)
+  {
+    /*
+      File structure follows struct RecorderStats (one row per frame update):
+        lostDataArea overDimensionedArea encodingTime margin
+    */
+
+    std::string filename = std::string(ROOT_DIR) + RECORDER_STATS;
+    std::ofstream of(filename);
+
+    for (const ImageUpdateStats& update : stats.stats) {
+      of << update.lostDataArea << " " << update.overDimensionedArea << " "
+         << update.encodingTime << " " << update.margin << "\n";
+    
     }
   }
 

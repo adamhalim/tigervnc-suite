@@ -5,6 +5,7 @@
 #include "rfb/EncodeManager.h"
 #include "rfb/Exception.h"
 #include "rfb/encodings.h"
+#include "../stats/RecorderStats.h"
 #include <exception>
 #include <fstream>
 #include <chrono>
@@ -73,8 +74,9 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
   }
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";
+  RecorderStats recorderStats;
   while (file.peek() != EOF) {
-    const Image* image = is.readImage(file);
+    const Image* image = is.readImage(file, recorderStats);
 
     // For each encoding we want to test, we load an image and loop through 
     // all servers
@@ -100,10 +102,11 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       continue; // FIXME: throw/log error?
 
     managerStats.print();
-    saveStats(server);
+    saveEncodingStats(server);
     delete server;
   }
-  saveStats(server_);
+  saveEncodingStats(server_);
+  saveRecordingStats(recorderStats);
 }
 
 EncoderSettings Benchmark::encoderSettings(EncoderClass encoderClass,
