@@ -42,6 +42,9 @@ namespace suite {
     ImageDecoder* decoder;
     const double interval;
     const double intervalThreshold;
+    suite::Image* lastImage;
+    double encodeTime_;
+    double lastImageEncodeTime;
   };
 }
 

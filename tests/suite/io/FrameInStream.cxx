@@ -32,7 +32,8 @@ namespace suite {
       throw std::ios_base::failure("error reading from stream");
 
     is >> size >> width >> height >> x_offset >> y_offset >> frameTime 
-       >> stats.lostDataArea >> stats.overDimensionedArea;
+       >> stats.lostDataArea >> stats.overDimensionedArea
+       >> stats.encodingTime >> stats.margin;
     is.ignore();
 
     rdr::U8* data = new rdr::U8[size];
@@ -46,7 +47,7 @@ namespace suite {
     return image;
   }
 
-  std::pair<int, int> FrameInStream::parseHeader(std::istream& is)
+  HeaderData FrameInStream::parseHeader(std::istream& is)
   {
     if (headerParsed)
       throw std::logic_error("header already parsed");
@@ -54,10 +55,18 @@ namespace suite {
     std::string decoder;
     int width;
     int height;
-    is >> decoder >> width >> height;
+    double interval;
+    is >> decoder >> width >> height >> interval;
+
+    HeaderData header {
+      .width = width,
+      .height = height,
+      .interval = interval,
+      .decoder = decoder,
+    };
     
     this->decoder = constructDecoder(decoder);
     headerParsed = true;
-    return std::make_pair(width, height);
+    return header;
   }
 }

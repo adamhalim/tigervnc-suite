@@ -14,6 +14,7 @@ namespace suite {
                      std::string display, int framerate) 
   : factory(true), decoder(decoder),
     interval(1000.0/framerate), intervalThreshold(interval/1000),
+    lastImage(0), lastImageEncodeTime(0)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -52,7 +53,7 @@ namespace suite {
   void Recorder::startRecording()
   {
     try {
-      fs->writeHeader(geo->width(), geo->height());
+      fs->writeHeader(geo->width(), geo->height(), interval);
     } catch (std::logic_error &e) {
       // FIXME: Handle cases where startRecording() is called twice?
       throw;
@@ -79,6 +80,8 @@ namespace suite {
       end = std::chrono::steady_clock::now();
       auto encodeTime = std::chrono::duration_cast
                              <std::chrono::milliseconds>(end - start);
+      lastImageEncodeTime = encodeTime.count();
+      encodeTime_ = encodeTime.count();
 
       #if _DEBUG
         std::cout << "Encoding took: " << encodeTime.count() << std::endl;
@@ -130,7 +133,8 @@ namespace suite {
       return;
 
     // Combine all rects into one bouding rect if we detect any overlap.
-    ImageUpdateStats stats = detectInteresctions(rects);
+    ImageUpdateStats stats;
+    detectInteresctions(rects, stats);
     rfb::Rect damagedRect = boundingRect(rects);
     handleDamagedRect(damagedRect, stats);
   }
@@ -153,9 +157,24 @@ namespace suite {
                                                        width, height,
                                                        x_offset,
                                                        y_offset);
-    suite::ImageUpdate* update = new suite::ImageUpdate(image, stats);
+
+    // Since encoding times are calculated after an update, we need to keep
+    // the previous update in memory until the next one so that the correct
+    // encodeTime can be saved.
+    if (lastImage == NULL) {
+      lastImage = image;
+      lastImageEncodeTime = encodeTime_;
+      return;
+    }
+    stats.encodingTime = lastImageEncodeTime;
+    stats.margin = interval - stats.encodingTime;
+    suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, stats);
     fs->addUpdate(update);
+
+    lastImage = image;
+    lastImageEncodeTime = encodeTime_;
     delete damagedImage;
+    delete update;
   }
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)

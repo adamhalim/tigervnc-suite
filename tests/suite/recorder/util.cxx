@@ -26,9 +26,9 @@ rfb::Rect boundingRect(std::vector<rfb::Rect>& rects)
 }
 
 // Calculates the IntersectionStats for a vector of rfb::Rects
-ImageUpdateStats detectInteresctions(std::vector<rfb::Rect>& rects)
+void detectInteresctions(std::vector<rfb::Rect>& rects,
+                         ImageUpdateStats& stats)
 {
-  ImageUpdateStats stats;
   int interesectArea = 0;
   // Loop rects all events and calculate the intersections between them.
   for (uint i = 0; i < rects.size() - 1; i++) {
@@ -49,5 +49,4 @@ ImageUpdateStats detectInteresctions(std::vector<rfb::Rect>& rects)
 
   stats.lostDataArea = interesectArea;
   stats.overDimensionedArea = totalArea - rectAreaNoOverlap;
-  return stats;
 }

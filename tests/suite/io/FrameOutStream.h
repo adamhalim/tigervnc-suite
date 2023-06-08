@@ -56,14 +56,13 @@ namespace suite {
     void addUpdate(rdr::U8* data, int width, int height, int x_offset, 
                    int y_offset, int size);
                   
-    void writeHeader(int width, int height);
+    void writeHeader(int width, int height, double interval);
   private:
     std::ofstream file;
     std::mutex lock; // In case updates are encoded in parallel.
     bool headerWritten;
     const std::string decoder;
     std::chrono::steady_clock::time_point lastFrameTime;
-    ImageUpdate* previousUpdate;
   };
 
 }

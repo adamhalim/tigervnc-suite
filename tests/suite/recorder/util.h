@@ -11,10 +11,13 @@
 struct ImageUpdateStats {
   int lostDataArea;
   int overDimensionedArea;
+  double encodingTime;
+  double margin;
 };
 
 // Calculates the area covered by a vector of Rects, excluding any overlaps
 int rectTotalArea(std::vector<rfb::Rect>& intersections);
-ImageUpdateStats detectInteresctions(std::vector<rfb::Rect>& rects);
+void detectInteresctions(std::vector<rfb::Rect>& rects,
+                         ImageUpdateStats& stats);
 rfb::Rect boundingRect(std::vector<rfb::Rect>& rects);
 #endif // __SUITE_RECORDER_UTIL

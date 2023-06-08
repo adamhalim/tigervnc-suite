@@ -411,7 +411,8 @@ void testIntersectionStats(rectIntersectionStats::TestEntry entry)
 {
   bool failed = false;
   printf("Running %s...\n", entry.testName);
-  ImageUpdateStats stats = detectInteresctions(entry.intersections);
+  ImageUpdateStats stats;
+  detectInteresctions(entry.intersections, stats);
   if (stats.overDimensionedArea != entry.expectedOverdimensionedArea) {
     printf("TEST %s FAILED. Got overdimensioned area: %d, expected: %d\n ",
             entry.testName, stats.overDimensionedArea,

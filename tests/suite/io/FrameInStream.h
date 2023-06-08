@@ -6,6 +6,14 @@ namespace suite {
   // This class parses an istream that contains data following the structure
   // defined in FrameOutStream.h
   //
+
+  struct HeaderData {
+    int width;
+    int height;
+    double interval;
+    std::string decoder;
+  };
+
   // FIXME: Probably want to wrap this class so that it is more seamless to
   // use. We shouldn't have to call parseHeader() before readImage().
   class FrameInStream
@@ -20,7 +28,7 @@ namespace suite {
     // Parses the header of the file and returns a pair with the 
     // width and size of the framebuffer. 
     // Needs to be run before readImage as it also sets the decoder.
-    std::pair<int, int> parseHeader(std::istream& is);
+    HeaderData parseHeader(std::istream& is);
   protected:
     ImageDecoder* decoder;
   private:
