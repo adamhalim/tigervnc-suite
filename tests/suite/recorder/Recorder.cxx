@@ -78,8 +78,8 @@ namespace suite {
       handleEvents(events);
       end = std::chrono::steady_clock::now();
       auto encodeTime = std::chrono::duration_cast
-                             <std::chrono::milliseconds>(end - start) 
-                                                       + sleepDuration;
+                             <std::chrono::milliseconds>(end - start);
+
       #if _DEBUG
         std::cout << "Encoding took: " << encodeTime.count() << std::endl;
       #endif
