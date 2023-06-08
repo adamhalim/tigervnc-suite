@@ -13,7 +13,7 @@ namespace suite {
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
                      std::string display, int framerate) 
   : factory(true), decoder(decoder),
-    interval(1000.0/framerate), intervalThreshold(interval/100)
+    interval(1000.0/framerate), intervalThreshold(interval/1000),
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
