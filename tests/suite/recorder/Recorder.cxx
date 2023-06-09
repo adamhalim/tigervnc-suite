@@ -171,10 +171,11 @@ namespace suite {
     suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, stats);
     fs->addUpdate(update);
 
-    lastImage = image;
-    lastImageEncodeTime = encodeTime_;
     delete damagedImage;
     delete update;
+
+    lastImageEncodeTime = encodeTime_;
+    lastImage = image;
   }
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)
