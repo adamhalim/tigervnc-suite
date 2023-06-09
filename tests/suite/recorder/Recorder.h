@@ -45,6 +45,8 @@ namespace suite {
     suite::Image* lastImage;
     double encodeTime_;
     double lastImageEncodeTime;
+    double lastInterval;
+    ImageUpdateStats lastImageStats;
   };
 }
 

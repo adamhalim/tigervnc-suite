@@ -160,22 +160,26 @@ namespace suite {
 
     // Since encoding times are calculated after an update, we need to keep
     // the previous update in memory until the next one so that the correct
-    // encodeTime can be saved.
+    // stats can be saved.
     if (lastImage == NULL) {
       lastImage = image;
-      lastImageEncodeTime = encodeTime_;
+      lastImageStats = stats;
+      lastInterval = interval;
       return;
     }
-    stats.encodingTime = lastImageEncodeTime;
-    stats.margin = interval - stats.encodingTime;
-    suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, stats);
+    lastImageStats.encodingTime = lastImageEncodeTime;
+    lastImageStats.margin = lastInterval - lastImageStats.encodingTime;
+
+    suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, lastImageStats);
     fs->addUpdate(update);
 
     delete damagedImage;
     delete update;
 
-    lastImageEncodeTime = encodeTime_;
     lastImage = image;
+    lastInterval = interval;
+    lastImageStats = stats;
+    lastImageEncodeTime = encodeTime_;
   }
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)
