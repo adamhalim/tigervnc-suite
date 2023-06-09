@@ -21,6 +21,7 @@ target_sources(suite PRIVATE
   codec/PNGDecoder.cxx
   codec/Image.cxx
   codec/QOIDecoder.cxx
+  codec/JPEGDecoder.cxx
   codec/decoderFactory.cxx
   codec/lib/fpng.cpp
   codec/lib/qoi.h

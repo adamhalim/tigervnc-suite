@@ -2,6 +2,7 @@
 #include "PNGDecoder.h"
 #include "PPMDecoder.h"
 #include "QOIDecoder.h"
+#include "JPEGDecoder.h"
 
 namespace suite {
   ImageDecoder* constructDecoder(decoderEnum decoder)
@@ -13,6 +14,8 @@ namespace suite {
       return (ImageDecoder*) new PNGDecoder();
     case QOI:
       return (ImageDecoder*) new QOIDecoder();
+    case JPEG:
+      return (ImageDecoder*) new JPEGDecoder();
     default:
       throw std::logic_error("decoder not imlpemented");
     }

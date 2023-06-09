@@ -9,6 +9,7 @@ target_sources(recorder PRIVATE
   ../codec/PPMDecoder.cxx
   ../codec/PNGDecoder.cxx
   ../codec/QOIDecoder.cxx
+  ../codec/JPEGDecoder.cxx
   ../codec/Image.cxx
   ../codec/decoderFactory.cxx
   ../codec/lib/fpng.cpp

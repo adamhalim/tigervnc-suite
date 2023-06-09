@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     std::cerr << "Error, incorrect arguments\n" 
               << "Usage:\n\t"
               << argv[0] << " <X display> <output filename> " 
-              << "<framerate> <encoder (default=QOI)>\n\t"
+              << "<framerate> <encoder (default=JPEG)>\n\t"
               << "Available encoders: " << decoderString << std::endl;
     exit(1);
   }
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
   int framerate = atoi(argv[3]);
 
   ImageDecoder* decoder = argc > 4 ? constructDecoder(argv[4])
-                                   : constructDecoder(QOI);
+                                   : constructDecoder(JPEG);
 
   Recorder recorder = Recorder(filename, decoder, display, framerate);
 
