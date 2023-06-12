@@ -157,6 +157,7 @@ namespace suite {
                                                        width, height,
                                                        x_offset,
                                                        y_offset);
+    delete damagedImage;
 
     // Since encoding times are calculated after an update, we need to keep
     // the previous update in memory until the next one so that the correct
@@ -173,7 +174,6 @@ namespace suite {
     suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, lastImageStats);
     fs->addUpdate(update);
 
-    delete damagedImage;
     delete update;
 
     lastImage = image;
