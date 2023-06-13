@@ -10,7 +10,7 @@ namespace suite {
 
   struct WriteRect {
     double timeSpent;
-    int pixelCount;
+    unsigned long long pixelCount;
 
     friend bool operator<(const WriteRect& lhs, const WriteRect& rhs)
     {
@@ -33,10 +33,10 @@ namespace suite {
   struct EncoderStats {
     double writeRectEncodetime;
     double writeSolidRectEncodetime;
-    int inputSizeRects;
-    int outputSizeRects;
-    int inputSizeSolidRects;
-    int outputSizeSolidRects;
+    unsigned long long inputSizeRects;
+    unsigned long long outputSizeRects;
+    unsigned long long inputSizeSolidRects;
+    unsigned long long outputSizeSolidRects;
     int nRects;
     int nSolidRects;
     std::string name;

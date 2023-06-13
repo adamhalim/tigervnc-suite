@@ -55,7 +55,7 @@ namespace suite {
     // Keep track of rects belonging to the same writeUpdate().
     WriteRect stats {
       .timeSpent = time.count(),
-      .pixelCount = pb->width() * pb->height(),
+      .pixelCount = static_cast<unsigned long long>(pb->width()*pb->height()),
     };
     _stats->writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
 
@@ -91,7 +91,7 @@ namespace suite {
     // Keep track of rects belonging to the same writeUpdate().
     WriteRect stats {
       .timeSpent = time.count(),
-      .pixelCount = width * height,
+      .pixelCount = static_cast<unsigned long long>(width * height),
     };
     _stats->writeUpdates[currentWriteUpdate].writeSolidRects.push_back(stats);
 
