@@ -14,7 +14,7 @@ namespace suite {
                      std::string display, int framerate) 
   : factory(true), decoder(decoder),
     interval(1000.0/framerate), intervalThreshold(interval/1000),
-    lastImage(0), lastImageEncodeTime(0)
+    lastImage(0)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -80,8 +80,9 @@ namespace suite {
       end = std::chrono::steady_clock::now();
       auto encodeTime = std::chrono::duration_cast
                              <std::chrono::milliseconds>(end - start);
-      lastImageEncodeTime = encodeTime.count();
       encodeTime_ = encodeTime.count();
+      lastImageStats.encodingTime = encodeTime_;
+      lastImageStats.margin = interval - encodeTime_;
 
       #ifdef _DEBUG
         std::cout << "Encoding took: " << encodeTime.count() << std::endl;
@@ -167,8 +168,6 @@ namespace suite {
       lastImageStats = stats;
       return;
     }
-    lastImageStats.encodingTime = lastImageEncodeTime;
-    lastImageStats.margin = interval - lastImageStats.encodingTime;
 
     suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, lastImageStats);
     fs->addUpdate(update);
@@ -177,7 +176,6 @@ namespace suite {
 
     lastImage = image;
     lastImageStats = stats;
-    lastImageEncodeTime = encodeTime_;
   }
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)

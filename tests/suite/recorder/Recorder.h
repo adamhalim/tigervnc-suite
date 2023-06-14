@@ -44,7 +44,6 @@ namespace suite {
     const double intervalThreshold;
     suite::Image* lastImage;
     double encodeTime_;
-    double lastImageEncodeTime;
     ImageUpdateStats lastImageStats;
   };
 }
