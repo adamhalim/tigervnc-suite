@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
   b->runBenchmark();
 
-  #if _DEBUG
+  #ifdef _DEBUG
   // Copy Server OutStream to Client InStream
   Client *client = new Client(b->width(), b->height());
   client->copyOutStreamToInStream(b->server()->out);

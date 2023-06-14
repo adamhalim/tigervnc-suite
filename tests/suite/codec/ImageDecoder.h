@@ -39,7 +39,7 @@ namespace suite {
     ImageDecoder(decoderEnum type) : type(type),
                                      name(decoderTypeToString(type))
     {
-      #if _DEBUG
+      #ifdef _DEBUG
         start = std::chrono::system_clock::now();
         pixelCount = 0;
       #endif
@@ -63,7 +63,7 @@ namespace suite {
     {
       // FIXME: This method has to be called explicitly by derived classes.
       // Is there a way to do this automatically?
-      #if _DEBUG
+      #ifdef _DEBUG
       pixelCount += (width * height * channels);
       auto now = std::chrono::system_clock::now();
       std::chrono::duration<double> time = now - start;

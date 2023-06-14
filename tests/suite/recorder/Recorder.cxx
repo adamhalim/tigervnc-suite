@@ -83,7 +83,7 @@ namespace suite {
       lastImageEncodeTime = encodeTime.count();
       encodeTime_ = encodeTime.count();
 
-      #if _DEBUG
+      #ifdef _DEBUG
         std::cout << "Encoding took: " << encodeTime.count() << std::endl;
       #endif
       // Sleep until next update
@@ -92,7 +92,7 @@ namespace suite {
         std::chrono::steady_clock::time_point sleepStart;
         std::chrono::steady_clock::time_point sleepEnd;
 
-        #if _DEBUG
+        #ifdef _DEBUG
         double sleeptime = interval - intervalThreshold
                          - encodeTime.count() - sleepDuration.count();
           std::cout << "Sleep for: " << sleeptime << std::endl;
@@ -113,7 +113,7 @@ namespace suite {
                        <std::chrono::milliseconds>(sleepEnd - sleepStart);
       } else {
         sleepDuration = std::chrono::steady_clock::duration::zero();
-        #if _DEBUG
+        #ifdef _DEBUG
           std::cerr << "Frame not encoded within time interval\n";
         #endif
       }
