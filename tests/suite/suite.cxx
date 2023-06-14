@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   #ifdef _DEBUG
   // Copy Server OutStream to Client InStream
   Client *client = new Client(b->width(), b->height());
-  client->copyOutStreamToInStream(b->server()->out);
+  client->copyOutStreamToInStream(b->debugServer_->out);
   // Decode input & dump to file
     try {
       while (true) {

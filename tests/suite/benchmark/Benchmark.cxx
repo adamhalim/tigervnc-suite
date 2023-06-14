@@ -34,7 +34,10 @@ Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
   this->width_ = header.width;
   this->height_ = header.height;
   try {
-    this->server_ = new Server(header.width, header.height);
+    this->defaultServer_ = new Server(header.width, header.height);
+    #ifdef _DEBUG
+    debugServer_ = new Server(header.width, header.height, fbPF, true);
+    #endif // _DEBUG
   } catch (rfb::Exception &e) {
     throw e;
   }
@@ -42,7 +45,10 @@ Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
 
 Benchmark::~Benchmark()
 {
-  delete server_;
+  delete defaultServer_;
+  #ifdef _DEBUG
+  delete debugServer_;
+  #endif // _DEBUG
 }
 
 void Benchmark::runBenchmark()
@@ -86,7 +92,10 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       server->loadImage(image, image->x_offset, image->y_offset);
       server->out->clear();
     }
-    server_->loadImage(image, image->x_offset, image->y_offset);
+    defaultServer_->loadImage(image, image->x_offset, image->y_offset);
+    #if _DEBUG
+    debugServer_->loadImage(image, image->x_offset, image->y_offset);
+    #endif // _DEBUG
     delete image;
   }
   std::cout << "Benchmarking complete!\n";
@@ -105,7 +114,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     saveEncodingStats(server);
     delete server;
   }
-  saveEncodingStats(server_);
+  saveEncodingStats(defaultServer_);
   saveRecordingStats(recorderStats);
 }
 

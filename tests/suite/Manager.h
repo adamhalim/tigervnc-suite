@@ -64,7 +64,7 @@ namespace suite {
   class Manager : public rfb::EncodeManager
   {
   public:
-    Manager(class rfb::SConnection *conn);
+    Manager(class rfb::SConnection *conn, bool debug);
     // Creates an EncodingManager that only uses the specified Encoder
     // for all encodings.
     Manager(class rfb::SConnection *conn, EncoderSettings settings);
