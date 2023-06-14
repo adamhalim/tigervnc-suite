@@ -22,11 +22,14 @@ namespace suite {
     void runBenchmark();
     int width() const { return width_; }
     int height() const { return height_; }
-    Server* server() const { return server_; }
+    Server* server() const { return defaultServer_; }
+    #ifdef _DEBUG
+    Server* debugServer_;
+    #endif //_DEBUG
 
   protected:
     std::string filename;
-    Server* server_;
+    Server* defaultServer_;
     int width_;
     int height_;
   private:

@@ -7,11 +7,11 @@
 
 namespace suite {
 
-  Server::Server(int width, int height, rfb::PixelFormat pf) 
+  Server::Server(int width, int height, rfb::PixelFormat pf, bool debug) 
                                       : settings(defaultEncoderSettings)
   {
     init(width, height, pf);
-    manager = new Manager(this);
+    manager = new Manager(this, debug);
   }
 
   Server::Server(int width, int height, EncoderSettings settings,

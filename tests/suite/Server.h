@@ -35,7 +35,8 @@ namespace suite {
     class Server : public rfb::SConnection
     {
     public:
-      Server(int width, int height, rfb::PixelFormat pf = fbPF);
+      Server(int width, int height, rfb::PixelFormat pf = fbPF,
+             bool debug = false);
       Server(int width, int height, EncoderSettings settings,
                                     rfb::PixelFormat pf = fbPF);
       ~Server();

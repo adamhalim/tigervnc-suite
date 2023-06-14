@@ -19,9 +19,15 @@
 
 namespace suite {
 
-  Manager::Manager(rfb::SConnection *conn) : EncodeManager(conn),
-                                             SINGLE_ENCODER(false)
+  Manager::Manager(rfb::SConnection *conn, bool debug) : EncodeManager(conn),
+                                                         SINGLE_ENCODER(false)
   {
+    if (debug) {
+      currentEncoder = new TimedTightEncoder(conn, this);
+      stats_.encoders.push_back(currentEncoder);
+      return;
+    }
+
     for (Encoder* encoder : encoders)
       delete encoder;
 
