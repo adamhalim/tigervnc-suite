@@ -165,11 +165,10 @@ namespace suite {
     if (lastImage == NULL) {
       lastImage = image;
       lastImageStats = stats;
-      lastInterval = interval;
       return;
     }
     lastImageStats.encodingTime = lastImageEncodeTime;
-    lastImageStats.margin = lastInterval - lastImageStats.encodingTime;
+    lastImageStats.margin = interval - lastImageStats.encodingTime;
 
     suite::ImageUpdate* update = new suite::ImageUpdate(lastImage, lastImageStats);
     fs->addUpdate(update);
@@ -177,7 +176,6 @@ namespace suite {
     delete update;
 
     lastImage = image;
-    lastInterval = interval;
     lastImageStats = stats;
     lastImageEncodeTime = encodeTime_;
   }
