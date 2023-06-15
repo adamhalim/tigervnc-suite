@@ -1,8 +1,8 @@
 #include "FrameInStream.h"
-#include "rdr/types.h"
 #include "../codec/lib/fpng.h"
 #include "../codec/lib/qoi.h"
 #include "../codec/decoderFactory.h"
+#include <rdr/types.h>
 #include <cstdio>
 #include <fstream>
 #include <ios>

@@ -7,10 +7,10 @@
 #include "codec/timed/TimedTightJPEGEncoder.h"
 #include "codec/timed/TimedZRLEEncoder.h"
 #include "codec/timed/timedEncoderFactory.h"
-#include "rfb/EncodeManager.h"
-#include "rfb/Encoder.h"
-#include "rfb/SConnection.h"
-#include "rfb/encodings.h"
+#include <rfb/EncodeManager.h>
+#include <rfb/Encoder.h>
+#include <rfb/SConnection.h>
+#include <rfb/encodings.h>
 #include "stats/EncoderStats.h"
 #include "stats/ManagerStats.h"
 #include <algorithm>

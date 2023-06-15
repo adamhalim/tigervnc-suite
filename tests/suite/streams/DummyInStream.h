@@ -1,7 +1,7 @@
 #ifndef __SUITE_DUMMYINSTREAM_H__
 #define __SUITE_DUMMYINSTREAM_H__
-#include "rdr/MemInStream.h"
-#include "rdr/InStream.h"
+#include <rdr/MemInStream.h>
+#include <rdr/InStream.h>
 
 class DummyInStream : public rdr::MemInStream
 {

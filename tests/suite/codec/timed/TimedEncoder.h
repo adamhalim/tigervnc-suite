@@ -7,7 +7,7 @@
 #include <rdr/OutStream.h>
 #include <rfb/Encoder.h>
 #include <rfb/PixelBuffer.h>
-#include "rfb/SConnection.h"
+#include <rfb/SConnection.h>
 #include <chrono>
 #include <stdexcept>
 #include <string>

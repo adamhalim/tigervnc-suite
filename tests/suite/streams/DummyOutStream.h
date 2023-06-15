@@ -1,7 +1,7 @@
 #ifndef __SUITE_DUMMY_OUT_STREAM_H__
 #define __SUITE_DUMMY_OUT_STREAM_H__
-#include "rdr/MemOutStream.h"
-#include "rdr/OutStream.h"
+#include <rdr/MemOutStream.h>
+#include <rdr/OutStream.h>
 
 class DummyOutStream : public rdr::MemOutStream
 {
