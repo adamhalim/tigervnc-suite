@@ -1,9 +1,9 @@
 #ifndef __SUITE_RECORDER_UTIL
 #define __SUITE_RECORDER_UTIL
 
+#include <vector>
 #include <rfb/Rect.h>
 #include <X11/Xlib.h>
-#include <vector>
 
 // Represents how much data is lost for a sequence of rfb::Rects,
 // as well as how much unneded data is captured by the bounding rectangle
