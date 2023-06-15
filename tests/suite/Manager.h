@@ -2,10 +2,10 @@
 #define __SUITE_MANAGER_H__
 #include "codec/timed/TimedEncoder.h"
 #include "stats/ManagerStats.h"
-#include "rfb/EncodeManager.h"
-#include "rfb/SConnection.h"
-#include "rfb/encodings.h"
 #include "stats/ManagerStats.h"
+#include <rfb/EncodeManager.h>
+#include <rfb/SConnection.h>
+#include <rfb/encodings.h>
 #include <map>
 #include <stdexcept>
 #include <string>

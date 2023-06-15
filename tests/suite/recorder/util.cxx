@@ -1,5 +1,5 @@
 #include "util.h"
-#include "rfb/Region.h"
+#include <rfb/Region.h>
 
 int rectTotalArea(std::vector<rfb::Rect>& rects)
 {

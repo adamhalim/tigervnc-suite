@@ -5,9 +5,7 @@
 using namespace suite;
 int main(int argc, char* argv[])
 {
-
   if(argc < 4) {
-
     std::string decoderString;
     std::for_each(decodersMap.begin(), decodersMap.end(), [&](const auto &s) {
       decoderString += s.first + " ";

@@ -90,8 +90,5 @@ namespace suite {
     const std::string decoder;
     std::chrono::steady_clock::time_point lastFrameTime;
   };
-
 }
-
-
 #endif // __SUITE_FRAME_OUT_STREAM_H__

@@ -4,7 +4,7 @@
 #include "ImageDecoder.h"
 
 namespace suite {
-  ImageDecoder* constructDecoder(decoderEnum decoder);
+  ImageDecoder* constructDecoder(DecoderEnum decoder);
   ImageDecoder* constructDecoder(std::string decoder);
 }
 

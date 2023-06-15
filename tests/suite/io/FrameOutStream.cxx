@@ -6,7 +6,7 @@
 namespace suite {
 
   FrameOutStream::FrameOutStream(std::string filename, ImageDecoder* decoder)
-                               : headerWritten(false), decoder(decoder->name)
+    : headerWritten(false), decoder(decoder->name)
   {
     file.open(filename.c_str());
     if (!file.is_open())
@@ -42,7 +42,6 @@ namespace suite {
     file.write((char*)image->getBuffer(), image->size);
     file << "\n";
     lock.unlock();
-
   }
 
   void FrameOutStream::addUpdate(rdr::U8* data, int width, int height,

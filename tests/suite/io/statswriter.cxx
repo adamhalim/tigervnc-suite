@@ -5,9 +5,9 @@
 #include <fstream>
 #include <ios>
 #include <iostream>
-#include <linux/limits.h>
 #include <sstream>
 #include <string>
+#include <linux/limits.h>
 #include <sys/stat.h>
 
 namespace suite {
@@ -114,7 +114,6 @@ namespace suite {
     ss << dir << settings.name << "_" << settings.compression
        << "_" << settings.quality;
 
-
     // EncoderSetting-compressionlevel(-qualitylevel)
     encoderRootDir = ss.str();
 
@@ -182,6 +181,7 @@ namespace suite {
         std::map<int,WriteRects> writeUpdates;
       is stored in separate files (saveEncoderWriteUpdates()).
     */
+
     stats = encoder->stats();
     of << stats->writeRectEncodetime << "\n"
        << stats->writeSolidRectEncodetime << "\n"

@@ -2,19 +2,18 @@
 #include "util.h"
 #include "tx/TXWindow.h"
 #include "x0vncserver/Image.h"
-#include <X11/Xlib.h>
 #include <ios>
-#include <sys/select.h>
 #include <chrono>
 #include <thread>
+#include <X11/Xlib.h>
+#include <sys/select.h>
 
 namespace suite {
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
                      std::string display, int framerate) 
-  : factory(true), decoder(decoder),
-    interval(1000.0/framerate), intervalThreshold(interval/1000),
-    lastImage(0)
+    : factory(true), decoder(decoder), interval(1000.0/framerate),
+      intervalThreshold(interval/1000), lastImage(0)
   {
     // XOpenDisplay takes ownership of display string,
     // so we need to make a copy.
@@ -193,7 +192,6 @@ namespace suite {
                                      -geo->offsetTop()));
     return rect;
   }
-
 
   void Recorder::stopRecording()
   {

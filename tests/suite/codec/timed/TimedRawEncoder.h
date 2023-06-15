@@ -1,10 +1,10 @@
 #ifndef __SUITE_TIMED_RAWENCODER_H__
 #define __SUITE_TIMED_RAWENCODER_H__
 #include "TimedEncoder.h"
-#include "rfb/RawEncoder.h"
-#include "rfb/SConnection.h"
-namespace suite {
+#include <rfb/RawEncoder.h>
+#include <rfb/SConnection.h>
 
+namespace suite {
   using namespace rfb;
 
   class TimedRawEncoder : public RawEncoder, public TimedEncoder
@@ -18,7 +18,5 @@ namespace suite {
                                 const PixelFormat& pf,
                                 const rdr::U8* colour);
   };
-
 }
-
 #endif // __SUITE_TIMED_RAWENCODER_H__

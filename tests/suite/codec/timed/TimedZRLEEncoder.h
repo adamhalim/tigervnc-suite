@@ -1,8 +1,8 @@
 #ifndef __SUITE_TIMED_ZRLEENCODER_H__
 #define __SUITE_TIMED_ZRLEENCODER_H__
 #include "TimedEncoder.h"
-#include "rfb/ZRLEEncoder.h"
-#include "rfb/SConnection.h"
+#include <rfb/ZRLEEncoder.h>
+#include <rfb/SConnection.h>
 
 namespace suite {
 
@@ -19,7 +19,5 @@ namespace suite {
                                 const PixelFormat& pf,
                                 const rdr::U8* colour);
   };
-
 }
-
 #endif // __SUITE_TIMED_ZRLEENCODER_H__

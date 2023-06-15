@@ -1,8 +1,9 @@
 #ifndef __SUITE_TIMED_TIGHTPEGENCODER_H__
 #define __SUITE_TIMED_TIGHTPEGENCODER_H__
 #include "TimedEncoder.h"
-#include "rfb/RREEncoder.h"
-#include "rfb/SConnection.h"
+#include <rfb/RREEncoder.h>
+#include <rfb/SConnection.h>
+
 namespace suite {
 
   using namespace rfb;
@@ -18,7 +19,5 @@ namespace suite {
                                 const PixelFormat& pf,
                                 const rdr::U8* colour);
   };
-
 }
-
 #endif // __SUITE_TIMED_RREENCODER_H__

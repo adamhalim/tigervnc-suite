@@ -1,6 +1,6 @@
 #include "benchmark/Benchmark.h"
 #include "Client.h"
-#include "rfb/Exception.h"
+#include <rfb/Exception.h>
 
 using namespace suite;
 
@@ -49,4 +49,3 @@ int main(int argc, char** argv)
   delete b;
   exit(0);
 }
-

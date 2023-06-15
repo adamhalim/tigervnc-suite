@@ -1,13 +1,13 @@
 #ifndef __SUITE_TIMEDENCODER_H__
 #define __SUITE_TIMEDENCODER_H__
 
-#include "rdr/InStream.h"
-#include "rdr/MemOutStream.h"
-#include "rdr/OutStream.h"
-#include "rfb/Encoder.h"
-#include "rfb/PixelBuffer.h"
-#include "rfb/SConnection.h"
 #include "../../stats/EncoderStats.h"
+#include <rdr/InStream.h>
+#include <rdr/MemOutStream.h>
+#include <rdr/OutStream.h>
+#include <rfb/Encoder.h>
+#include <rfb/PixelBuffer.h>
+#include "rfb/SConnection.h"
 #include <chrono>
 #include <stdexcept>
 #include <string>
@@ -105,5 +105,4 @@ namespace suite {
     std::chrono::system_clock::time_point writeSolidRectStart;
   };
 }
-
 #endif // __SUITE_TIMEDENCODER_H__ 

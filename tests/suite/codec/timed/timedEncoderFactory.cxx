@@ -5,7 +5,7 @@
 #include "TimedTightEncoder.h"
 #include "TimedTightJPEGEncoder.h"
 #include "TimedZRLEEncoder.h"
-#include "rfb/SConnection.h"
+#include <rfb/SConnection.h>
 #include <stdexcept>
 
 namespace suite {

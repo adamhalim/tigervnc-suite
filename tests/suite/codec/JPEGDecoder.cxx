@@ -1,9 +1,10 @@
 #include "JPEGDecoder.h"
 #include "ImageDecoder.h"
-#include "rfb/JpegDecompressor.h"
-#include "rfb/ServerParams.h"
-#include "rfb/TightDecoder.h"
-#include "rfb/TightJPEGEncoder.h"
+#include <rfb/JpegCompressor.h>
+#include <rfb/JpegDecompressor.h>
+#include <rfb/ServerParams.h>
+#include <rfb/TightDecoder.h>
+#include <rfb/TightJPEGEncoder.h>
 #include <fstream>
 #include <fstream>
 #include <cstring>
@@ -13,7 +14,7 @@ namespace suite {
                       255, 255, 255, 0, 8, 16);
 
   JPEGDecoder::JPEGDecoder(int quality, int subsampling) 
-  : ImageDecoder(JPEG), quality(quality), subsampling(subsampling)
+    : ImageDecoder(JPEG), quality(quality), subsampling(subsampling)
   {
   }
 
@@ -55,6 +56,7 @@ namespace suite {
   {
     rfb::Rect rect;
     std::ofstream of;
+    rfb::JpegCompressor jc;
 
     rect.tl.x = 0;
     rect.tl.y = 0;
@@ -75,6 +77,7 @@ namespace suite {
   {
     rfb::Rect rect;
     rdr::U8 *bufferCopy;
+    rfb::JpegCompressor jc;
     Image* image;
 
     rect.tl.x = x_offset;

@@ -2,9 +2,9 @@
 #define __SUITE_JPEG_DECODER_H__
 
 #include "ImageDecoder.h"
-#include "rfb/JpegCompressor.h"
-#include "rfb/JpegDecompressor.h"
-#include "rfb/TightDecoder.h"
+#include <rfb/JpegCompressor.h>
+#include <rfb/JpegDecompressor.h>
+#include <rfb/TightDecoder.h>
 
 namespace suite {
 
@@ -25,7 +25,6 @@ namespace suite {
     Image* encodeImageToMemory(const rdr::U8* data, int width, int height,
                                int x_offset = 0, int y_offset = 0);
   private:
-    rfb::JpegCompressor jc;
     int quality;
     int subsampling;
   };

@@ -2,9 +2,9 @@
 #define __SUITE_TIMED_TIGHTENCODER_H__
 
 #include "TimedEncoder.h"
-#include "rfb/EncodeManager.h"
-#include "rfb/SConnection.h"
-#include "rfb/TightEncoder.h"
+#include <rfb/EncodeManager.h>
+#include <rfb/SConnection.h>
+#include <rfb/TightEncoder.h>
 
 namespace suite {
 
@@ -22,5 +22,4 @@ namespace suite {
                                 const rdr::U8* colour);
   };
 }
-
 #endif // __SUITE_TIGHTENCODER_H__

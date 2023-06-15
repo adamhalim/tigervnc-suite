@@ -1,7 +1,7 @@
 #ifndef __SUITE_CLIENT_H__
 #define __SUITE_CLIENT_H__
 
-#include "rfb/CConnection.h"
+#include <rfb/CConnection.h>
 #include "Server.h"
 
 namespace suite {
@@ -40,5 +40,4 @@ namespace suite {
     rfb::CMsgWriter* writer;
   };
 }
-
 #endif // __SUITE_CLIENT_H__

@@ -37,5 +37,4 @@ namespace suite {
     bool headerParsed;
   };
 }
-
 #endif // __SUITE_FRAME_IN_STREAM_H__

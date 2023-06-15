@@ -1,14 +1,14 @@
 #ifndef __SUITE_SERVER_H__
 #define __SUITE_SERVER_H__
 #include "codec/timed/TimedEncoder.h"
-#include "rfb/PixelFormat.h"
 #include "stats/ManagerStats.h"
 #include "streams/DummyInStream.h"
 #include "streams/DummyOutStream.h"
 #include "codec/Image.h"
 #include "Manager.h"
-#include "rfb/UpdateTracker.h"
-#include "rfb/encodings.h"
+#include <rfb/PixelFormat.h>
+#include <rfb/UpdateTracker.h>
+#include <rfb/encodings.h>
 #include <map>
 
 namespace suite {

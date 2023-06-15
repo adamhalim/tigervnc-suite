@@ -8,21 +8,21 @@
 
 namespace suite {
 
-  enum decoderEnum {
+  enum DecoderEnum {
     PPM = 0,
     PNG,
     QOI,
     JPEG,
   };
 
-  static std::map<std::string, decoderEnum> decodersMap = {
+  static std::map<std::string, DecoderEnum> decodersMap = {
     {"PPM", PPM},
     {"PNG", PNG},
     {"QOI", QOI},
     {"JPEG", JPEG}
   };
 
-  static std::string decoderTypeToString(enum decoderEnum e)
+  static std::string decoderTypeToString(enum DecoderEnum e)
   {
     static std::string strings[] = {
       "PPM",
@@ -36,8 +36,8 @@ namespace suite {
   class ImageDecoder
   {
   public:
-    ImageDecoder(decoderEnum type) : type(type),
-                                     name(decoderTypeToString(type))
+    ImageDecoder(DecoderEnum type)
+      : type(type), name(decoderTypeToString(type))
     {
       #ifdef _DEBUG
         start = std::chrono::system_clock::now();
@@ -55,7 +55,7 @@ namespace suite {
     virtual Image* encodeImageToMemory(const rdr::U8* data, int width,
                                        int height, int offset_x = 0,
                                        int offset_y  = 0) = 0;
-    const decoderEnum type;
+    const DecoderEnum type;
     const std::string name;
   protected:
     // Measures encoding/decoding performance.

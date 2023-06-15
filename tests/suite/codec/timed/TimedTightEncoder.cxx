@@ -1,16 +1,15 @@
 #include "TimedTightEncoder.h"
 #include "TimedEncoder.h"
-#include "rdr/InStream.h"
-#include "rdr/MemOutStream.h"
-#include "rdr/OutStream.h"
-#include "rfb/SConnection.h"
+#include <rdr/InStream.h>
+#include <rdr/MemOutStream.h>
+#include <rdr/OutStream.h>
+#include <rfb/SConnection.h>
 #include <iostream>
 
 namespace suite {
 
   TimedTightEncoder::TimedTightEncoder(SConnection* conn_, Manager* manager) 
-                                     : TightEncoder(conn_),
-                                       TimedEncoder(encoderTight, manager)
+    : TightEncoder(conn_), TimedEncoder(encoderTight, manager)
   {
   }
 

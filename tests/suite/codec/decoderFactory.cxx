@@ -5,7 +5,7 @@
 #include "JPEGDecoder.h"
 
 namespace suite {
-  ImageDecoder* constructDecoder(decoderEnum decoder)
+  ImageDecoder* constructDecoder(DecoderEnum decoder)
   {
     switch (decoder) {
     case PPM:

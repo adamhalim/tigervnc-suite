@@ -2,7 +2,7 @@
 #define __SUITE_TIMEDENCODERFACTORY_H__
 
 #include "TimedEncoder.h"
-#include "rfb/SConnection.h"
+#include <rfb/SConnection.h>
 
 namespace suite {
   TimedEncoder* constructTimedEncoder(EncoderClass encoder,

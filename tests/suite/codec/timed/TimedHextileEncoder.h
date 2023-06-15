@@ -1,10 +1,9 @@
 #ifndef __SUITE_TIMED_HEXTILEENCODER_H__
 #define __SUITE_TIMED_HEXTILEENCODER_H__
 #include "TimedEncoder.h"
-#include "rfb/HextileEncoder.h"
-#include "rfb/SConnection.h"
+#include <rfb/HextileEncoder.h>
+#include <rfb/SConnection.h>
 namespace suite {
-
   using namespace rfb;
 
   class TimedHextileEncoder : public HextileEncoder, public TimedEncoder
@@ -18,7 +17,5 @@ namespace suite {
                                 const PixelFormat& pf,
                                 const rdr::U8* colour);
   };
-
 }
-
 #endif // __SUITE_TIMED_HEXTILEENCODER_H__

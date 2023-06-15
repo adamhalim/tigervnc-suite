@@ -2,8 +2,8 @@
 #include "Manager.h"
 #include "codec/timed/TimedEncoder.h"
 #include "codec/timed/timedEncoderFactory.h"
-#include "rfb/SConnection.h"
-#include "rfb/SMsgWriter.h"
+#include <rfb/SConnection.h>
+#include <rfb/SMsgWriter.h>
 
 namespace suite {
 

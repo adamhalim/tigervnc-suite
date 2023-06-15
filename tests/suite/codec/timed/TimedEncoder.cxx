@@ -1,17 +1,15 @@
 #include "TimedEncoder.h"
-#include "rdr/MemOutStream.h"
-#include "rfb/PixelBuffer.h"
-#include "rfb/SConnection.h"
 #include "../../Manager.h"
 #include "../../Server.h"
+#include <rdr/MemOutStream.h>
+#include <rfb/PixelBuffer.h>
+#include <rfb/SConnection.h>
 #include <chrono>
 
 namespace suite {
 
   TimedEncoder::TimedEncoder(EncoderClass encoderclass, Manager* manager) 
-                           : encoderClass(encoderclass),
-                             currentWriteUpdate(0),
-                             manager(manager)
+    : encoderClass(encoderclass), currentWriteUpdate(0), manager(manager)
   {
     _stats = new EncoderStats {
       .writeRectEncodetime = 0,

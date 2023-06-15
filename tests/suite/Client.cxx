@@ -1,7 +1,7 @@
 #include "Client.h"
 #include "codec/PNGDecoder.h"
-#include "rfb/CMsgReader.h"
-#include "rfb/CMsgWriter.h"
+#include <rfb/CMsgReader.h>
+#include <rfb/CMsgWriter.h>
 
 using namespace suite;
 

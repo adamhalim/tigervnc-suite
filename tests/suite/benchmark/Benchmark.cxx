@@ -1,11 +1,11 @@
 #include "Benchmark.h"
 #include "../fileUtil.h"
 #include "../io/statswriter.h"
-#include "rdr/Exception.h"
-#include "rfb/EncodeManager.h"
-#include "rfb/Exception.h"
-#include "rfb/encodings.h"
 #include "../stats/RecorderStats.h"
+#include <rdr/Exception.h>
+#include <rfb/EncodeManager.h>
+#include <rfb/Exception.h>
+#include <rfb/encodings.h>
 #include <exception>
 #include <fstream>
 #include <chrono>
@@ -17,9 +17,7 @@ using namespace suite;
 
 Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
                                            const size_t len) 
-                                           : filename(filename),
-                                             encodings_(encodings),
-                                             encodingsLength_(len)
+  : filename(filename), encodings_(encodings), encodingsLength_(len)
 {
   struct stat buf;
   if (stat (filename.c_str(), &buf) != 0)
@@ -76,7 +74,6 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
 
     s->setEncodings(setting.encodingSize, setting.rfbEncoding);
     servers[setting.encoderClass] = s;
-      
   }
 
   std::cout << "Starting benchmark using \"" << filename << "\"\n";

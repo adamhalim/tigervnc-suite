@@ -1,8 +1,8 @@
 #ifndef __SUITE_IMAGE_H__
 #define __SUITE_IMAGE_H__
 
-#include "rdr/types.h"
 #include "../recorder/util.h"
+#include <rdr/types.h>
 #include <istream>
 
 namespace suite {
