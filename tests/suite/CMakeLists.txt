@@ -8,7 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 add_executable(suite suite.cxx)
 target_sources(suite PRIVATE 
-  fileUtil.cxx
   Manager.cxx
   Server.cxx
   Client.cxx

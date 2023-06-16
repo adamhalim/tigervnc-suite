@@ -1,5 +1,4 @@
 #include "Benchmark.h"
-#include "../fileUtil.h"
 #include "../io/statswriter.h"
 #include "../stats/RecorderStats.h"
 #include <rdr/Exception.h>

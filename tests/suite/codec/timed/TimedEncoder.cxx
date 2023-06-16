@@ -58,7 +58,7 @@ namespace suite {
     _stats->writeUpdates[currentWriteUpdate].writeRects.push_back(stats);
 
     _stats->writeRectEncodetime += time.count();
-    _stats->inputSizeRects += pb->width() * pb->height() * 4;
+    _stats->inputSizeRects += pb->width() * pb->height() * BPP;
     _stats->outputSizeRects += encoderOutstream->length();
     _stats->nRects++;
 

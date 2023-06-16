@@ -54,12 +54,12 @@ namespace suite {
       // Sum all updates belonging to the same writeUpdate
       for (const auto& rects : update.second.writeRects) {
         timeSum += rects.timeSpent;
-        pixels += rects.pixelCount;
+        pixels += (rects.pixelCount * BPP);
       }
 
       for (const auto& solidRects : update.second.writeSolidRects) {
         timeSum += solidRects.timeSpent;
-        pixels += solidRects.pixelCount;
+        pixels += (solidRects.pixelCount * BPP);
       }
 
       double mps = pixels / (timeSum * 10e6);
