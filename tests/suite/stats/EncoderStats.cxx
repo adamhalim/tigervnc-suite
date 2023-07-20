@@ -21,18 +21,18 @@ namespace suite {
 
   double EncoderStats::megaPixelsPerSecondRects()
   {
-    return inputSizeRects / (writeRectEncodetime * 10e6 * BPP);
+    return (inputSizeRects / 1e6) / (writeRectEncodetime / 1e3);
   }
 
   double EncoderStats::megaPixelsPerSecondSolidRects()
   {
-    return inputSizeSolidRects / (writeSolidRectEncodetime * 10e6 * BPP);
+    return (inputSizeSolidRects / 1e6) / (writeSolidRectEncodetime / 1e3);
   }
 
   double EncoderStats::megaPixelsPerSecondCombined()
   {
-    return (inputSizeRects + inputSizeSolidRects) 
-         / ((writeRectEncodetime + writeSolidRectEncodetime) * 10e6 * BPP);
+    return ((inputSizeRects + inputSizeSolidRects) / 1e6 )
+         / ((writeRectEncodetime + writeSolidRectEncodetime) / 1e3);
   }
 
   // Returns a "score" which is a function of time 
@@ -59,7 +59,7 @@ namespace suite {
 
       for (const auto& solidRects : update.second.writeSolidRects) {
         timeSum += solidRects.timeSpent;
-        pixels += (solidRects.pixelCount * BPP);
+        pixels += (solidRects.pixelCount);
       }
 
       double mps = pixels / (timeSum * 10e6);
