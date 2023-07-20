@@ -162,14 +162,14 @@ namespace suite {
                   << std::setprecision(precision) << std::fixed 
                   << std::setw(tableWidth) << std::setfill(' ') << std::left
                   << "writeRect: " << std::right 
-                  << stats->writeRectEncodetime
+                  << stats->writeRectEncodetime / 1e3
                   << "\n\t\t" << std::left  << std::setw(tableWidth)
                   << "writeSolidRect: " << std::right 
                   << stats->compressionRatioSolidRects()
                   << "\n\t\t" << std::setw(tableWidth) << std::left
                   << "total: " << std::right 
-                               << stats->writeRectEncodetime 
-                                + stats->writeSolidRectEncodetime
+                               << (stats->writeRectEncodetime 
+                                + stats->writeSolidRectEncodetime) / 1e3
                   << "\n\t\t" << std::setfill('-')
                   << std::setw(tableWidth+precision+2)
                   << std::left << "" << std::setfill(' ')
@@ -231,7 +231,7 @@ namespace suite {
                   << writeUpdates.meanWriteUpdate << "\n\t\t" << std::left 
                   << std::setfill(' ') << std::setw(tableWidth)
                   << "Encoder writeUpdate median:" << std::right
-                  << writeUpdates.medianWriteRect << "\n\t\t"
+                  << writeUpdates.medianWriteUpdate << "\n\t\t"
                   << std::left << std::setfill(' ') << std::setw(tableWidth)
                   << "Encoder writeUpdate variance:" << std::right 
                   << writeUpdates.varianceWriteUpdate
