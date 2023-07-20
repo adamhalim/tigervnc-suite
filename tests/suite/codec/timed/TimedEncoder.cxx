@@ -63,9 +63,6 @@ namespace suite {
     _stats->outputSizeRects += encoderOutstream->length();
     _stats->nRects++;
 
-    // NOTE: not thread safe
-    manager->setCurrentEncoder(this);
-
     // Return the original OutStream after encoding
     // & reset our MemOutStream
     conn_->setStreams(is, os);
@@ -99,9 +96,6 @@ namespace suite {
     _stats->inputSizeSolidRects += width * height * 4;
     _stats->outputSizeSolidRects += encoderOutstream->length();
     _stats->nSolidRects++;
-
-    // NOTE: not thread safe
-    manager->setCurrentEncoder(this);
 
     // Return the original OutStream after encoding
     // & reset our MemOutStream

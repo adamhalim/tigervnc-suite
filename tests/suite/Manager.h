@@ -78,12 +78,12 @@ namespace suite {
                      uint frameTime);
 
     ManagerStats stats() { return stats_; };
-    void setCurrentEncoder(TimedEncoder* encoder) { currentEncoder = encoder; }
+    void updateCurrentWriteUpdate();
 
   protected:
     const bool SINGLE_ENCODER;
     ManagerStats stats_;
-    TimedEncoder* currentEncoder;
+    uint currentWriteUpdate;
   };
 }
 #endif // __SUITE_MANAGER_H__

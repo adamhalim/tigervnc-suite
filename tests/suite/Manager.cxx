@@ -21,7 +21,8 @@
 namespace suite {
 
   Manager::Manager(rfb::SConnection *conn, bool debug) : EncodeManager(conn),
-                                                         SINGLE_ENCODER(false)
+                                                         SINGLE_ENCODER(false),
+                                                         currentWriteUpdate(0)
   {
     if (debug) {
       currentEncoder = new TimedTightEncoder(conn, this);
@@ -47,7 +48,8 @@ namespace suite {
 
   Manager::Manager(rfb::SConnection* conn, EncoderSettings settings) 
                                          : EncodeManager(conn),
-                                           SINGLE_ENCODER(true)
+                                           SINGLE_ENCODER(true),
+                                           currentWriteUpdate(0)
   {
     for (Encoder* e : encoders)
       delete e;
@@ -88,6 +90,7 @@ namespace suite {
                             const rfb::RenderedCursor* renderedCursor,
                             uint frameTime)
   {
+    updateCurrentWriteUpdate();
     auto start = std::chrono::system_clock::now();
     writeUpdate(ui, pb, renderedCursor);
     auto end = std::chrono::system_clock::now();
@@ -102,8 +105,14 @@ namespace suite {
     };
     stats_.addWriteUpdate(update);
 
+
+  void Manager::updateCurrentWriteUpdate()
+  {
+    for (TimedEncoder* encoder : stats_.encoders) {
+      encoder->currentWriteUpdate = currentWriteUpdate;
+    }
     // Increment the currentWriteUpdate index so we can keep track
     // of which writeRect() belongs to which writeUpdate.
-    currentEncoder->currentWriteUpdate++;
+    currentWriteUpdate++;
   }
 }
