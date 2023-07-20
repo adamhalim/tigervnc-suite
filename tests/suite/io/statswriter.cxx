@@ -1,13 +1,8 @@
 #include "statswriter.h"
 #include "../stats/ManagerStats.h"
-#include <cstdio>
-#include <cstring>
 #include <fstream>
-#include <ios>
-#include <iostream>
 #include <sstream>
 #include <string>
-#include <linux/limits.h>
 #include <sys/stat.h>
 
 namespace suite {
@@ -239,10 +234,11 @@ namespace suite {
      std::ofstream of(dir + "/" + WRITE_UPDATES);
 
     /* File structure (ms, per writeUpdate):
-      timeRequred timeSpent
+      timeRequred timeSpent pixelCount
     */
     for (WriteUpdate& update : manager.writeUpdateStats) {
-      of << update.timeRequired << " " << update.timeSpent << "\n";
+      of << update.timeRequired << " " << update.timeSpent 
+         << " " << update.size << "\n";
     } 
   }
 

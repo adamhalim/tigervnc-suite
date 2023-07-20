@@ -1,4 +1,5 @@
 #include "Manager.h"
+#include "Server.h"
 #include "codec/timed/TimedEncoder.h"
 #include "codec/timed/TimedHextileEncoder.h"
 #include "codec/timed/TimedRREEncoder.h"
@@ -84,6 +85,17 @@ namespace suite {
     EncodeManager::writeUpdate(ui, pb, renderedCursor);
   }
 
+
+  unsigned int getArea(Region changed) {
+    std::vector<Rect> rects;
+    changed.get_rects(&rects);
+    unsigned int totalArea = 0;
+    for (const Rect r : rects) {
+      totalArea += r.area();
+    }
+    return totalArea;
+  }
+
   void Manager::writeUpdate(const rfb::UpdateInfo& ui,
                             const rfb::PixelBuffer* pb,
                             const rfb::RenderedCursor* renderedCursor,
@@ -100,9 +112,11 @@ namespace suite {
     // (as it was recorded).
     WriteUpdate update {
       .timeRequired = frameTime,
-      .timeSpent = time.count() * 10e2,
+      .timeSpent = time.count(),
+      .size = getArea(ui.changed),
     };
     stats_.addWriteUpdate(update);
+  }
 
 
   void Manager::updateCurrentWriteUpdate()
