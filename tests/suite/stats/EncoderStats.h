@@ -25,14 +25,14 @@ namespace suite {
 
   struct WriteUpdateStatistics {
     double meanWriteUpdate;
-    double medianWriteRect;
+    double medianWriteUpdate;
     double varianceWriteUpdate;
     double stdWriteUpdate;
   };
 
   struct EncoderStats {
-    double writeRectEncodetime;
-    double writeSolidRectEncodetime;
+    long double writeRectEncodetime;
+    long double writeSolidRectEncodetime;
     unsigned long long inputSizeRects;
     unsigned long long outputSizeRects;
     unsigned long long inputSizeSolidRects;

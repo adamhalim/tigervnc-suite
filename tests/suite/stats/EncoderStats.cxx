@@ -80,7 +80,7 @@ namespace suite {
     
     struct WriteUpdateStatistics stats {
       .meanWriteUpdate = mean,
-      .medianWriteRect = median,
+      .medianWriteUpdate = median,
       .varianceWriteUpdate = variance,
       .stdWriteUpdate = std::sqrt(variance),
     };
