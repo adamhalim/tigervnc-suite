@@ -16,7 +16,7 @@ namespace suite {
     unsigned int size;
 
     // Was the frame encoded within the time budget?
-    bool encodedInTime() const { return timeSpent <= timeRequired; }
+    bool encodedInTime() const { return timeSpent < timeRequired; }
     // How much time (in milliseconds) do we have left, or did we surpass
     // the budget with?
     int encodingMargin() const { return timeRequired - timeSpent; }
