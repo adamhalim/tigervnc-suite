@@ -25,8 +25,7 @@ namespace suite {
                                                          currentWriteUpdate(0)
   {
     if (debug) {
-      currentEncoder = new TimedTightEncoder(conn, this);
-      stats_.encoders.push_back(currentEncoder);
+      stats_.encoders.push_back(new TimedTightEncoder(conn, this));
       return;
     }
 
