@@ -28,9 +28,8 @@ namespace suite {
     // Keep track of time between frames
     auto now = std::chrono::steady_clock::now();
     // FIXME: timeBudget is unused/unnecessary?
-    auto timeBudget = std::chrono::duration_cast
-                             <std::chrono::milliseconds>
-                             (now - lastFrameTime);
+    auto timeBudget = std::chrono::duration<double, std::milli>
+                                           (now - lastFrameTime);
     lastFrameTime = now;
 
     lock.lock();

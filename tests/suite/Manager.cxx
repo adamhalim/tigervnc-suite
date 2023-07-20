@@ -7,6 +7,7 @@
 #include "codec/timed/TimedTightJPEGEncoder.h"
 #include "codec/timed/TimedZRLEEncoder.h"
 #include "codec/timed/timedEncoderFactory.h"
+#include <chrono>
 #include <rfb/EncodeManager.h>
 #include <rfb/Encoder.h>
 #include <rfb/SConnection.h>
@@ -90,7 +91,7 @@ namespace suite {
     auto start = std::chrono::system_clock::now();
     writeUpdate(ui, pb, renderedCursor);
     auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> time = end - start;
+    auto time = std::chrono::duration<double, std::milli>(end-start);
 
     // We keep track of the time it takes to encode an entire frame,
     // and how much time there is left until the next frame occurs

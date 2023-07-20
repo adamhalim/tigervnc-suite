@@ -77,8 +77,7 @@ namespace suite {
 
       handleEvents(events);
       end = std::chrono::steady_clock::now();
-      auto encodeTime = std::chrono::duration_cast
-                             <std::chrono::milliseconds>(end - start);
+      auto encodeTime = std::chrono::duration<double, std::milli>(end - start);
       encodeTime_ = encodeTime.count();
       lastImageStats.encodingTime = encodeTime_;
       lastImageStats.margin = interval - encodeTime_;

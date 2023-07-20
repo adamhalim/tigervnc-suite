@@ -48,7 +48,8 @@ namespace suite {
   void TimedEncoder::stopWriteRectTimer(const rfb::PixelBuffer* pb)
   {
     auto now = std::chrono::system_clock::now();
-    std::chrono::duration<double> time = now - writeRectStart;
+    auto time = std::chrono::duration<double, std::milli>
+                                     (now - writeRectStart);
 
     // Keep track of rects belonging to the same writeUpdate().
     WriteRect stats {
@@ -84,7 +85,8 @@ namespace suite {
   void TimedEncoder::stopWriteSolidRectTimer(int width, int height)
   {
     auto now = std::chrono::system_clock::now();
-    std::chrono::duration<double> time = now - writeSolidRectStart;
+    auto time = std::chrono::duration<double, std::milli>
+                                     (now-writeSolidRectStart);
 
     // Keep track of rects belonging to the same writeUpdate().
     WriteRect stats {
