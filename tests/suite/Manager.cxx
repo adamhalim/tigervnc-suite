@@ -58,10 +58,7 @@ namespace suite {
     TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn,
                                                        this);
     stats_.encoders.push_back(timedEncoder);
-    for (uint i = 0; i < ENCODERS_COUNT; i++) {
-      encoders[static_cast<EncoderClass>(i)] = 
-               dynamic_cast<Encoder*>(timedEncoder);
-    }
+    setActiveEncoder(timedEncoder);
   }
 
   Manager::~Manager()
@@ -127,5 +124,15 @@ namespace suite {
     // Increment the currentWriteUpdate index so we can keep track
     // of which writeRect() belongs to which writeUpdate.
     currentWriteUpdate++;
+  }
+
+  void Manager::setActiveEncoder(TimedEncoder* encoder)
+  {
+    encoders[encoderRaw] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderRRE] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderHextile] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderTight] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderTightJPEG] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderZRLE] = dynamic_cast<Encoder*>(encoder);
   }
 }

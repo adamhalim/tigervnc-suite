@@ -79,6 +79,7 @@ namespace suite {
 
     ManagerStats stats() { return stats_; };
     void updateCurrentWriteUpdate();
+    void setActiveEncoder(TimedEncoder* encoder);
 
   protected:
     const bool SINGLE_ENCODER;
