@@ -8,8 +8,8 @@
 
 namespace suite {
 
-  TimedTightEncoder::TimedTightEncoder(SConnection* conn_, Manager* manager) 
-    : TightEncoder(conn_), TimedEncoder(encoderTight, manager)
+  TimedTightEncoder::TimedTightEncoder(SConnection* conn_) 
+    : TightEncoder(conn_), TimedEncoder(encoderTight)
   {
   }
 

@@ -5,8 +5,8 @@
 
 namespace suite {
 
-  TimedZRLEEncoder::TimedZRLEEncoder(SConnection* conn_, Manager* manager) 
-    : ZRLEEncoder(conn_), TimedEncoder(encoderZRLE, manager)
+  TimedZRLEEncoder::TimedZRLEEncoder(SConnection* conn_) 
+    : ZRLEEncoder(conn_), TimedEncoder(encoderZRLE)
   {
   }
 

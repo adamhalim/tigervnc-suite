@@ -10,22 +10,21 @@
 
 namespace suite {
   TimedEncoder* constructTimedEncoder(EncoderClass encoder,
-                                      rfb::SConnection* sconn,
-                                      Manager* manager)
+                                      rfb::SConnection* sconn)
   {
     switch(encoder) {
     case encoderRaw:
-      return new TimedRawEncoder(sconn, manager);
+      return new TimedRawEncoder(sconn);
     case encoderRRE:
-      return new TimedRREEncoder(sconn, manager);
+      return new TimedRREEncoder(sconn);
     case encoderHextile:
-      return new TimedHextileEncoder(sconn, manager);
+      return new TimedHextileEncoder(sconn);
     case encoderTight:
-      return new TimedTightEncoder(sconn, manager);
+      return new TimedTightEncoder(sconn);
     case encoderTightJPEG:
-      return new TimedTightJPEGEncoder(sconn, manager);
+      return new TimedTightJPEGEncoder(sconn);
     case encoderZRLE:
-      return new TimedZRLEEncoder(sconn, manager);
+      return new TimedZRLEEncoder(sconn);
     default:
       throw std::logic_error("decoder not implemented");
     }

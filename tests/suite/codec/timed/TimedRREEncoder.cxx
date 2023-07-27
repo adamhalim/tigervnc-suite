@@ -5,8 +5,8 @@
 
 namespace suite {
 
-  TimedRREEncoder::TimedRREEncoder(SConnection* conn_, Manager* manager) 
-    : RREEncoder(conn_), TimedEncoder(encoderRRE, manager)
+  TimedRREEncoder::TimedRREEncoder(SConnection* conn_) 
+    : RREEncoder(conn_), TimedEncoder(encoderRRE)
   {
   }
 

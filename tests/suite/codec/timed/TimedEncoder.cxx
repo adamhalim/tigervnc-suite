@@ -8,8 +8,8 @@
 
 namespace suite {
 
-  TimedEncoder::TimedEncoder(EncoderClass encoderclass, Manager* manager) 
-    : encoderClass(encoderclass), currentWriteUpdate(0), manager(manager)
+  TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
+    : encoderClass(encoderclass), currentWriteUpdate(0)
   {
     _stats = new EncoderStats {
       .writeRectEncodetime = 0,

@@ -72,13 +72,12 @@ namespace suite {
   using namespace enumEncoder;
 
   // Forward declarations
-  class Manager;
   struct WriteUpdate;
 
   class TimedEncoder
   {
   public:
-    TimedEncoder(EncoderClass encoderclass, Manager* manager);
+    TimedEncoder(EncoderClass encoderclass);
     ~TimedEncoder();
 
     void startWriteRectTimer(rfb::SConnection* sconn);
@@ -99,7 +98,6 @@ namespace suite {
     rdr::OutStream* os;
     rdr::InStream* is;
     rfb::SConnection* conn_;
-    Manager* manager; // FIXME: Can we avoid needing a Manager* here?
     EncoderStats* _stats;
     std::chrono::system_clock::time_point writeRectStart;
     std::chrono::system_clock::time_point writeSolidRectStart;

@@ -26,19 +26,19 @@ namespace suite {
                                                          currentWriteUpdate(0)
   {
     if (debug) {
-      stats_.encoders.push_back(new TimedTightEncoder(conn, this));
+      stats_.encoders.push_back(new TimedTightEncoder(conn));
       return;
     }
 
     for (Encoder* encoder : encoders)
       delete encoder;
 
-    encoders[encoderRaw] = new TimedRawEncoder(conn, this);
-    encoders[encoderRRE] = new TimedRREEncoder(conn, this);
-    encoders[encoderHextile] = new TimedHextileEncoder(conn, this);
-    encoders[encoderTight] = new TimedTightEncoder(conn, this);
-    encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn, this);
-    encoders[encoderZRLE] = new TimedZRLEEncoder(conn, this);
+    encoders[encoderRaw] = new TimedRawEncoder(conn);
+    encoders[encoderRRE] = new TimedRREEncoder(conn);
+    encoders[encoderHextile] = new TimedHextileEncoder(conn);
+    encoders[encoderTight] = new TimedTightEncoder(conn);
+    encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn);
+    encoders[encoderZRLE] = new TimedZRLEEncoder(conn);
 
     for (uint i = 0; i < encoders.size(); i++) {
       TimedEncoder* timedEncoder = dynamic_cast<TimedEncoder*>(encoders[i]);
@@ -55,8 +55,7 @@ namespace suite {
       delete e;
 
     EncoderClass encoderClass = settings.encoderClass;
-    TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn,
-                                                       this);
+    TimedEncoder* timedEncoder = constructTimedEncoder(encoderClass, conn);
     stats_.encoders.push_back(timedEncoder);
     setActiveEncoder(timedEncoder);
   }
@@ -70,7 +69,7 @@ namespace suite {
     if (SINGLE_ENCODER) {
       for (uint i = 1; i < ENCODERS_COUNT; i++) {
         encoders[i] = dynamic_cast<Encoder*>
-                      (constructTimedEncoder(encoderRaw, conn, this));
+                      (constructTimedEncoder(encoderRaw, conn));
       }
     }
   }

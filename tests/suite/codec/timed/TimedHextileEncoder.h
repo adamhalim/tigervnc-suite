@@ -9,7 +9,7 @@ namespace suite {
   class TimedHextileEncoder : public HextileEncoder, public TimedEncoder
   {
   public:
-    TimedHextileEncoder(SConnection* conn_, Manager* manager);
+    TimedHextileEncoder(SConnection* conn_);
     ~TimedHextileEncoder();
 
     virtual void writeRect(const PixelBuffer* pb, const Palette& palette);
