@@ -54,8 +54,8 @@ namespace suite {
     public:
       DummyInStream *in;
       DummyOutStream *out;
-    protected:
       Manager *manager;
+    protected:
       rfb::SimpleUpdateTracker updates;
       rfb::ManagedPixelBuffer* pb;
       void init(int width, int height, rfb::PixelFormat pf);

@@ -11,10 +11,11 @@ target_sources(suite PRIVATE
   Manager.cxx
   Server.cxx
   Client.cxx
-  TestWindow.cxx
   ../../vncviewer/PlatformPixelBuffer.cxx
   ../../vncviewer/Surface.cxx
   ../../vncviewer/Surface_X11.cxx
+  bruteforce/BruteForce.cxx
+  bruteforce/TimedBruteForceEncoder.cxx
   benchmark/Benchmark.cxx
   codec/PPMDecoder.cxx
   codec/PNGDecoder.cxx
