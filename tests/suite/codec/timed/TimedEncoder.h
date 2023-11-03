@@ -40,6 +40,14 @@ namespace suite {
       NINE
     };
 
+    struct EncoderArgs {
+      int encoding;
+      enum rfb::EncoderFlags flags;
+      unsigned int maxPaletteSize;
+      int losslessQuality;
+  };
+
+
     struct EncoderSettings {
       EncoderClass encoderClass;
       int *rfbEncoding;
@@ -74,24 +82,37 @@ namespace suite {
   // Forward declarations
   struct WriteUpdate;
 
-  class TimedEncoder
+  class TimedEncoder : public rfb::Encoder
   {
   public:
-    TimedEncoder(EncoderClass encoderclass);
+    TimedEncoder(EncoderClass encoderclass, rfb::Encoder* encoder,
+                                            rfb::SConnection* sconn,
+                                            EncoderArgs args);
     ~TimedEncoder();
 
-    void startWriteRectTimer(rfb::SConnection* sconn);
+    void startWriteRectTimer();
     void stopWriteRectTimer(const rfb::PixelBuffer* pb);
-    void startWriteSolidRectTimer(rfb::SConnection* sconn);
+    void startWriteSolidRectTimer();
     void stopWriteSolidRectTimer(int width, int height);
     const EncoderClass encoderClass;
     EncoderStats* stats() { return _stats; };
-    virtual bool isSupported() { return true; };
-    virtual void writeRect(const rfb::PixelBuffer* pb,
-                           const rfb::Palette& palette)=0;
-    virtual void writeSolidRect(int width, int height,
-                                const rfb::PixelFormat& pf,
-                                const rdr::U8* colour)=0;
+
+    bool isSupported() { return true; };
+    void writeRect(const rfb::PixelBuffer* pb,
+                   const rfb::Palette& palette);
+
+    void writeSolidRect(int width, int height,
+                        const rfb::PixelFormat& pf,
+                        const rdr::U8* colour);
+
+    void setCompressLevel(int level) { encoder->setCompressLevel(level); };
+    void setQualityLevel(int level) { encoder->setQualityLevel(level); };
+    void setFineQualityLevel(int quality, int subsampling)
+    {
+      encoder->setFineQualityLevel(quality, subsampling);
+    };
+    int getCompressLevel() { return encoder->getCompressLevel(); };
+    int getQualityLevel() { return encoder->getQualityLevel(); };
     uint currentWriteUpdate;
   private:
     rdr::MemOutStream *encoderOutstream;
@@ -101,6 +122,7 @@ namespace suite {
     EncoderStats* _stats;
     std::chrono::system_clock::time_point writeRectStart;
     std::chrono::system_clock::time_point writeSolidRectStart;
+    rfb::Encoder *encoder;
   };
 }
 #endif // __SUITE_TIMEDENCODER_H__ 

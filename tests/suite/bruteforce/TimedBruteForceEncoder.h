@@ -15,7 +15,7 @@ namespace suite {
     double encodingTime;
   };
 
-  class TimedBruteForceEncoder : public RawEncoder, public TimedEncoder
+  class TimedBruteForceEncoder : public TimedEncoder
   {
   public:
     TimedBruteForceEncoder(SConnection* sconn,

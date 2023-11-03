@@ -1,6 +1,8 @@
 #include "TimedEncoder.h"
 #include "../../Manager.h"
 #include "../../Server.h"
+#include "rfb/Encoder.h"
+#include "timedEncoderFactory.h"
 #include <rdr/MemOutStream.h>
 #include <rfb/PixelBuffer.h>
 #include <rfb/SConnection.h>
@@ -8,8 +10,14 @@
 
 namespace suite {
 
-  TimedEncoder::TimedEncoder(EncoderClass encoderclass) 
-    : encoderClass(encoderclass), currentWriteUpdate(0)
+  TimedEncoder::TimedEncoder(EncoderClass encoderclass, rfb::Encoder* encoder,
+                                                        rfb::SConnection* sconn,
+                                                        EncoderArgs args)
+    : rfb::Encoder(sconn, args.encoding, args.flags, args.maxPaletteSize,
+                                                     args.losslessQuality),
+      encoderClass(encoderclass),
+      currentWriteUpdate(0), conn_(sconn),
+      encoder(encoder)
   {
     _stats = new EncoderStats {
       .writeRectEncodetime = 0,
@@ -33,11 +41,28 @@ namespace suite {
   {
     delete encoderOutstream;
     delete _stats;
+    delete encoder;
   }
 
-  void TimedEncoder::startWriteRectTimer(rfb::SConnection* sconn)
+void TimedEncoder::writeRect(const rfb::PixelBuffer* pb,
+                             const rfb::Palette& palette)
+{
+  startWriteRectTimer();
+  encoder->writeRect(pb, palette);
+  stopWriteRectTimer(pb);
+}
+
+void TimedEncoder::writeSolidRect(int width, int height,
+                                  const rfb::PixelFormat& pf,
+                                  const rdr::U8* colour)
+{
+  startWriteSolidRectTimer();
+  encoder->writeSolidRect(width, height, pf, colour);
+  stopWriteSolidRectTimer(width, height);
+}
+
+  void TimedEncoder::startWriteRectTimer()
   {
-    conn_ = sconn;
     os = conn_->getOutStream();
     is = conn_->getInStream();
     // Inject our own MemOutStream just before encoding occurs
@@ -69,9 +94,8 @@ namespace suite {
     encoderOutstream->clear();
   }
 
-  void TimedEncoder::startWriteSolidRectTimer(rfb::SConnection* sconn)
+  void TimedEncoder::startWriteSolidRectTimer()
   {
-    conn_ = sconn;
     os = conn_->getOutStream();
     is = conn_->getInStream();
     // Inject our own MemOutStream just before encoding occurs

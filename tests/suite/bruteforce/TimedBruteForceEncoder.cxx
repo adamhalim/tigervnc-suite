@@ -10,7 +10,8 @@ namespace suite {
   TimedBruteForceEncoder::TimedBruteForceEncoder(SConnection* conn_,
                                                  std::vector<TimedEncoder*>
                                                                   encoders)
-    : RawEncoder(conn_), TimedEncoder(encoderHextile), 
+    : TimedEncoder(encoderHextile, new RawEncoder(conn_),
+                   conn_, EncoderArgs{}),
       encoders(encoders)
   {
   }
@@ -26,7 +27,7 @@ namespace suite {
     best.inputSize = pb->area() * 4;
 
     for (const auto& encoder : encoders) {
-      startWriteRectTimer(this->conn);
+      startWriteRectTimer();
       encoder->writeRect(pb, palette);
       stopWriteRectTimer(pb);
       EncoderStats* stats = encoder->stats();
@@ -56,7 +57,7 @@ namespace suite {
     best.inputSize = inputSize;
 
     for (const auto& encoder : encoders) {
-      startWriteSolidRectTimer(this->conn);
+      startWriteSolidRectTimer();
       encoder->writeSolidRect(width, height, pf, colour);
       stopWriteSolidRectTimer(width, height);
       EncoderStats* stats = encoder->stats();
