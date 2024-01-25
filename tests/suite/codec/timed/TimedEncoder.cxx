@@ -11,10 +11,9 @@
 namespace suite {
 
   TimedEncoder::TimedEncoder(EncoderClass encoderclass, rfb::Encoder* encoder,
-                                                        rfb::SConnection* sconn,
-                                                        EncoderArgs args)
-    : rfb::Encoder(sconn, args.encoding, args.flags, args.maxPaletteSize,
-                                                     args.losslessQuality),
+                                                        rfb::SConnection* sconn)
+    : rfb::Encoder(sconn, encoder->encoding, encoder->flags, encoder->maxPaletteSize,
+                                                     encoder->losslessQuality),
       encoderClass(encoderclass),
       currentWriteUpdate(0), conn_(sconn),
       encoder(encoder)

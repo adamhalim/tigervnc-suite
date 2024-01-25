@@ -40,13 +40,6 @@ namespace suite {
       NINE
     };
 
-    struct EncoderArgs {
-      int encoding;
-      enum rfb::EncoderFlags flags;
-      unsigned int maxPaletteSize;
-      int losslessQuality;
-  };
-
 
     struct EncoderSettings {
       EncoderClass encoderClass;
@@ -86,8 +79,7 @@ namespace suite {
   {
   public:
     TimedEncoder(EncoderClass encoderclass, rfb::Encoder* encoder,
-                                            rfb::SConnection* sconn,
-                                            EncoderArgs args);
+                                            rfb::SConnection* sconn);
     ~TimedEncoder();
 
     void startWriteRectTimer();

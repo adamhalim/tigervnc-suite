@@ -11,7 +11,7 @@ namespace suite {
                                                  std::vector<TimedEncoder*>
                                                                   encoders)
     : TimedEncoder(encoderHextile, new RawEncoder(conn_),
-                   conn_, EncoderArgs{}),
+                   conn_),
       encoders(encoders)
   {
   }
