@@ -7,10 +7,10 @@
 #include <vector>
 
 namespace suite {
-  TimedBruteForceEncoder::TimedBruteForceEncoder(SConnection* conn_,
+  TimedBruteForceEncoder::TimedBruteForceEncoder(rfb::SConnection* conn_,
                                                  std::vector<TimedEncoder*>
                                                                   encoders)
-    : TimedEncoder(encoderHextile, new RawEncoder(conn_),
+    : TimedEncoder(encoderHextile, new rfb::RawEncoder(conn_),
                    conn_),
       encoders(encoders)
   {
@@ -20,8 +20,8 @@ namespace suite {
   {
   }
 
-  void TimedBruteForceEncoder::writeRect(const PixelBuffer* pb,
-                                         const Palette& palette)
+  void TimedBruteForceEncoder::writeRect(const rfb::PixelBuffer* pb,
+                                         const rfb::Palette& palette)
   {
     BestEncoder best{};
     best.inputSize = pb->area() * 4;
@@ -49,7 +49,7 @@ namespace suite {
   }
 
     void TimedBruteForceEncoder::writeSolidRect(int width, int height,
-                                                const PixelFormat& pf,
+                                                const rfb::PixelFormat& pf,
                                                 const rdr::U8* colour)
   {
     int inputSize = width * height  *4;
