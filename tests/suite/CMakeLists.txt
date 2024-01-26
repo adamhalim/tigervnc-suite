@@ -26,12 +26,6 @@ target_sources(suite PRIVATE
   codec/lib/fpng.cpp
   codec/lib/qoi.h
   codec/timed/TimedEncoder.cxx
-  codec/timed/TimedRawEncoder.cxx
-  codec/timed/TimedRREEncoder.cxx
-  codec/timed/TimedHextileEncoder.cxx
-  codec/timed/TimedTightEncoder.cxx
-  codec/timed/TimedTightJPEGEncoder.cxx
-  codec/timed/TimedZRLEEncoder.cxx
   codec/timed/timedEncoderFactory.cxx
   io/FrameInStream.cxx
   io/statswriter.cxx

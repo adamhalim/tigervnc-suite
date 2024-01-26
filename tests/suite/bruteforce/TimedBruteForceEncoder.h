@@ -6,7 +6,6 @@
 #include <rfb/SConnection.h>
 
 namespace suite {
-  using namespace rfb;
 
   struct BestEncoder {
     enumEncoder::EncoderClass encoder;
@@ -15,16 +14,17 @@ namespace suite {
     double encodingTime;
   };
 
-  class TimedBruteForceEncoder : public RawEncoder, public TimedEncoder
+  class TimedBruteForceEncoder : public TimedEncoder
   {
   public:
-    TimedBruteForceEncoder(SConnection* sconn,
+    TimedBruteForceEncoder(rfb::SConnection* sconn,
                            std::vector<TimedEncoder*> encoders);
     ~TimedBruteForceEncoder();
 
-    virtual void writeRect(const PixelBuffer* pb, const Palette& palette);
+    virtual void writeRect(const rfb::PixelBuffer* pb,
+                           const rfb::Palette& palette);
     virtual void writeSolidRect(int width, int height,
-                                const PixelFormat& pf,
+                                const rfb::PixelFormat& pf,
                                 const rdr::U8* colour);
     void bestEncoder(double time, uint inputSize, uint outputSize,
                      EncoderClass encoder, BestEncoder* best);

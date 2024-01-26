@@ -7,10 +7,11 @@
 #include <vector>
 
 namespace suite {
-  TimedBruteForceEncoder::TimedBruteForceEncoder(SConnection* conn_,
+  TimedBruteForceEncoder::TimedBruteForceEncoder(rfb::SConnection* conn_,
                                                  std::vector<TimedEncoder*>
                                                                   encoders)
-    : RawEncoder(conn_), TimedEncoder(encoderHextile), 
+    : TimedEncoder(encoderHextile, new rfb::RawEncoder(conn_),
+                   conn_),
       encoders(encoders)
   {
   }
@@ -19,14 +20,14 @@ namespace suite {
   {
   }
 
-  void TimedBruteForceEncoder::writeRect(const PixelBuffer* pb,
-                                         const Palette& palette)
+  void TimedBruteForceEncoder::writeRect(const rfb::PixelBuffer* pb,
+                                         const rfb::Palette& palette)
   {
     BestEncoder best{};
     best.inputSize = pb->area() * 4;
 
     for (const auto& encoder : encoders) {
-      startWriteRectTimer(this->conn);
+      startWriteRectTimer();
       encoder->writeRect(pb, palette);
       stopWriteRectTimer(pb);
       EncoderStats* stats = encoder->stats();
@@ -48,7 +49,7 @@ namespace suite {
   }
 
     void TimedBruteForceEncoder::writeSolidRect(int width, int height,
-                                                const PixelFormat& pf,
+                                                const rfb::PixelFormat& pf,
                                                 const rdr::U8* colour)
   {
     int inputSize = width * height  *4;
@@ -56,7 +57,7 @@ namespace suite {
     best.inputSize = inputSize;
 
     for (const auto& encoder : encoders) {
-      startWriteSolidRectTimer(this->conn);
+      startWriteSolidRectTimer();
       encoder->writeSolidRect(width, height, pf, colour);
       stopWriteSolidRectTimer(width, height);
       EncoderStats* stats = encoder->stats();

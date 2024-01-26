@@ -1,12 +1,6 @@
 #include "Manager.h"
 #include "Server.h"
 #include "codec/timed/TimedEncoder.h"
-#include "codec/timed/TimedHextileEncoder.h"
-#include "codec/timed/TimedRREEncoder.h"
-#include "codec/timed/TimedTightEncoder.h"
-#include "codec/timed/TimedRawEncoder.h"
-#include "codec/timed/TimedTightJPEGEncoder.h"
-#include "codec/timed/TimedZRLEEncoder.h"
 #include "codec/timed/timedEncoderFactory.h"
 #include <chrono>
 #include <rfb/EncodeManager.h>
@@ -26,19 +20,19 @@ namespace suite {
                                                          currentWriteUpdate(0)
   {
     if (debug) {
-      stats_.encoders.push_back(new TimedTightEncoder(conn));
+      stats_.encoders.push_back(constructTimedEncoder(encoderTight, conn));
       return;
     }
 
-    for (Encoder* encoder : encoders)
+    for (rfb::Encoder* encoder : encoders)
       delete encoder;
 
-    encoders[encoderRaw] = new TimedRawEncoder(conn);
-    encoders[encoderRRE] = new TimedRREEncoder(conn);
-    encoders[encoderHextile] = new TimedHextileEncoder(conn);
-    encoders[encoderTight] = new TimedTightEncoder(conn);
-    encoders[encoderTightJPEG] = new TimedTightJPEGEncoder(conn);
-    encoders[encoderZRLE] = new TimedZRLEEncoder(conn);
+    encoders[encoderRaw] = constructTimedEncoder(encoderRaw, conn);
+    encoders[encoderRRE] = constructTimedEncoder(encoderRRE, conn);
+    encoders[encoderHextile] = constructTimedEncoder(encoderHextile, conn);
+    encoders[encoderTight] = constructTimedEncoder(encoderTight, conn);
+    encoders[encoderTightJPEG] = constructTimedEncoder(encoderTightJPEG, conn);
+    encoders[encoderZRLE] = constructTimedEncoder(encoderZRLE, conn);
 
     for (uint i = 0; i < encoders.size(); i++) {
       TimedEncoder* timedEncoder = dynamic_cast<TimedEncoder*>(encoders[i]);
@@ -51,7 +45,7 @@ namespace suite {
                                            SINGLE_ENCODER(true),
                                            currentWriteUpdate(0)
   {
-    for (Encoder* e : encoders)
+    for (rfb::Encoder* e : encoders)
       delete e;
 
     EncoderClass encoderClass = settings.encoderClass;
@@ -68,7 +62,7 @@ namespace suite {
     // to be freed. 
     if (SINGLE_ENCODER) {
       for (uint i = 1; i < ENCODERS_COUNT; i++) {
-        encoders[i] = dynamic_cast<Encoder*>
+        encoders[i] = dynamic_cast<rfb::Encoder*>
                       (constructTimedEncoder(encoderRaw, conn));
       }
     }
@@ -82,11 +76,11 @@ namespace suite {
   }
 
 
-  unsigned int getArea(Region changed) {
-    std::vector<Rect> rects;
+  unsigned int getArea(rfb::Region changed) {
+    std::vector<rfb::Rect> rects;
     changed.get_rects(&rects);
     unsigned int totalArea = 0;
-    for (const Rect r : rects) {
+    for (const rfb::Rect r : rects) {
       totalArea += r.area();
     }
     return totalArea;
@@ -127,11 +121,11 @@ namespace suite {
 
   void Manager::setActiveEncoder(TimedEncoder* encoder)
   {
-    encoders[encoderRaw] = dynamic_cast<Encoder*>(encoder);
-    encoders[encoderRRE] = dynamic_cast<Encoder*>(encoder);
-    encoders[encoderHextile] = dynamic_cast<Encoder*>(encoder);
-    encoders[encoderTight] = dynamic_cast<Encoder*>(encoder);
-    encoders[encoderTightJPEG] = dynamic_cast<Encoder*>(encoder);
-    encoders[encoderZRLE] = dynamic_cast<Encoder*>(encoder);
+    encoders[encoderRaw] = dynamic_cast<rfb::Encoder*>(encoder);
+    encoders[encoderRRE] = dynamic_cast<rfb::Encoder*>(encoder);
+    encoders[encoderHextile] = dynamic_cast<rfb::Encoder*>(encoder);
+    encoders[encoderTight] = dynamic_cast<rfb::Encoder*>(encoder);
+    encoders[encoderTightJPEG] = dynamic_cast<rfb::Encoder*>(encoder);
+    encoders[encoderZRLE] = dynamic_cast<rfb::Encoder*>(encoder);
   }
 }

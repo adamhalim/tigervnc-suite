@@ -1,32 +1,43 @@
 #include "timedEncoderFactory.h"
-#include "TimedRawEncoder.h"
-#include "TimedRREEncoder.h"
-#include "TimedHextileEncoder.h"
-#include "TimedTightEncoder.h"
-#include "TimedTightJPEGEncoder.h"
-#include "TimedZRLEEncoder.h"
+#include "TimedEncoder.h"
+#include "rfb/Encoder.h"
+#include "rfb/HextileEncoder.h"
+#include "rfb/RREEncoder.h"
+#include "rfb/RawEncoder.h"
+#include "rfb/TightEncoder.h"
+#include "rfb/TightJPEGEncoder.h"
+#include "rfb/ZRLEEncoder.h"
 #include <rfb/SConnection.h>
 #include <stdexcept>
 
 namespace suite {
+
   TimedEncoder* constructTimedEncoder(EncoderClass encoder,
                                       rfb::SConnection* sconn)
   {
+    rfb::Encoder* e;
     switch(encoder) {
     case encoderRaw:
-      return new TimedRawEncoder(sconn);
+      e = new rfb::RawEncoder(sconn);
+      break;
     case encoderRRE:
-      return new TimedRREEncoder(sconn);
+      e = new rfb::RREEncoder(sconn);
+      break;
     case encoderHextile:
-      return new TimedHextileEncoder(sconn);
+      e = new rfb::HextileEncoder(sconn);
+      break;
     case encoderTight:
-      return new TimedTightEncoder(sconn);
+      e = new rfb::TightEncoder(sconn);
+      break;
     case encoderTightJPEG:
-      return new TimedTightJPEGEncoder(sconn);
+      e = new rfb::TightJPEGEncoder(sconn);
+      break;
     case encoderZRLE:
-      return new TimedZRLEEncoder(sconn);
+      e = new rfb::ZRLEEncoder(sconn);
+      break;
     default:
       throw std::logic_error("decoder not implemented");
     }
+    return new TimedEncoder(encoder, e, sconn);
   }
 }

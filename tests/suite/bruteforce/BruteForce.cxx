@@ -1,9 +1,4 @@
-#include "../codec/timed/TimedRawEncoder.h"
-#include "../codec/timed/TimedRREEncoder.h"
-#include "../codec/timed/TimedHextileEncoder.h"
-#include "../codec/timed/TimedTightEncoder.h"
-#include "../codec/timed/TimedTightJPEGEncoder.h"
-#include "../codec/timed/TimedZRLEEncoder.h"
+#include "../codec/timed/timedEncoderFactory.h"
 #include "BruteForce.h"
 #include "TimedBruteForceEncoder.h"
 #include <rfb/TightEncoder.h>
@@ -80,18 +75,18 @@ namespace suite {
   void BruteForce::setDefaultBruteForceEncoder()
   {
     std::vector<TimedEncoder*> encoders = {
-      new TimedRawEncoder(server),
-      new TimedRREEncoder(server),
-      new TimedHextileEncoder(server),
-      new TimedTightEncoder(server),
-      new TimedTightJPEGEncoder(server),
-      new TimedZRLEEncoder(server),
+      constructTimedEncoder(EncoderClass::encoderRaw, server),
+      constructTimedEncoder(EncoderClass::encoderRRE, server),
+      constructTimedEncoder(EncoderClass::encoderHextile, server),
+      constructTimedEncoder(EncoderClass::encoderTight, server),
+      constructTimedEncoder(EncoderClass::encoderTightJPEG, server),
+      constructTimedEncoder(EncoderClass::encoderZRLE, server),
     };
 
     // FIXME: don't hardcode values
-    dynamic_cast<TimedTightEncoder*>(encoders[3])->setCompressLevel(2);
-    dynamic_cast<TimedTightJPEGEncoder*>(encoders[4])->setQualityLevel(8);
-    dynamic_cast<TimedZRLEEncoder*>(encoders[5])->setCompressLevel(6);
+    encoders[3]->setCompressLevel(2); // TightEncoder
+    encoders[4]->setQualityLevel(8);  // TightJPEGEncoder
+    encoders[5]->setCompressLevel(6); // ZRLEEncoder
 
     bruteForceEncoder = new TimedBruteForceEncoder(server, encoders);
     manager->setActiveEncoder(bruteForceEncoder);
