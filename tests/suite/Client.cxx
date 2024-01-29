@@ -6,7 +6,7 @@
 using namespace suite;
 
 Client::Client(int width, int height, rfb::PixelFormat pf)
-{ 
+{
   in = new DummyInStream();
   out = new DummyOutStream();
   setStreams(in, out);
@@ -24,7 +24,7 @@ Client::Client(int width, int height, rfb::PixelFormat pf)
   setFramebuffer(pb);
 }
 
-Client::~Client() 
+Client::~Client()
 {
   delete in;
   delete out;

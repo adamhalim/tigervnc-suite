@@ -13,7 +13,7 @@ namespace suite {
   rfb::PixelFormat pf(32, 24, false, true,
                       255, 255, 255, 0, 8, 16);
 
-  JPEGDecoder::JPEGDecoder(int quality, int subsampling) 
+  JPEGDecoder::JPEGDecoder(int quality, int subsampling)
     : ImageDecoder(JPEG), quality(quality), subsampling(subsampling)
   {
   }
@@ -91,7 +91,7 @@ namespace suite {
     bufferCopy = new rdr::U8[jc.length()];
     memcpy(bufferCopy, jc.data(), jc.length());
 
-    image = new Image(width, height, bufferCopy, jc.length(), 
+    image = new Image(width, height, bufferCopy, jc.length(),
                              x_offset, y_offset);
     measurePixelRate(width, height, 4);
     return image;

@@ -41,7 +41,7 @@ namespace suite {
     int bufSize = width * height * 3;
     rdr::U8* buf = new rdr::U8[bufSize];
     Image *image = new Image(width, height, buf, bufSize);
-    // While there is data still in stream, 
+    // While there is data still in stream,
     while ((iss >> std::ws).peek() != std::char_traits<char>::eof()) {
       Pixel pixel;
       iss >> pixel;
@@ -76,7 +76,7 @@ namespace suite {
 
     // Header/metadata
     const int MAXVAL = 255;
-    file << "P3" << "\n" << width << " " << height << "\n" 
+    file << "P3" << "\n" << width << " " << height << "\n"
       << MAXVAL << "\n";
 
     std::ostringstream oss;
@@ -95,7 +95,7 @@ namespace suite {
                                         int height, int offset_x, int offset_y)
   {
     const std::string MAXVAL = "255";
-    std::string header = "P3\n" + std::to_string(width) + " " 
+    std::string header = "P3\n" + std::to_string(width) + " "
       + std::to_string(height) + "\n" + MAXVAL + "\n";
     rdr::U8* buf = new rdr::U8[(width * height * 3) + header.length()];
 
@@ -112,4 +112,3 @@ namespace suite {
     return image;
   }
 }
-

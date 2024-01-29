@@ -7,7 +7,7 @@
 
 namespace suite {
 
-  Server::Server(int width, int height, rfb::PixelFormat pf, bool debug) 
+  Server::Server(int width, int height, rfb::PixelFormat pf, bool debug)
                                       : settings(defaultEncoderSettings)
   {
     init(width, height, pf);
@@ -15,7 +15,7 @@ namespace suite {
   }
 
   Server::Server(int width, int height, EncoderSettings settings,
-                                        rfb::PixelFormat pf) 
+                                        rfb::PixelFormat pf)
                                       : settings(settings)
   {
     init(width, height, pf);
@@ -38,7 +38,7 @@ namespace suite {
     setEncodings(sizeof(encodings) / sizeof(*encodings), encodings);
   }
 
-  Server::~Server() 
+  Server::~Server()
   {
     delete out;
     delete in;
@@ -52,7 +52,7 @@ namespace suite {
     int stride;
     pb->getBuffer(rect, &stride);
     pb->imageRect(rect, image->getBuffer());
-    
+
     rfb::UpdateInfo ui;
     const rfb::Region changed(rect);
 

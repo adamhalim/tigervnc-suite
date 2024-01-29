@@ -10,9 +10,9 @@ int main(int argc, char* argv[])
     std::for_each(decodersMap.begin(), decodersMap.end(), [&](const auto &s) {
       decoderString += s.first + " ";
     });
-    std::cerr << "Error, incorrect arguments\n" 
+    std::cerr << "Error, incorrect arguments\n"
               << "Usage:\n\t"
-              << argv[0] << " <X display> <output filename> " 
+              << argv[0] << " <X display> <output filename> "
               << "<framerate> <encoder (default=JPEG)>\n\t"
               << "Available encoders: " << decoderString << std::endl;
     exit(1);

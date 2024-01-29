@@ -49,4 +49,5 @@ namespace suite {
     void print();
   };
 }
+
 #endif // __SUITE_MANAGERSTATS_H__

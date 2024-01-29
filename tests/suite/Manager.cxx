@@ -40,7 +40,7 @@ namespace suite {
     }
   }
 
-  Manager::Manager(rfb::SConnection* conn, EncoderSettings settings) 
+  Manager::Manager(rfb::SConnection* conn, EncoderSettings settings)
                                          : EncodeManager(conn),
                                            SINGLE_ENCODER(true),
                                            currentWriteUpdate(0)
@@ -59,7 +59,7 @@ namespace suite {
     // Ugly hack, EncodeManager's destructor will call delete on all
     // elements in encoders. Since we sometimes use the same pointer for
     // all elements in encoders, we need to make sure there is something
-    // to be freed. 
+    // to be freed.
     if (SINGLE_ENCODER) {
       for (uint i = 1; i < ENCODERS_COUNT; i++) {
         encoders[i] = dynamic_cast<rfb::Encoder*>

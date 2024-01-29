@@ -11,7 +11,7 @@
 namespace suite {
 
   Recorder::Recorder(std::string filename, ImageDecoder* decoder,
-                     std::string display, int framerate) 
+                     std::string display, int framerate)
     : factory(true), decoder(decoder), interval(1000.0/framerate),
       intervalThreshold(interval/1000), lastImage(0)
   {
@@ -128,7 +128,7 @@ namespace suite {
       } catch (std::ios_base::failure &e) {}
     }
 
-    if (!rects.size()) 
+    if (!rects.size())
       return;
 
     // Combine all rects into one bouding rect if we detect any overlap.
@@ -152,7 +152,7 @@ namespace suite {
     const rdr::U8* data = (rdr::U8*) damagedImage->xim->data;
 
     // Save changed rectangle
-    suite::Image* image = decoder->encodeImageToMemory(data, 
+    suite::Image* image = decoder->encodeImageToMemory(data,
                                                        width, height,
                                                        x_offset,
                                                        y_offset);
@@ -178,7 +178,7 @@ namespace suite {
 
   rfb::Rect Recorder::rectFromEvent(XEvent& event)
   {
-    if (!(event.type == xdamageEventBase)) 
+    if (!(event.type == xdamageEventBase))
       throw std::ios_base::failure("XEvent not DAMAGE event");
 
     XDamageNotifyEvent* dev;

@@ -9,7 +9,7 @@
 
 namespace suite {
 
-  BruteForce::BruteForce(std::string filename) 
+  BruteForce::BruteForce(std::string filename)
     : Benchmark(filename), server(defaultServer_),
       manager(defaultServer_->manager)
   {
@@ -33,7 +33,7 @@ namespace suite {
     std::ifstream file(filename);
     is.parseHeader(file); // FIXME: Don't parse header twice
 
-    std::cout << "Starting brute-force benchmark using \"" 
+    std::cout << "Starting brute-force benchmark using \""
               << filename << "\"\n";
 
     RecorderStats recorderStats;  // unused

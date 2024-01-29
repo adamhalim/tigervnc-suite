@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 
   if (argc < 2) {
     std::cerr << "Error, incorrect arguments\n"
-              << "Usage:\n\t" 
+              << "Usage:\n\t"
               << argv[0] << " <inputfile>\n";
     exit(1);
   }

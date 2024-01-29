@@ -12,6 +12,7 @@ public:
 
 private:
   static const int BUF_SIZE = 10 << 20; // 10MB
-  rdr::U8* buf[BUF_SIZE]; 
+  rdr::U8* buf[BUF_SIZE];
 };
+
 #endif // __SUITE_DUMMYINSTREAM_H__

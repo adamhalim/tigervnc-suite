@@ -61,9 +61,9 @@ namespace suite {
       encoder->writeSolidRect(width, height, pf, colour);
       stopWriteSolidRectTimer(width, height);
       EncoderStats* stats = encoder->stats();
-      
+
       uint outputSize = stats->outputSizeRects +  stats->outputSizeSolidRects;
-      double time = stats->writeRectEncodetime 
+      double time = stats->writeRectEncodetime
                   + stats->writeSolidRectEncodetime;
       bestEncoder(time, inputSize, outputSize, encoder->encoderClass, &best);
 

@@ -29,4 +29,5 @@ namespace suite {
     int subsampling;
   };
 }
+
 #endif // __SUITE_JPEG_DECODER_H__

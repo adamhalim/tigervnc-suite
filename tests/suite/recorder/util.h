@@ -20,4 +20,5 @@ int rectTotalArea(std::vector<rfb::Rect>& intersections);
 void detectInteresctions(std::vector<rfb::Rect>& rects,
                          ImageUpdateStats& stats);
 rfb::Rect boundingRect(std::vector<rfb::Rect>& rects);
+
 #endif // __SUITE_RECORDER_UTIL

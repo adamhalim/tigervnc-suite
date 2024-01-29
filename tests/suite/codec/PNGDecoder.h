@@ -27,5 +27,4 @@ namespace suite {
   };
 }
 
-
 #endif // __SUITE_PNG_DECODER_H__

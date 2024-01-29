@@ -8,7 +8,7 @@ namespace suite {
 
   // Represents a framebuffer update. Takes ownership of the image.
   // FIXME: Add time data so that updates can be played in "realtime".
-  struct ImageUpdate 
+  struct ImageUpdate
   {
     ImageUpdate(Image* image, ImageUpdateStats stats = ImageUpdateStats{});
     ~ImageUpdate();

@@ -14,7 +14,7 @@ namespace suite {
     // Sets InStream and sets a new CMsgReader with the new InStream
     void setInStream(DummyInStream* in);
 
-    // Creates copy of buffer in OutStream and creates a new InStream 
+    // Creates copy of buffer in OutStream and creates a new InStream
     // with copied data
     void copyOutStreamToInStream(DummyOutStream* out);
 
@@ -40,4 +40,5 @@ namespace suite {
     rfb::CMsgWriter* writer;
   };
 }
+
 #endif // __SUITE_CLIENT_H__

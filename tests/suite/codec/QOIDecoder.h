@@ -23,4 +23,5 @@ namespace suite {
                                int x_offset = 0, int y_offset = 0);
   };
 }
+
 #endif // __SUITE_QOI_DECODER_H__

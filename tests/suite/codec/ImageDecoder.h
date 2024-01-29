@@ -79,4 +79,5 @@ namespace suite {
     std::chrono::system_clock::time_point start;
   };
 }
+
 #endif // __SUITE_IMAGE_DECODER_H__

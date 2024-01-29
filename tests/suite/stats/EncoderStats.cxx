@@ -3,9 +3,9 @@
 #include <cmath>
 
 namespace suite {
-  double EncoderStats::compressionRatioRects() 
+  double EncoderStats::compressionRatioRects()
   {
-    return (double) outputSizeRects / inputSizeRects; 
+    return (double) outputSizeRects / inputSizeRects;
   }
 
   double EncoderStats::compressionRatioSolidRects()
@@ -35,7 +35,7 @@ namespace suite {
          / ((writeRectEncodetime + writeSolidRectEncodetime) / 1e3);
   }
 
-  // Returns a "score" which is a function of time 
+  // Returns a "score" which is a function of time
   // per compressed data
   double EncoderStats::score()
   {
@@ -77,7 +77,7 @@ namespace suite {
       variance += (mPxPerSecond[i] - mean) * (mPxPerSecond[i] - mean);
 
     variance /= (mPxPerSecond.size() - 1);
-    
+
     struct WriteUpdateStatistics stats {
       .meanWriteUpdate = mean,
       .medianWriteUpdate = median,

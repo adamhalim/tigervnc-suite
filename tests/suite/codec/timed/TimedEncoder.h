@@ -117,4 +117,5 @@ namespace suite {
     rfb::Encoder *encoder;
   };
 }
-#endif // __SUITE_TIMEDENCODER_H__ 
+
+#endif // __SUITE_TIMEDENCODER_H__

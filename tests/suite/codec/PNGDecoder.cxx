@@ -97,15 +97,15 @@ namespace suite {
                                        int width, int height)
   {
     // When copying data from the framebuffer, the alpha channel is set to 0
-    // which causes issues when encoding PNG. We don't want anything to be 
+    // which causes issues when encoding PNG. We don't want anything to be
     // transparent, so we set all alpha bits to 255.
     int bufSize = width * height * 4;
     rdr::U8* paddedBuf = new rdr::U8[bufSize];
 
     for (int i = 0; i < bufSize; i += 4) {
-      paddedBuf[i] = data[i]; 
-      paddedBuf[i + 1] = data[i+1]; 
-      paddedBuf[i + 2] = data[i+2]; 
+      paddedBuf[i] = data[i];
+      paddedBuf[i + 1] = data[i+1];
+      paddedBuf[i + 2] = data[i+2];
       paddedBuf[i + 3] = 255;   // no transparency
     }
     return paddedBuf;

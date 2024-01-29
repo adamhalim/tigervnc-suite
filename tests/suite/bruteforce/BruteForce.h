@@ -11,7 +11,7 @@ namespace suite {
 
   /*
     This class is used to calculate what the upper bound limit for compression
-    ratio is for a given Manager. It will use a brute-force approach to 
+    ratio is for a given Manager. It will use a brute-force approach to
     find the encoder with the highest compression for each rectangle that is
     encdoded.
   */
@@ -23,7 +23,7 @@ namespace suite {
     ~BruteForce();
 
     void run();
-    void setBruteForceEncoder(TimedBruteForceEncoder* encoder); 
+    void setBruteForceEncoder(TimedBruteForceEncoder* encoder);
   private:
     void setDefaultBruteForceEncoder();
     Server* server;

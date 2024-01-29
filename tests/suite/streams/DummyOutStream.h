@@ -14,4 +14,5 @@ public:
   rdr::U8* dump();
   bool write(rdr::U8* data, size_t length);
 };
+
 #endif // __SUITE_DUMMY_OUT_STREAM_H__

@@ -1,7 +1,7 @@
 #include "ImageUpdate.h"
 
 namespace suite {
-  ImageUpdate::ImageUpdate(Image* image, ImageUpdateStats stats) 
+  ImageUpdate::ImageUpdate(Image* image, ImageUpdateStats stats)
     : image(image), stats(stats)
   {
   }

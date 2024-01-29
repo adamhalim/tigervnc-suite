@@ -21,7 +21,7 @@ namespace suite {
 
   Image &Image::operator+=(Pixel const &pixel)
   {
-    assert(pixelCount * 4 <= size);   
+    assert(pixelCount * 4 <= size);
     memcpy(&buffer[pixelCount * 4], &pixel, 4);
     pixelCount++;
     return *this;

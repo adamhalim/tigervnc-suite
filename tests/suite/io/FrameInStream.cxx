@@ -60,7 +60,7 @@ namespace suite {
   {
     if (headerParsed)
       throw std::logic_error("header already parsed");
-    
+
     std::string decoder;
     int width;
     int height;
@@ -73,7 +73,7 @@ namespace suite {
       .interval = interval,
       .decoder = decoder,
     };
-    
+
     this->decoder = constructDecoder(decoder);
     headerParsed = true;
     return header;

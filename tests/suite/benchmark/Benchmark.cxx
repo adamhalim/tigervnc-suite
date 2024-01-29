@@ -15,7 +15,7 @@
 using namespace suite;
 
 Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
-                                           const size_t len) 
+                                           const size_t len)
   : filename(filename), encodings_(encodings), encodingsLength_(len)
 {
   struct stat buf;
@@ -80,7 +80,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
   while (file.peek() != EOF) {
     const Image* image = is.readImage(file, recorderStats);
 
-    // For each encoding we want to test, we load an image and loop through 
+    // For each encoding we want to test, we load an image and loop through
     // all servers
     for (uint i = 0; i < len; i++) {
       EncoderSettings setting = settings[i];
@@ -102,7 +102,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
     std::string encoderRequested = encoderClasstoString(s.first);
     Server* server = s.second;
     ManagerStats managerStats = server->stats();
-    
+
     if (!managerStats.encoders.size())
       continue; // FIXME: throw/log error?
 

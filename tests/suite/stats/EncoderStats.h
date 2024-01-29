@@ -53,4 +53,5 @@ namespace suite {
     struct WriteUpdateStatistics writeUpdateStatistics();
   };
 }
+
 #endif // __SUITE_ENCODERSTATS_H__

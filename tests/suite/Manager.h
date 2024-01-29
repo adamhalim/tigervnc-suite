@@ -87,4 +87,5 @@ namespace suite {
     uint currentWriteUpdate;
   };
 }
+
 #endif // __SUITE_MANAGER_H__

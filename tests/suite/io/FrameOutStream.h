@@ -14,19 +14,19 @@ namespace suite {
      The file structure is as follows:
 
       ______________________________________________________
-      |               encoding width height interval     \n| <-- File header 
+      |               encoding width height interval     \n| <-- File header
       | imageSize width height x_offset y_offset frameTime | <-- Image metadata
       |       lostArea overArea encodingTime margin      \n|
       |****************************************************|
       |****************************************************|
-      |****************** RAW IMAGE DATA ******************| <-- Raw dump of 
+      |****************** RAW IMAGE DATA ******************| <-- Raw dump of
       |****************************************************|     image data.
       |****************************************************|
       |**************************************************\n|
       | imageSize width height x_offset y_offset frameTime | <-- Next image
-      |       lostArea overArea encodingTime margin      \n| 
+      |       lostArea overArea encodingTime margin      \n|
       |****************************************************|
-      |****************************************************| 
+      |****************************************************|
       |****************** RAW IMAGE DATA ******************|
       |**************************************************\n|
       |____________________________________________________|
@@ -79,9 +79,9 @@ namespace suite {
 
     // Assumes ownership if ImageUpdate
     void addUpdate(ImageUpdate* update);
-    void addUpdate(rdr::U8* data, int width, int height, int x_offset, 
+    void addUpdate(rdr::U8* data, int width, int height, int x_offset,
                    int y_offset, int size);
-                  
+
     void writeHeader(int width, int height, double interval);
   private:
     std::ofstream file;
@@ -91,4 +91,5 @@ namespace suite {
     std::chrono::steady_clock::time_point lastFrameTime;
   };
 }
+
 #endif // __SUITE_FRAME_OUT_STREAM_H__

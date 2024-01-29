@@ -29,7 +29,7 @@ namespace suite {
       .nSolidRects = 0,
       .name = encoderClassName(encoderclass),
     };
-    // Use an OutStream and inject it to the underlying 
+    // Use an OutStream and inject it to the underlying
     // SConn just before writeRect() and writeSolidRect()
     // so that we can keep track of how much data is written
     // by each encoder (excluding RFB protocol overheads)

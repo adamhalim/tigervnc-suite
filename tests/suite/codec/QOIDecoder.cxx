@@ -9,7 +9,7 @@ namespace suite {
  QOIDecoder::QOIDecoder() : ImageDecoder(QOI)
  {
  }
- 
+
  QOIDecoder::~QOIDecoder()
  {
  }

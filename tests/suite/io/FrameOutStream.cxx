@@ -21,7 +21,7 @@ namespace suite {
   {
     if (!headerWritten)
       throw std::logic_error("header not written");
-  
+
     Image* image = update->image;
     const ImageUpdateStats stats = update->stats;
 

@@ -29,4 +29,5 @@ namespace suite {
   void saveManagerWriteUpdateStats(ManagerStats& manager, std::string dir);
   void saveManagerDelayedFrames(ManagerStats& manager, std::string dir);
 }
+
 #endif // __SUITE_STATSWRITER_H__

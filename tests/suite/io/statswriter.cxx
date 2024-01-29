@@ -10,14 +10,14 @@ namespace suite {
   static int counter = 0;
 
   // -=- statswriter.cxx - the stats are structured as follows:
-  /* 
+  /*
     |--root
       recorderstats.txt
-      |--1  
+      |--1
         |--EncoderSetting-compressionlevel(-qualitylevel)
         |-- encodersettings.txt
-        |-- delayedframes.txt 
-        |-- writeupdates.txt 
+        |-- delayedframes.txt
+        |-- writeupdates.txt
           |--Encoder(1)
             |--encoderstats.txt
             |--encoderwriterects.txt
@@ -33,8 +33,8 @@ namespace suite {
       |--2
         |--EncoderSetting-compressionlevel(-qualitylevel)
         |-- encodersettings.txt
-        |-- delayedframes.txt 
-        |-- writeupdates.txt 
+        |-- delayedframes.txt
+        |-- writeupdates.txt
           |--     .
           |--     .
           |--     .
@@ -47,7 +47,7 @@ namespace suite {
     std::string counterStr;
     std::string dir;
     ManagerStats stats;
-    
+
     counterStr = ROOT_DIR + std::to_string(counter) + "/";
     struct stat sb;
     if (stat(ROOT_DIR, &sb) == -1) {
@@ -93,7 +93,6 @@ namespace suite {
     for (const ImageUpdateStats& update : stats.stats) {
       of << update.lostDataArea << " " << update.overDimensionedArea << " "
          << update.encodingTime << " " << update.margin << "\n";
-    
     }
   }
 
@@ -120,7 +119,7 @@ namespace suite {
 
   std::string createEncoderDir(TimedEncoder* encoder, std::string dir)
   {
-    std::string encoderDir = dir + "/" 
+    std::string encoderDir = dir + "/"
                            + encoderClasstoString(encoder->encoderClass);
 
     if (mkdir(encoderDir.c_str(), 0700)) {
@@ -155,8 +154,8 @@ namespace suite {
   void saveEncoderStats(TimedEncoder* encoder, std::string dir)
   {
     EncoderStats* stats;
-    
-     std::ofstream of(dir + "/" 
+
+     std::ofstream of(dir + "/"
                     + encoderClasstoString(encoder->encoderClass)
                     + "_" + ENCODER_STATS);
 
@@ -172,7 +171,7 @@ namespace suite {
         int nSolidRects;
         std::string name;
       ---------------------------------
-      The field 
+      The field
         std::map<int,WriteRects> writeUpdates;
       is stored in separate files (saveEncoderWriteUpdates()).
     */
@@ -192,23 +191,23 @@ namespace suite {
   void saveEncoderWriteUpdates(TimedEncoder* encoder, std::string dir)
   {
     EncoderStats* stats;
-    
+
     std::ofstream rectsFile(dir + "/"
-                          + encoderClasstoString(encoder->encoderClass) 
+                          + encoderClasstoString(encoder->encoderClass)
                           + "_" + ENCODER_WRITE_RETCS);
 
     std::ofstream solidRectsFile(dir + "/"
-                               + encoderClasstoString(encoder->encoderClass) 
+                               + encoderClasstoString(encoder->encoderClass)
                                + "_" + ENCODER_WRITE_SOLID_RECTS);
 
     /* File structure for encoderWriteRects (one row per writeRect):
         writeUpdate timeSpent pixelCount
-        
+
 
       File structure for encoderWriteSolidRects (one row per writeSolidRect):
         writeUpdate timeSpent pixelCount
 
-      Since a single frameUpdate can contain both writeRect() and 
+      Since a single frameUpdate can contain both writeRect() and
       writeSolidRect() calls, we use two files and map them to
       their respective writeUpdate.
     */
@@ -223,7 +222,7 @@ namespace suite {
       }
 
       for (const WriteRect& writeSolidRect : writeRects.writeSolidRects) {
-        solidRectsFile << frameUpdate << " " << writeSolidRect.timeSpent 
+        solidRectsFile << frameUpdate << " " << writeSolidRect.timeSpent
                        << " " << writeSolidRect.pixelCount << "\n";
       }
     }
@@ -237,9 +236,9 @@ namespace suite {
       timeRequred timeSpent pixelCount
     */
     for (WriteUpdate& update : manager.writeUpdateStats) {
-      of << update.timeRequired << " " << update.timeSpent 
+      of << update.timeRequired << " " << update.timeSpent
          << " " << update.size << "\n";
-    } 
+    }
   }
 
   void saveManagerDelayedFrames(ManagerStats& stats, std::string dir)
