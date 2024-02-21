@@ -23,7 +23,7 @@ namespace suite {
   }
 
 
-  Image* JPEGDecoder::decodeImageFromFile(std::string filename)
+  Image* JPEGDecoder::decodeImageFromFile(std::string)
   {
     throw std::logic_error("method not implemented");
   }
@@ -46,8 +46,11 @@ namespace suite {
 
     jd.decompress(data, size, buffer, width, rect, pf);
 
-    image = new Image(width, height, buffer, size, x_offset, y_offset);
+    #ifdef _DEBUG
     measurePixelRate(width, height, 4);
+    #endif //_DEBUG
+
+    image = new Image(width, height, buffer, size, x_offset, y_offset);
     return image;
   }
 
@@ -91,9 +94,12 @@ namespace suite {
     bufferCopy = new uint8_t[jc.length()];
     memcpy(bufferCopy, jc.data(), jc.length());
 
+    #ifdef _DEBUG
+    measurePixelRate(width, height, 4);
+    #endif //_DEBUG
+
     image = new Image(width, height, bufferCopy, jc.length(),
                              x_offset, y_offset);
-    measurePixelRate(width, height, 4);
     return image;
   }
 }

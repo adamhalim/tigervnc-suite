@@ -24,11 +24,11 @@ namespace suite {
     virtual bool dataRect(const rfb::Rect&, int);
 
     // Unused
-    virtual void initDone();
-    virtual void setCursor(int, int, const rfb::Point&, const uint8_t*);
-    virtual void setCursorPos(const rfb::Point&);
-    virtual void setColourMapEntries(int, int, uint16_t*);
-    virtual void bell();
+    virtual void initDone() {};
+    virtual void setCursor(int, int, const rfb::Point&, const uint8_t*) {};
+    virtual void setCursorPos(const rfb::Point&) {};
+    virtual void setColourMapEntries(int, int, uint16_t*) {};
+    virtual void bell() {};
 
     rfb::SimpleUpdateTracker updates;
     DummyInStream *in;

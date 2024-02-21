@@ -86,25 +86,3 @@ bool Client::dataRect(const rfb::Rect&r , int encoding)
 {
   return rfb::CConnection::dataRect(r, encoding);
 }
-
-void Client::initDone()
-{
-}
-
-void Client::setColourMapEntries(int firstColour, int nColours, uint16_t* rgbs)
-{
-}
-
-void Client::bell()
-{
-}
-
-
-void Client::setCursor(int width, int height, const rfb::Point& hotspot,
-                                              const uint8_t* data)
-{
-}
-
-void Client::setCursorPos(const rfb::Point& pos)
-{
-}

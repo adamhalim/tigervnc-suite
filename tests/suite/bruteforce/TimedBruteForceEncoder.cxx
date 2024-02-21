@@ -36,7 +36,7 @@ namespace suite {
                   + stats->writeSolidRectEncodetime;
       uint outputSize = stats->outputSizeRects + stats->outputSizeSolidRects;
 
-      bestEncoder(time, pb->area(), outputSize, encoder->encoderClass, &best);
+      bestEncoder(time, outputSize, encoder->encoderClass, &best);
 
       stats->outputSizeRects = 0;
       stats->outputSizeSolidRects = 0;
@@ -65,7 +65,7 @@ namespace suite {
       uint outputSize = stats->outputSizeRects +  stats->outputSizeSolidRects;
       double time = stats->writeRectEncodetime
                   + stats->writeSolidRectEncodetime;
-      bestEncoder(time, inputSize, outputSize, encoder->encoderClass, &best);
+      bestEncoder(time, outputSize, encoder->encoderClass, &best);
 
       stats->outputSizeRects = 0;
       stats->outputSizeSolidRects = 0;
@@ -76,7 +76,7 @@ namespace suite {
     bestCounter_[best.encoder]++;
   }
 
-  void TimedBruteForceEncoder::bestEncoder(double time, uint inputSize,
+  void TimedBruteForceEncoder::bestEncoder(double time,
                                            uint outputSize,
                                            EncoderClass encoder,
                                            BestEncoder* best)

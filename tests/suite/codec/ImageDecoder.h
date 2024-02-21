@@ -55,12 +55,12 @@ namespace suite {
     const DecoderEnum type;
     const std::string name;
   protected:
+    #ifdef _DEBUG
     // Measures encoding/decoding performance.
     void measurePixelRate(int width, int height, int channels)
     {
       // FIXME: This method has to be called explicitly by derived classes.
       // Is there a way to do this automatically?
-      #ifdef _DEBUG
       pixelCount += (width * height * channels);
       auto now = std::chrono::system_clock::now();
       std::chrono::duration<double> time = now - start;
@@ -69,11 +69,11 @@ namespace suite {
         start = now;
         pixelCount = 0;
       }
-      #endif // _DEBUG
     }
   private:
     unsigned long pixelCount;
     std::chrono::system_clock::time_point start;
+    #endif // _DEBUG
   };
 }
 

@@ -21,9 +21,12 @@ namespace suite {
   if (!data)
     throw std::ios_base::failure("qoi: error decoding image");
 
+  #ifdef _DEBUG
+  measurePixelRate(desc.width, desc.height, desc.channels);
+  #endif //_DEBUG
+
   int bufSize = desc.width * desc.height * desc.channels;
   Image* image = new Image(desc.width, desc.height, data, bufSize);
-  measurePixelRate(desc.width, desc.height, desc.channels);
   return image;
  }
 
@@ -35,10 +38,13 @@ Image* QOIDecoder::decodeImageFromMemory(uint8_t* data, int width, int height,
   if (decodedImage == NULL)
     throw std::ios_base::failure("qoi: error decoding image");
 
+  #ifdef _DEBUG
+  measurePixelRate(width, height, desc.channels);
+  #endif //_DEBUG
+
   int bufSize = desc.width * desc.height * desc.channels;
   Image* image = new Image(width, height, decodedImage, bufSize,
                            x_offset, y_offset);
-  measurePixelRate(width, height, desc.channels);
   return image;
 }
  void QOIDecoder::encodeImageTofile(const uint8_t *data, int width, int height,
@@ -56,7 +62,9 @@ Image* QOIDecoder::decodeImageFromMemory(uint8_t* data, int width, int height,
   if (!size)
     throw std::ios_base::failure("error encoding image");
 
+  #ifdef _DEBUG
   measurePixelRate(width, height, desc.channels);
+  #endif //_DEBUG
  }
 
  Image* QOIDecoder::encodeImageToMemory(const uint8_t *data, int width,
@@ -73,9 +81,13 @@ Image* QOIDecoder::decodeImageFromMemory(uint8_t* data, int width, int height,
   uint8_t* encodedData = (uint8_t*) qoi_encode(data, &desc,  &size);
   if (!encodedData)
     throw std::ios_base::failure("error encoding image");
+
+  #ifdef _DEBUG
+  measurePixelRate(width, height, desc.channels);
+  #endif //_DEBUG
+
   Image* image = new Image(desc.width, desc.height, encodedData,
                            size, x_offset, y_offset);
-  measurePixelRate(width, height, desc.channels);
   return image;
  }
 }

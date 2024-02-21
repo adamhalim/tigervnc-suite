@@ -73,9 +73,4 @@ namespace suite {
   {
     return manager->stats();
   }
-
-  void Server::setDesktopSize(int fb_width, int fb_height,
-                              const rfb::ScreenSet &layout)
-  {
-  }
 }

@@ -47,13 +47,15 @@ namespace suite {
       iss >> pixel;
       *image += pixel;
     }
+
+    #ifdef _DEBUG
     measurePixelRate(width, height, 3);
+    #endif //_DEBUG
+
     return image;
   }
 
-  Image* PPMDecoder::decodeImageFromMemory(uint8_t* data, int width,
-                                           int height, int size,
-                                           int x_offest, int y_offset)
+  Image* PPMDecoder::decodeImageFromMemory(uint8_t*, int, int, int, int, int)
   {
     throw std::logic_error("function not implemented");
   }
@@ -88,7 +90,10 @@ namespace suite {
     }
     file << oss.str();
     file.close();
+
+    #ifdef _DEBUG
     measurePixelRate(width, height, 3);
+    #endif //_DEBUG
   }
 
   Image* PPMDecoder::encodeImageToMemory(const uint8_t *data, int width,
@@ -105,10 +110,13 @@ namespace suite {
       buf[i + 2 - (i/4)] = data[i+ 2];
     }
 
+    #ifdef _DEBUG
+    measurePixelRate(width, height, 3);
+    #endif //_DEBUG
+
     Image* image = new Image(width, height, buf,
                              width * height * 3,
                              offset_x, offset_y);
-    measurePixelRate(width, height, 3);
     return image;
   }
 }

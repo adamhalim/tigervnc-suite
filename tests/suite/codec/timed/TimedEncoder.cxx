@@ -15,8 +15,9 @@ namespace suite {
     : rfb::Encoder(sconn, encoder->encoding, encoder->flags, encoder->maxPaletteSize,
                                                      encoder->losslessQuality),
       encoderClass(encoderclass),
-      currentWriteUpdate(0), conn_(sconn),
-      encoder(encoder)
+      currentWriteUpdate(0),
+      encoderOutstream(new rdr::MemOutStream(10 << 20)),
+      conn_(sconn), encoder(encoder)
   {
     _stats = new EncoderStats {
       .writeRectEncodetime = 0,
@@ -28,12 +29,12 @@ namespace suite {
       .nRects = 0,
       .nSolidRects = 0,
       .name = encoderClassName(encoderclass),
+      .writeUpdates = std::map<int,WriteRects>{}
     };
     // Use an OutStream and inject it to the underlying
     // SConn just before writeRect() and writeSolidRect()
     // so that we can keep track of how much data is written
     // by each encoder (excluding RFB protocol overheads)
-    encoderOutstream = new rdr::MemOutStream(10 << 20);
   }
 
   TimedEncoder::~TimedEncoder()

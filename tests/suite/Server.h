@@ -44,8 +44,7 @@ namespace suite {
     void writeUpdate(const rfb::UpdateInfo& ui, const rfb::PixelBuffer* pb);
 
     // Unused
-    virtual void setDesktopSize(int fb_width, int fb_height,
-                                const rfb::ScreenSet& layout);
+    virtual void setDesktopSize(int, int, const rfb::ScreenSet&) {};
     // Loads an Image onto the framebuffer at x, y
     virtual void loadImage(const Image* image, int x = 0, int y = 0);
 

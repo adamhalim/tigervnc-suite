@@ -26,7 +26,7 @@ namespace suite {
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
                                 const uint8_t* colour);
-    void bestEncoder(double time, uint inputSize, uint outputSize,
+    void bestEncoder(double time, uint outputSize,
                      EncoderClass encoder, BestEncoder* best);
 
     std::vector<BestEncoder> bestEncoders() { return bestEncoders_; }
