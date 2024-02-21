@@ -1,5 +1,4 @@
 #include "decoderFactory.h"
-#include "PNGDecoder.h"
 #include "PPMDecoder.h"
 #include "QOIDecoder.h"
 #include "JPEGDecoder.h"
@@ -10,8 +9,6 @@ namespace suite {
     switch (decoder) {
     case PPM:
       return (ImageDecoder*) new PPMDecoder();
-    case PNG:
-      return (ImageDecoder*) new PNGDecoder();
     case QOI:
       return (ImageDecoder*) new QOIDecoder();
     case JPEG:

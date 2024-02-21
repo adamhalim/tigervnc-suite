@@ -1,5 +1,5 @@
 #include "Client.h"
-#include "codec/PNGDecoder.h"
+#include "codec/JPEGDecoder.h"
 #include <rfb/CMsgReader.h>
 #include <rfb/CMsgWriter.h>
 
@@ -73,8 +73,8 @@ void Client::framebufferUpdateEnd()
     pb = getFramebuffer();
 
     const uint8_t* data = pb->getBuffer(pb->getRect(), &stride);
-    PNGDecoder decoder = PNGDecoder();
 
+    JPEGDecoder decoder = JPEGDecoder();
     decoder.encodeImageTofile(data, pb->width(), pb->height(),
                                           "debug_output.png");
   #endif

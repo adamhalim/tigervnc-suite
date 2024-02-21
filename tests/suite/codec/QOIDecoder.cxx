@@ -1,5 +1,4 @@
 #include "QOIDecoder.h"
-#include "lib/fpng.h"
 
 #define QOI_IMPLEMENTATION
 #include "lib/qoi.h"

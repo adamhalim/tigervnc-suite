@@ -1,5 +1,4 @@
 #include "FrameInStream.h"
-#include "../codec/lib/fpng.h"
 #include "../codec/lib/qoi.h"
 #include "../codec/decoderFactory.h"
 #include <cstdio>

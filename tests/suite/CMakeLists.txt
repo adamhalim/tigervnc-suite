@@ -18,12 +18,10 @@ target_sources(suite PRIVATE
   bruteforce/TimedBruteForceEncoder.cxx
   benchmark/Benchmark.cxx
   codec/PPMDecoder.cxx
-  codec/PNGDecoder.cxx
   codec/Image.cxx
   codec/QOIDecoder.cxx
   codec/JPEGDecoder.cxx
   codec/decoderFactory.cxx
-  codec/lib/fpng.cpp
   codec/lib/qoi.h
   codec/timed/TimedEncoder.cxx
   codec/timed/timedEncoderFactory.cxx

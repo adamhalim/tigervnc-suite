@@ -10,14 +10,12 @@ namespace suite {
 
   enum DecoderEnum {
     PPM = 0,
-    PNG,
     QOI,
     JPEG,
   };
 
   static std::map<std::string, DecoderEnum> decodersMap = {
     {"PPM", PPM},
-    {"PNG", PNG},
     {"QOI", QOI},
     {"JPEG", JPEG}
   };
@@ -26,7 +24,6 @@ namespace suite {
   {
     static std::string strings[] = {
       "PPM",
-      "PNG",
       "QOI",
       "JPEG",
     };
