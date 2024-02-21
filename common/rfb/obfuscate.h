@@ -1,5 +1,6 @@
-/* Copyright (C) 2011 TigerVNC Team.  All Rights Reserved.
- *
+/* Copyright (C) 2002-2005 RealVNC Ltd.  All Rights Reserved.
+ * Copyright 2023 Pierre Ossman for Cendio AB
+ * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,18 +17,19 @@
  * USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#ifndef __RFB_OBFUSCATE_H__
+#define __RFB_OBFUSCATE_H__
+
+#include <stdint.h>
+
+#include <string>
+#include <vector>
+
+namespace rfb {
+
+  std::vector<uint8_t> obfuscate(const char *str);
+  std::string deobfuscate(const uint8_t *data, size_t len);
+
+}
+
 #endif
-
-#ifdef WIN32 
-
-#define INITGUID
-#include <basetyps.h>
-
-#ifndef HAVE_ACTIVE_DESKTOP_L
-DEFINE_GUID(CLSID_ActiveDesktop,0x75048700L,0xEF1F,0x11D0,0x98,0x88,0x00,0x60,0x97,0xDE,0xAC,0xF9);
-DEFINE_GUID(IID_IActiveDesktop,0xF490EB00L,0x1240,0x11D1,0x98,0x88,0x00,0x60,0x97,0xDE,0xAC,0xF9);
-#endif
-
-#endif /* WIN32 */

@@ -17,7 +17,7 @@ namespace suite {
                                      255, 255, 255, 0, 8, 16);
 
   // Encodings to use
-  static const rdr::S32 encodings[] = {
+  static const int32_t encodings[] = {
     rfb::encodingTight, rfb::encodingCopyRect, rfb::encodingRRE,
     rfb::encodingHextile, rfb::encodingZRLE, rfb::pseudoEncodingLastRect,
     rfb::pseudoEncodingQualityLevel0 + 8,

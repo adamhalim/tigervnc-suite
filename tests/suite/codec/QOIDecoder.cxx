@@ -17,7 +17,7 @@ namespace suite {
  Image* QOIDecoder::decodeImageFromFile(std::string filename)
  {
   qoi_desc desc;
-  rdr::U8* data = (rdr::U8*) qoi_read(filename.c_str(), &desc, 4);
+  uint8_t* data = (uint8_t*) qoi_read(filename.c_str(), &desc, 4);
 
   if (!data)
     throw std::ios_base::failure("qoi: error decoding image");
@@ -28,11 +28,11 @@ namespace suite {
   return image;
  }
 
-Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
+Image* QOIDecoder::decodeImageFromMemory(uint8_t* data, int width, int height,
                                          int size, int x_offset, int y_offset)
 {
   qoi_desc desc;
-  rdr::U8* decodedImage = (rdr::U8*) qoi_decode(data, size, &desc, 4);
+  uint8_t* decodedImage = (uint8_t*) qoi_decode(data, size, &desc, 4);
   if (decodedImage == NULL)
     throw std::ios_base::failure("qoi: error decoding image");
 
@@ -42,7 +42,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   measurePixelRate(width, height, desc.channels);
   return image;
 }
- void QOIDecoder::encodeImageTofile(const rdr::U8 *data, int width, int height,
+ void QOIDecoder::encodeImageTofile(const uint8_t *data, int width, int height,
                                     std::string filename)
  {
   qoi_desc desc {
@@ -60,7 +60,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   measurePixelRate(width, height, desc.channels);
  }
 
- Image* QOIDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+ Image* QOIDecoder::encodeImageToMemory(const uint8_t *data, int width,
                                         int height, int x_offset, int y_offset)
  {
   qoi_desc desc {
@@ -71,7 +71,7 @@ Image* QOIDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
   };
 
   int size;
-  rdr::U8* encodedData = (rdr::U8*) qoi_encode(data, &desc,  &size);
+  uint8_t* encodedData = (uint8_t*) qoi_encode(data, &desc,  &size);
   if (!encodedData)
     throw std::ios_base::failure("error encoding image");
   Image* image = new Image(desc.width, desc.height, encodedData,

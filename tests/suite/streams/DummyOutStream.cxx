@@ -14,7 +14,7 @@ size_t DummyOutStream::length()
 }
 
 
-bool DummyOutStream::write(rdr::U8* data, size_t length)
+bool DummyOutStream::write(uint8_t* data, size_t length)
 {
   overrun(length);
   memcpy(start, data, length);
@@ -27,7 +27,7 @@ size_t DummyOutStream::size()
   return end - ptr;
 }
 
-rdr::U8* DummyOutStream::dump()
+uint8_t* DummyOutStream::dump()
 {
   return start;
 }

@@ -21,9 +21,9 @@ namespace suite {
     strncpy(displayCopy, display.c_str(), display.length());
     displayCopy[display.length()] = '\0';
 
-    rfb::CharArray dpyStr(displayCopy);
-    if (!(dpy = XOpenDisplay(dpyStr.buf[0] ? dpyStr.buf : 0))) {
-      std::cerr << "unable to open display " << XDisplayName(dpyStr.buf)
+    std::string dpyStr(displayCopy);
+    if (!(dpy = XOpenDisplay(dpyStr.c_str() ? dpyStr.c_str() : 0))) {
+      std::cerr << "unable to open display " << XDisplayName(dpyStr.c_str())
                 << std::endl;
       exit(1);
     }
@@ -149,7 +149,7 @@ namespace suite {
     // Get the damaged region from the display
     ::Image* damagedImage = factory.newImage(dpy, width, height);
     damagedImage->get(DefaultRootWindow(dpy), x_offset, y_offset);
-    const rdr::U8* data = (rdr::U8*) damagedImage->xim->data;
+    const uint8_t* data = (uint8_t*) damagedImage->xim->data;
 
     // Save changed rectangle
     suite::Image* image = decoder->encodeImageToMemory(data,

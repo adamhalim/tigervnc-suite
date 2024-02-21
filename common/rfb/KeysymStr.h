@@ -1,4 +1,4 @@
-/* Copyright (C) 2002-2005 RealVNC Ltd.  All Rights Reserved.
+/* Copyright 2021 Pierre Ossman for Cendio AB
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +15,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
  * USA.
  */
-#ifndef __RFB_PIXEL_H__
-#define __RFB_PIXEL_H__
 
-#include <rdr/types.h>
+#ifndef __RFB_KEYSYMSTR_H__
+#define __RFB_KEYSYMSTR_H__
 
-namespace rfb {
-  typedef rdr::U32 Pixel; // must be big enough to hold any pixel value
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+const char* KeySymName(unsigned keysym);
+
+#ifdef __cplusplus
 }
+#endif
+
 #endif

@@ -425,7 +425,7 @@ static int vncConvertSelection(ClientPtr client, Atom selection,
                                      XA_STRING, 8, PropModeReplace,
                                      strlen(latin1), latin1, TRUE);
 
-        vncStrFree(latin1);
+        free(latin1);
 
         if (rc != Success)
           return rc;
@@ -593,7 +593,7 @@ static void vncHandleSelection(Atom selection, Atom target,
       return;
 
     utf8 = vncLatin1ToUTF8(filtered, (size_t)-1);
-    vncStrFree(filtered);
+    free(filtered);
     if (utf8 == NULL)
       return;
 
@@ -602,7 +602,7 @@ static void vncHandleSelection(Atom selection, Atom target,
 
     vncSendClipboardData(utf8);
 
-    vncStrFree(utf8);
+    free(utf8);
   } else if (target == xaUTF8_STRING) {
     char *filtered;
 
@@ -610,6 +610,11 @@ static void vncHandleSelection(Atom selection, Atom target,
       return;
     if (prop->type != xaUTF8_STRING)
       return;
+
+    if (!vncIsValidUTF8(prop->data, prop->size)) {
+      LOG_ERROR("Invalid UTF-8 sequence in clipboard");
+      return;
+    }
 
     filtered = vncConvertLF(prop->data, prop->size);
     if (filtered == NULL)
@@ -620,7 +625,7 @@ static void vncHandleSelection(Atom selection, Atom target,
 
     vncSendClipboardData(filtered);
 
-    vncStrFree(filtered);
+    free(filtered);
   }
 }
 

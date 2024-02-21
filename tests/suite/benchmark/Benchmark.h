@@ -11,7 +11,7 @@ namespace suite {
   class Benchmark
   {
   public:
-    Benchmark(std::string filename, const rdr::S32* e = encodings,
+    Benchmark(std::string filename, const int32_t* e = encodings,
                                     const size_t len = sizeof(encodings)
                                                      / sizeof(*encodings));
     ~Benchmark();
@@ -33,7 +33,7 @@ namespace suite {
     int width_;
     int height_;
   private:
-    const rdr::S32* encodings_;
+    const int32_t* encodings_;
     const size_t encodingsLength_;
     static EncoderSettings encoderSettings(EncoderClass encoderClass,
                                         PseudoEncodingLevel quality = NONE,

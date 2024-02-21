@@ -38,6 +38,7 @@
 #include <rfb/SMsgWriter.h>
 #include <rfb/LogWriter.h>
 #include <rfb/ledStates.h>
+#include <rfb/util.h>
 
 using namespace rfb;
 
@@ -56,21 +57,21 @@ SMsgWriter::~SMsgWriter()
 {
 }
 
-void SMsgWriter::writeServerInit(rdr::U16 width, rdr::U16 height,
+void SMsgWriter::writeServerInit(uint16_t width, uint16_t height,
                                  const PixelFormat& pf, const char* name)
 {
   os->writeU16(width);
   os->writeU16(height);
   pf.write(os);
   os->writeU32(strlen(name));
-  os->writeBytes(name, strlen(name));
+  os->writeBytes((const uint8_t*)name, strlen(name));
   endMsg();
 }
 
 void SMsgWriter::writeSetColourMapEntries(int firstColour, int nColours,
-                                          const rdr::U16 red[],
-                                          const rdr::U16 green[],
-                                          const rdr::U16 blue[])
+                                          const uint16_t red[],
+                                          const uint16_t green[],
+                                          const uint16_t blue[])
 {
   startMsg(msgTypeSetColourMapEntries);
   os->pad(1);
@@ -92,21 +93,20 @@ void SMsgWriter::writeBell()
 
 void SMsgWriter::writeServerCutText(const char* str)
 {
-  size_t len;
-
   if (strchr(str, '\r') != NULL)
     throw Exception("Invalid carriage return in clipboard data");
 
-  len = strlen(str);
+  std::string latin1(utf8ToLatin1(str));
+
   startMsg(msgTypeServerCutText);
   os->pad(3);
-  os->writeU32(len);
-  os->writeBytes(str, len);
+  os->writeU32(latin1.size());
+  os->writeBytes((const uint8_t*)latin1.data(), latin1.size());
   endMsg();
 }
 
-void SMsgWriter::writeClipboardCaps(rdr::U32 caps,
-                                    const rdr::U32* lengths)
+void SMsgWriter::writeClipboardCaps(uint32_t caps,
+                                    const uint32_t* lengths)
 {
   size_t i, count;
 
@@ -134,7 +134,7 @@ void SMsgWriter::writeClipboardCaps(rdr::U32 caps,
   endMsg();
 }
 
-void SMsgWriter::writeClipboardRequest(rdr::U32 flags)
+void SMsgWriter::writeClipboardRequest(uint32_t flags)
 {
   if (!client->supportsEncoding(pseudoEncodingExtendedClipboard))
     throw Exception("Client does not support extended clipboard");
@@ -148,7 +148,7 @@ void SMsgWriter::writeClipboardRequest(rdr::U32 flags)
   endMsg();
 }
 
-void SMsgWriter::writeClipboardPeek(rdr::U32 flags)
+void SMsgWriter::writeClipboardPeek(uint32_t flags)
 {
   if (!client->supportsEncoding(pseudoEncodingExtendedClipboard))
     throw Exception("Client does not support extended clipboard");
@@ -162,7 +162,7 @@ void SMsgWriter::writeClipboardPeek(rdr::U32 flags)
   endMsg();
 }
 
-void SMsgWriter::writeClipboardNotify(rdr::U32 flags)
+void SMsgWriter::writeClipboardNotify(uint32_t flags)
 {
   if (!client->supportsEncoding(pseudoEncodingExtendedClipboard))
     throw Exception("Client does not support extended clipboard");
@@ -176,9 +176,9 @@ void SMsgWriter::writeClipboardNotify(rdr::U32 flags)
   endMsg();
 }
 
-void SMsgWriter::writeClipboardProvide(rdr::U32 flags,
+void SMsgWriter::writeClipboardProvide(uint32_t flags,
                                       const size_t* lengths,
-                                      const rdr::U8* const* data)
+                                      const uint8_t* const* data)
 {
   rdr::MemOutStream mos;
   rdr::ZlibOutStream zos;
@@ -211,7 +211,8 @@ void SMsgWriter::writeClipboardProvide(rdr::U32 flags,
   endMsg();
 }
 
-void SMsgWriter::writeFence(rdr::U32 flags, unsigned len, const char data[])
+void SMsgWriter::writeFence(uint32_t flags, unsigned len,
+                            const uint8_t data[])
 {
   if (!client->supportsEncoding(pseudoEncodingFence))
     throw Exception("Client does not support fences");
@@ -242,7 +243,7 @@ void SMsgWriter::writeEndOfContinuousUpdates()
   endMsg();
 }
 
-void SMsgWriter::writeDesktopSize(rdr::U16 reason, rdr::U16 result)
+void SMsgWriter::writeDesktopSize(uint16_t reason, uint16_t result)
 {
   ExtendedDesktopSizeMsg msg;
 
@@ -442,14 +443,16 @@ void SMsgWriter::writePseudoRects()
                                cursor.hotspot().x, cursor.hotspot().y,
                                cursor.getBuffer());
     } else if (client->supportsEncoding(pseudoEncodingCursor)) {
-      rdr::U8Array data(cursor.width()*cursor.height() * (client->pf().bpp/8));
-      rdr::U8Array mask(cursor.getMask());
+      size_t data_len = cursor.width()*cursor.height() *
+                        (client->pf().bpp/8);
+      std::vector<uint8_t> data(data_len);
+      std::vector<uint8_t> mask(cursor.getMask());
 
-      const rdr::U8* in;
-      rdr::U8* out;
+      const uint8_t* in;
+      uint8_t* out;
 
       in = cursor.getBuffer();
-      out = data.buf;
+      out = data.data();
       for (int i = 0;i < cursor.width()*cursor.height();i++) {
         client->pf().bufferFromRGB(out, in, 1);
         in += 4;
@@ -458,14 +461,14 @@ void SMsgWriter::writePseudoRects()
 
       writeSetCursorRect(cursor.width(), cursor.height(),
                          cursor.hotspot().x, cursor.hotspot().y,
-                         data.buf, mask.buf);
+                         data.data(), mask.data());
     } else if (client->supportsEncoding(pseudoEncodingXCursor)) {
-      rdr::U8Array bitmap(cursor.getBitmap());
-      rdr::U8Array mask(cursor.getMask());
+      std::vector<uint8_t> bitmap(cursor.getBitmap());
+      std::vector<uint8_t> mask(cursor.getMask());
 
       writeSetXCursorRect(cursor.width(), cursor.height(),
                           cursor.hotspot().x, cursor.hotspot().y,
-                          bitmap.buf, mask.buf);
+                          bitmap.data(), mask.data());
     } else {
       throw Exception("Client does not support local cursor");
     }
@@ -538,8 +541,8 @@ void SMsgWriter::writeSetDesktopSizeRect(int width, int height)
   os->writeU32(pseudoEncodingDesktopSize);
 }
 
-void SMsgWriter::writeExtendedDesktopSizeRect(rdr::U16 reason,
-                                              rdr::U16 result,
+void SMsgWriter::writeExtendedDesktopSizeRect(uint16_t reason,
+                                              uint16_t result,
                                               int fb_width,
                                               int fb_height,
                                               const ScreenSet& layout)
@@ -583,12 +586,13 @@ void SMsgWriter::writeSetDesktopNameRect(const char *name)
   os->writeU16(0);
   os->writeU32(pseudoEncodingDesktopName);
   os->writeU32(strlen(name));
-  os->writeBytes(name, strlen(name));
+  os->writeBytes((const uint8_t*)name, strlen(name));
 }
 
 void SMsgWriter::writeSetCursorRect(int width, int height,
                                     int hotspotX, int hotspotY,
-                                    const void* data, const void* mask)
+                                    const uint8_t* data,
+                                    const uint8_t* mask)
 {
   if (!client->supportsEncoding(pseudoEncodingCursor))
     throw Exception("Client does not support local cursors");
@@ -606,7 +610,8 @@ void SMsgWriter::writeSetCursorRect(int width, int height,
 
 void SMsgWriter::writeSetXCursorRect(int width, int height,
                                      int hotspotX, int hotspotY,
-                                     const void* data, const void* mask)
+                                     const uint8_t* data,
+                                     const uint8_t* mask)
 {
   if (!client->supportsEncoding(pseudoEncodingXCursor))
     throw Exception("Client does not support local cursors");
@@ -632,7 +637,7 @@ void SMsgWriter::writeSetXCursorRect(int width, int height,
 
 void SMsgWriter::writeSetCursorWithAlphaRect(int width, int height,
                                              int hotspotX, int hotspotY,
-                                             const rdr::U8* data)
+                                             const uint8_t* data)
 {
   if (!client->supportsEncoding(pseudoEncodingCursorWithAlpha))
     throw Exception("Client does not support local cursors");
@@ -660,7 +665,7 @@ void SMsgWriter::writeSetCursorWithAlphaRect(int width, int height,
 
 void SMsgWriter::writeSetVMwareCursorRect(int width, int height,
                                           int hotspotX, int hotspotY,
-                                          const rdr::U8* data)
+                                          const uint8_t* data)
 {
   if (!client->supportsEncoding(pseudoEncodingVMwareCursor))
     throw Exception("Client does not support local cursors");
@@ -694,7 +699,7 @@ void SMsgWriter::writeSetVMwareCursorPositionRect(int hotspotX, int hotspotY)
   os->writeU32(pseudoEncodingVMwareCursorPosition);
 }
 
-void SMsgWriter::writeLEDStateRect(rdr::U8 state)
+void SMsgWriter::writeLEDStateRect(uint8_t state)
 {
   if (!client->supportsEncoding(pseudoEncodingLEDState) &&
       !client->supportsEncoding(pseudoEncodingVMwareLEDState))

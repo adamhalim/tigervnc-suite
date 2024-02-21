@@ -28,12 +28,12 @@ namespace suite {
     throw std::logic_error("method not implemented");
   }
 
-  Image* JPEGDecoder::decodeImageFromMemory(rdr::U8 *data, int width,
+  Image* JPEGDecoder::decodeImageFromMemory(uint8_t *data, int width,
                                             int height, int size,
                                             int x_offset, int y_offset)
   {
     rfb::Rect rect;
-    rdr::U8* buffer;
+    uint8_t* buffer;
     Image* image;
     rfb::JpegDecompressor jd;
 
@@ -42,7 +42,7 @@ namespace suite {
     rect.br.x = x_offset + width;
     rect.br.y = y_offset + height;
 
-    buffer = new rdr::U8[width * height * 4];
+    buffer = new uint8_t[width * height * 4];
 
     jd.decompress(data, size, buffer, width, rect, pf);
 
@@ -51,7 +51,7 @@ namespace suite {
     return image;
   }
 
-  void JPEGDecoder::encodeImageTofile(const rdr::U8 *data, int width,
+  void JPEGDecoder::encodeImageTofile(const uint8_t *data, int width,
                                       int height, std::string filename)
   {
     rfb::Rect rect;
@@ -71,12 +71,12 @@ namespace suite {
     of.close();
   }
 
-  Image* JPEGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+  Image* JPEGDecoder::encodeImageToMemory(const uint8_t *data, int width,
                                           int height, int x_offset,
                                           int y_offset)
   {
     rfb::Rect rect;
-    rdr::U8 *bufferCopy;
+    uint8_t *bufferCopy;
     rfb::JpegCompressor jc;
     Image* image;
 
@@ -88,7 +88,7 @@ namespace suite {
     jc.clear();
     jc.compress(data, width, rect, pf, quality, subsampling);
 
-    bufferCopy = new rdr::U8[jc.length()];
+    bufferCopy = new uint8_t[jc.length()];
     memcpy(bufferCopy, jc.data(), jc.length());
 
     image = new Image(width, height, bufferCopy, jc.length(),

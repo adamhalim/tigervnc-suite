@@ -2,7 +2,6 @@
 #include "../codec/lib/fpng.h"
 #include "../codec/lib/qoi.h"
 #include "../codec/decoderFactory.h"
-#include <rdr/types.h>
 #include <cstdio>
 #include <fstream>
 #include <ios>
@@ -45,7 +44,7 @@ namespace suite {
 
     recorderStats.stats.push_back(stats);
 
-    rdr::U8* data = new rdr::U8[size];
+    uint8_t* data = new uint8_t[size];
     is.read((char*)data, size);
 
     Image* image = decoder->decodeImageFromMemory(data, width, height, size,

@@ -11,8 +11,8 @@ public:
 
   virtual size_t length();
   size_t size();
-  rdr::U8* dump();
-  bool write(rdr::U8* data, size_t length);
+  uint8_t* dump();
+  bool write(uint8_t* data, size_t length);
 };
 
 #endif // __SUITE_DUMMY_OUT_STREAM_H__

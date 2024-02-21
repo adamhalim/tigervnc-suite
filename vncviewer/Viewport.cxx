@@ -28,7 +28,9 @@
 #include <rfb/CMsgWriter.h>
 #include <rfb/LogWriter.h>
 #include <rfb/Exception.h>
+#include <rfb/KeysymStr.h>
 #include <rfb/ledStates.h>
+#include <rfb/util.h>
 
 // FLTK can pull in the X11 headers on some systems
 #ifndef XK_VoidSymbol
@@ -55,12 +57,13 @@
 #define MAPVK_VK_TO_VSC 0
 #endif
 
+#include "fltk/layout.h"
+#include "fltk/util.h"
 #include "Viewport.h"
 #include "CConn.h"
 #include "OptionsDialog.h"
 #include "DesktopWindow.h"
 #include "i18n.h"
-#include "fltk_layout.h"
 #include "parameters.h"
 #include "keysym2ucs.h"
 #include "menukey.h"
@@ -98,7 +101,6 @@ extern const unsigned int code_map_osx_to_qnum_len;
 
 
 using namespace rfb;
-using namespace rdr;
 
 static rfb::LogWriter vlog("Viewport");
 
@@ -113,14 +115,13 @@ enum { ID_DISCONNECT, ID_FULLSCREEN, ID_MINIMIZE, ID_RESIZE,
 static const WORD SCAN_FAKE = 0xaa;
 #endif
 
-Viewport::Viewport(int w, int h, const rfb::PixelFormat& serverPF, CConn* cc_)
+Viewport::Viewport(int w, int h, const rfb::PixelFormat& /*serverPF*/, CConn* cc_)
   : Fl_Widget(0, 0, w, h), cc(cc_), frameBuffer(NULL),
     lastPointerPos(0, 0), lastButtonMask(0),
 #ifdef WIN32
     altGrArmed(false),
 #endif
-    firstLEDState(true),
-    pendingServerClipboard(false), pendingClientClipboard(false),
+    firstLEDState(true), pendingClientClipboard(false),
     menuCtrlKey(false), menuAltKey(false), cursor(NULL)
 {
 #if !defined(WIN32) && !defined(__APPLE__)
@@ -245,7 +246,7 @@ static const char * dotcursor_xpm[] = {
   "     "};
 
 void Viewport::setCursor(int width, int height, const Point& hotspot,
-                         const rdr::U8* data)
+                         const uint8_t* data)
 {
   int i;
 
@@ -266,12 +267,12 @@ void Viewport::setCursor(int width, int height, const Point& hotspot,
     cursorHotspot.x = cursorHotspot.y = 2;
   } else {
     if ((width == 0) || (height == 0)) {
-      U8 *buffer = new U8[4];
+      uint8_t *buffer = new uint8_t[4];
       memset(buffer, 0, 4);
       cursor = new Fl_RGB_Image(buffer, 1, 1, 4);
       cursorHotspot.x = cursorHotspot.y = 0;
     } else {
-      U8 *buffer = new U8[width * height * 4];
+      uint8_t *buffer = new uint8_t[width * height * 4];
       memcpy(buffer, data, width * height * 4);
       cursor = new Fl_RGB_Image(buffer, width, height, 4);
       cursorHotspot = hotspot;
@@ -294,17 +295,15 @@ void Viewport::handleClipboardAnnounce(bool available)
 
   if (!available) {
     vlog.debug("Clipboard is no longer available on server");
-    pendingServerClipboard = false;
+    return;
+  }
+
+  if (!hasFocus()) {
+    vlog.debug("Got notification of new clipboard on server whilst not focused, ignoring");
     return;
   }
 
   pendingClientClipboard = false;
-
-  if (!hasFocus()) {
-    vlog.debug("Got notification of new clipboard on server whilst not focused, will request data later");
-    pendingServerClipboard = true;
-    return;
-  }
 
   vlog.debug("Got notification of new clipboard on server, requesting data");
   cc->requestClipboard();
@@ -559,24 +558,27 @@ void Viewport::resize(int x, int y, int w, int h)
 
 int Viewport::handle(int event)
 {
-  char *filtered;
+  std::string filtered;
   int buttonMask, wheelMask;
   DownMap::const_iterator iter;
 
   switch (event) {
   case FL_PASTE:
+    if (!isValidUTF8(Fl::event_text(), Fl::event_length())) {
+      vlog.error("Invalid UTF-8 sequence in system clipboard");
+      return 1;
+    }
+
     filtered = convertLF(Fl::event_text(), Fl::event_length());
 
-    vlog.debug("Sending clipboard data (%d bytes)", (int)strlen(filtered));
+    vlog.debug("Sending clipboard data (%d bytes)", (int)filtered.size());
 
     try {
-      cc->sendClipboardData(filtered);
+      cc->sendClipboardData(filtered.c_str());
     } catch (rdr::Exception& e) {
       vlog.error("%s", e.str());
       abort_connection_with_unexpected_error(e);
     }
-
-    strFree(filtered);
 
     return 1;
 
@@ -754,8 +756,6 @@ void Viewport::handleClipboardChange(int source, void *data)
 
   self->clipboardSource = source;
 
-  self->pendingServerClipboard = false;
-
   if (!self->hasFocus()) {
     vlog.debug("Local clipboard changed whilst not focused, will notify server later");
     self->pendingClientClipboard = true;
@@ -776,15 +776,6 @@ void Viewport::handleClipboardChange(int source, void *data)
 
 void Viewport::flushPendingClipboard()
 {
-  if (pendingServerClipboard) {
-    vlog.debug("Focus regained after remote clipboard change, requesting data");
-    try {
-      cc->requestClipboard();
-    } catch (rdr::Exception& e) {
-      vlog.error("%s", e.str());
-      abort_connection_with_unexpected_error(e);
-    }
-  }
   if (pendingClientClipboard) {
     vlog.debug("Focus regained after local clipboard change, notifying server");
     try {
@@ -795,7 +786,6 @@ void Viewport::flushPendingClipboard()
     }
   }
 
-  pendingServerClipboard = false;
   pendingClientClipboard = false;
 }
 
@@ -829,7 +819,7 @@ void Viewport::resetKeyboard()
 }
 
 
-void Viewport::handleKeyPress(int keyCode, rdr::U32 keySym)
+void Viewport::handleKeyPress(int keyCode, uint32_t keySym)
 {
   static bool menuRecursion = false;
 
@@ -878,12 +868,8 @@ void Viewport::handleKeyPress(int keyCode, rdr::U32 keySym)
   // and send the same on release.
   downKeySym[keyCode] = keySym;
 
-#if defined(WIN32) || defined(__APPLE__)
-  vlog.debug("Key pressed: 0x%04x => 0x%04x", keyCode, keySym);
-#else
   vlog.debug("Key pressed: 0x%04x => XK_%s (0x%04x)",
-             keyCode, XKeysymToString(keySym), keySym);
-#endif
+             keyCode, KeySymName(keySym), keySym);
 
   try {
     // Fake keycode?
@@ -913,12 +899,8 @@ void Viewport::handleKeyRelease(int keyCode)
     return;
   }
 
-#if defined(WIN32) || defined(__APPLE__)
-  vlog.debug("Key released: 0x%04x => 0x%04x", keyCode, iter->second);
-#else
   vlog.debug("Key released: 0x%04x => XK_%s (0x%04x)",
-             keyCode, XKeysymToString(iter->second), iter->second);
-#endif
+             keyCode, KeySymName(iter->second), iter->second);
 
   try {
     if (keyCode > 0xff)
@@ -967,7 +949,7 @@ int Viewport::handleSystemEvent(void *event, void *data)
     UINT vKey;
     bool isExtended;
     int keyCode;
-    rdr::U32 keySym;
+    uint32_t keySym;
 
     vKey = msg->wParam;
     isExtended = (msg->lParam & (1 << 24)) != 0;
@@ -1147,7 +1129,7 @@ int Viewport::handleSystemEvent(void *event, void *data)
       keyCode = code_map_osx_to_qnum[keyCode];
 
     if (cocoa_is_key_press(event)) {
-      rdr::U32 keySym;
+      uint32_t keySym;
 
       keySym = cocoa_event_keysym(event);
       if (keySym == NoSymbol) {
@@ -1244,7 +1226,7 @@ void Viewport::initContextMenu()
 {
   contextMenu->clear();
 
-  fltk_menu_add(contextMenu, p_("ContextMenu|", "Dis&connect"),
+  fltk_menu_add(contextMenu, p_("ContextMenu|", "Disconn&ect"),
                 0, NULL, (void*)ID_DISCONNECT, FL_MENU_DIVIDER);
 
   fltk_menu_add(contextMenu, p_("ContextMenu|", "&Full screen"),

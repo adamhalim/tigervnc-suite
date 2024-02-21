@@ -25,7 +25,7 @@ namespace suite {
                            const rfb::Palette& palette);
     virtual void writeSolidRect(int width, int height,
                                 const rfb::PixelFormat& pf,
-                                const rdr::U8* colour);
+                                const uint8_t* colour);
     void bestEncoder(double time, uint inputSize, uint outputSize,
                      EncoderClass encoder, BestEncoder* best);
 

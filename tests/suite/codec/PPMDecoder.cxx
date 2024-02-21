@@ -39,7 +39,7 @@ namespace suite {
 
     std::istringstream iss(pixels);
     int bufSize = width * height * 3;
-    rdr::U8* buf = new rdr::U8[bufSize];
+    uint8_t* buf = new uint8_t[bufSize];
     Image *image = new Image(width, height, buf, bufSize);
     // While there is data still in stream,
     while ((iss >> std::ws).peek() != std::char_traits<char>::eof()) {
@@ -51,7 +51,7 @@ namespace suite {
     return image;
   }
 
-  Image* PPMDecoder::decodeImageFromMemory(rdr::U8* data, int width,
+  Image* PPMDecoder::decodeImageFromMemory(uint8_t* data, int width,
                                            int height, int size,
                                            int x_offest, int y_offset)
   {
@@ -63,7 +63,7 @@ namespace suite {
     encodeImageTofile(image->getBuffer(), image->width, image->height, filename);
   }
 
-  void PPMDecoder::encodeImageTofile(const rdr::U8* data,
+  void PPMDecoder::encodeImageTofile(const uint8_t* data,
                                      int width, int height,
                                      std::string filename)
   {
@@ -81,9 +81,9 @@ namespace suite {
 
     std::ostringstream oss;
     for (int i = 0; i < width * height * 4; i+=4) {
-      rdr::U8 r = data[i];
-      rdr::U8 g = data[i+1];
-      rdr::U8 b = data[i+2];
+      uint8_t r = data[i];
+      uint8_t g = data[i+1];
+      uint8_t b = data[i+2];
       oss << (int)r << " " << (int)g << " " << (int)b << " ";
     }
     file << oss.str();
@@ -91,13 +91,13 @@ namespace suite {
     measurePixelRate(width, height, 3);
   }
 
-  Image* PPMDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+  Image* PPMDecoder::encodeImageToMemory(const uint8_t *data, int width,
                                         int height, int offset_x, int offset_y)
   {
     const std::string MAXVAL = "255";
     std::string header = "P3\n" + std::to_string(width) + " "
       + std::to_string(height) + "\n" + MAXVAL + "\n";
-    rdr::U8* buf = new rdr::U8[(width * height * 3) + header.length()];
+    uint8_t* buf = new uint8_t[(width * height * 3) + header.length()];
 
     for (int i = 0; i < width * height * 4; i+=4) {
       buf[i - (i/4)] = data[i];

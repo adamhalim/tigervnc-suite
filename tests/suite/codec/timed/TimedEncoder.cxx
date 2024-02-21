@@ -53,7 +53,7 @@ void TimedEncoder::writeRect(const rfb::PixelBuffer* pb,
 
 void TimedEncoder::writeSolidRect(int width, int height,
                                   const rfb::PixelFormat& pf,
-                                  const rdr::U8* colour)
+                                  const uint8_t* colour)
 {
   startWriteSolidRectTimer();
   encoder->writeSolidRect(width, height, pf, colour);

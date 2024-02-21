@@ -95,7 +95,7 @@ namespace suite {
 
     void writeSolidRect(int width, int height,
                         const rfb::PixelFormat& pf,
-                        const rdr::U8* colour);
+                        const uint8_t* colour);
 
     void setCompressLevel(int level) { encoder->setCompressLevel(level); };
     void setQualityLevel(int level) { encoder->setQualityLevel(level); };

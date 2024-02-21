@@ -48,7 +48,7 @@ extern char **environ;
 const char *SERVICE_NAME = "tigervnc";
 
 // Main script PID
-volatile static pid_t script = -1;
+static volatile pid_t script = -1;
 
 // Daemon completion pipe
 int daemon_pipe_fd = -1;
@@ -142,6 +142,7 @@ finish_daemon(void)
 static void
 sighandler(int sig)
 {
+    (void)sig;
     if (script > 0) {
         kill(script, SIGTERM);
     }
@@ -169,6 +170,10 @@ conv(int num_msg,
      const struct pam_message **msg,
      struct pam_response **resp, void *appdata_ptr)
 {
+    (void)num_msg;
+    (void)msg;
+    (void)resp;
+    (void)appdata_ptr;
     /* Opening a session should not require a conversation */
     return PAM_CONV_ERR;
 }
@@ -344,7 +349,7 @@ static void
 redir_stdio(const char *homedir, const char *display)
 {
     int fd;
-    size_t hostlen;
+    long hostlen;
     char* hostname = NULL;
     char logfile[PATH_MAX];
 
@@ -498,6 +503,14 @@ run_script(const char *username, const char *display, char **envp)
     _exit(EX_OSERR);
 }
 
+static void
+usage(void)
+{
+    fprintf(stderr, "Syntax:\n");
+    fprintf(stderr, "    vncsession [-D] <username> <display>\n");
+    exit(EX_USAGE);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -506,14 +519,23 @@ main(int argc, char **argv)
 
     const char *username, *display;
 
-    if ((argc != 3) || (argv[2][0] != ':')) {
-        fprintf(stderr, "Syntax:\n");
-        fprintf(stderr, "    %s <username> <display>\n", argv[0]);
-        return EX_USAGE;
+    int opt, forking = 1;
+
+    while ((opt = getopt(argc, argv, "D")) != -1) {
+        switch (opt) {
+        case 'D':
+            forking = 0;
+            break;
+        default:
+            usage();
+        }
     }
 
-    username = argv[1];
-    display = argv[2];
+    if ((argc != optind + 2) || (argv[optind +1][0] != ':'))
+        usage();
+
+    username = argv[argc - 2];
+    display = argv[argc - 1];
 
     if (geteuid() != 0) {
         fprintf(stderr, "This program needs to be run as root!\n");
@@ -529,8 +551,10 @@ main(int argc, char **argv)
         return EX_OSERR;
     }
 
-    if (begin_daemon() == -1)
-        return EX_OSERR;
+    if (forking) {
+        if (begin_daemon() == -1)
+            return EX_OSERR;
+    }
 
     openlog("vncsession", LOG_PID, LOG_AUTH);
 
@@ -581,7 +605,8 @@ main(int argc, char **argv)
         fclose(f);
     }
 
-    finish_daemon();
+    if (forking)
+        finish_daemon();
 
     while (1) {
         int status;

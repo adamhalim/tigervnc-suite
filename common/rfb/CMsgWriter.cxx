@@ -36,6 +36,7 @@
 #include <rfb/Rect.h>
 #include <rfb/ServerParams.h>
 #include <rfb/CMsgWriter.h>
+#include <rfb/util.h>
 
 using namespace rfb;
 
@@ -62,9 +63,9 @@ void CMsgWriter::writeSetPixelFormat(const PixelFormat& pf)
   endMsg();
 }
 
-void CMsgWriter::writeSetEncodings(const std::list<rdr::U32> encodings)
+void CMsgWriter::writeSetEncodings(const std::list<uint32_t> encodings)
 {
-  std::list<rdr::U32>::const_iterator iter;
+  std::list<uint32_t>::const_iterator iter;
   startMsg(msgTypeSetEncodings);
   os->pad(1);
   os->writeU16(encodings.size());
@@ -130,7 +131,7 @@ void CMsgWriter::writeEnableContinuousUpdates(bool enable,
   endMsg();
 }
 
-void CMsgWriter::writeFence(rdr::U32 flags, unsigned len, const char data[])
+void CMsgWriter::writeFence(uint32_t flags, unsigned len, const uint8_t data[])
 {
   if (!server->supportsFence)
     throw Exception("Server does not support fences");
@@ -150,7 +151,7 @@ void CMsgWriter::writeFence(rdr::U32 flags, unsigned len, const char data[])
   endMsg();
 }
 
-void CMsgWriter::writeKeyEvent(rdr::U32 keysym, rdr::U32 keycode, bool down)
+void CMsgWriter::writeKeyEvent(uint32_t keysym, uint32_t keycode, bool down)
 {
   if (!server->supportsQEMUKeyEvent || !keycode) {
     /* This event isn't meaningful without a valid keysym */
@@ -191,21 +192,20 @@ void CMsgWriter::writePointerEvent(const Point& pos, int buttonMask)
 
 void CMsgWriter::writeClientCutText(const char* str)
 {
-  size_t len;
-
   if (strchr(str, '\r') != NULL)
     throw Exception("Invalid carriage return in clipboard data");
 
-  len = strlen(str);
+  std::string latin1(utf8ToLatin1(str));
+
   startMsg(msgTypeClientCutText);
   os->pad(3);
-  os->writeU32(len);
-  os->writeBytes(str, len);
+  os->writeU32(latin1.size());
+  os->writeBytes((const uint8_t*)latin1.data(), latin1.size());
   endMsg();
 }
 
-void CMsgWriter::writeClipboardCaps(rdr::U32 caps,
-                                    const rdr::U32* lengths)
+void CMsgWriter::writeClipboardCaps(uint32_t caps,
+                                    const uint32_t* lengths)
 {
   size_t i, count;
 
@@ -233,7 +233,7 @@ void CMsgWriter::writeClipboardCaps(rdr::U32 caps,
   endMsg();
 }
 
-void CMsgWriter::writeClipboardRequest(rdr::U32 flags)
+void CMsgWriter::writeClipboardRequest(uint32_t flags)
 {
   if (!(server->clipboardFlags() & clipboardRequest))
     throw Exception("Server does not support clipboard \"request\" action");
@@ -245,7 +245,7 @@ void CMsgWriter::writeClipboardRequest(rdr::U32 flags)
   endMsg();
 }
 
-void CMsgWriter::writeClipboardPeek(rdr::U32 flags)
+void CMsgWriter::writeClipboardPeek(uint32_t flags)
 {
   if (!(server->clipboardFlags() & clipboardPeek))
     throw Exception("Server does not support clipboard \"peek\" action");
@@ -257,7 +257,7 @@ void CMsgWriter::writeClipboardPeek(rdr::U32 flags)
   endMsg();
 }
 
-void CMsgWriter::writeClipboardNotify(rdr::U32 flags)
+void CMsgWriter::writeClipboardNotify(uint32_t flags)
 {
   if (!(server->clipboardFlags() & clipboardNotify))
     throw Exception("Server does not support clipboard \"notify\" action");
@@ -269,9 +269,9 @@ void CMsgWriter::writeClipboardNotify(rdr::U32 flags)
   endMsg();
 }
 
-void CMsgWriter::writeClipboardProvide(rdr::U32 flags,
+void CMsgWriter::writeClipboardProvide(uint32_t flags,
                                       const size_t* lengths,
-                                      const rdr::U8* const* data)
+                                      const uint8_t* const* data)
 {
   rdr::MemOutStream mos;
   rdr::ZlibOutStream zos;

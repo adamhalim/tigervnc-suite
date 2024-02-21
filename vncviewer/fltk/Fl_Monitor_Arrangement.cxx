@@ -53,15 +53,14 @@
 #include <IOKit/hidsystem/IOHIDParameter.h>
 #endif
 
-#include "MonitorArrangement.h"
+#include "Fl_Monitor_Arrangement.h"
 
-static std::set<MonitorArrangement *> instances;
+static std::set<Fl_Monitor_Arrangement *> instances;
 static const Fl_Boxtype FL_CHECKERED_BOX = FL_FREE_BOXTYPE;
 
-MonitorArrangement::MonitorArrangement(
+Fl_Monitor_Arrangement::Fl_Monitor_Arrangement(
    int x, int y, int w, int h)
 :  Fl_Group(x, y, w, h),
-   SELECTION_COLOR(fl_lighter(FL_BLUE)),
    AVAILABLE_COLOR(fl_lighter(fl_lighter(fl_lighter(FL_BACKGROUND_COLOR))))
 {
   // Used for required monitors.
@@ -77,7 +76,7 @@ MonitorArrangement::MonitorArrangement(
   end();
 }
 
-MonitorArrangement::~MonitorArrangement()
+Fl_Monitor_Arrangement::~Fl_Monitor_Arrangement()
 {
   instances.erase(this);
 
@@ -85,7 +84,7 @@ MonitorArrangement::~MonitorArrangement()
     Fl::remove_handler(fltk_event_handler);
 }
 
-std::set<int> MonitorArrangement::get()
+std::set<int> Fl_Monitor_Arrangement::value() const
 {
   std::set<int> indices;
   MonitorMap::const_iterator iter;
@@ -98,18 +97,24 @@ std::set<int> MonitorArrangement::get()
   return indices;
 }
 
-void MonitorArrangement::set(std::set<int> indices)
+int Fl_Monitor_Arrangement::value(std::set<int> indices)
 {
   MonitorMap::const_iterator iter;
+  bool changed;
 
+  changed = false;
   for (iter = monitors.begin(); iter != monitors.end(); ++iter) {
     bool selected = std::find(indices.begin(), indices.end(),
                               iter->first) != indices.end();
-    iter->second->value(selected ? 1 : 0);
+    if (iter->second->value() != selected)
+      changed = true;
+    iter->second->value(selected);
   }
+
+  return changed;
 }
 
-void MonitorArrangement::draw()
+void Fl_Monitor_Arrangement::draw()
 {
   MonitorMap::const_iterator iter;
 
@@ -118,18 +123,18 @@ void MonitorArrangement::draw()
 
     if (is_required(iter->first)) {
       monitor->box(FL_CHECKERED_BOX);
-      monitor->color(SELECTION_COLOR);
+      monitor->color(FL_SELECTION_COLOR);
     } else {
       monitor->box(FL_BORDER_BOX);
       monitor->color(AVAILABLE_COLOR);
-      monitor->selection_color(SELECTION_COLOR);
+      monitor->selection_color(FL_SELECTION_COLOR);
     }
   }
 
   Fl_Group::draw();
 }
 
-void MonitorArrangement::layout()
+void Fl_Monitor_Arrangement::layout()
 {
   int x, y, w, h;
   double scale = this->scale();
@@ -173,12 +178,12 @@ void MonitorArrangement::layout()
   }
 }
 
-void MonitorArrangement::refresh()
+void Fl_Monitor_Arrangement::refresh()
 {
   // The selection state is only saved persistently when "OK" is
   // pressed. We need to manually restore the current selection
   // when the widget is refreshed.
-  std::set<int> indices = get();
+  std::set<int> indices = value();
   monitors.clear();
 
   // FLTK recursively deletes all children for us.
@@ -188,18 +193,18 @@ void MonitorArrangement::refresh()
   end();
 
   // Restore the current selection state.
-  set(indices);
+  value(indices);
   redraw();
 }
 
-bool MonitorArrangement::is_required(int m)
+bool Fl_Monitor_Arrangement::is_required(int m)
 {
   // A selected monitor is never required.
   if (monitors[m]->value() == 1)
     return false;
 
   // If no monitors are selected, none are required.
-  std::set<int> selected = get();
+  std::set<int> selected = value();
   if (selected.size() <= 0)
     return false;
 
@@ -258,7 +263,7 @@ bool MonitorArrangement::is_required(int m)
   return true;
 }
 
-double MonitorArrangement::scale()
+double Fl_Monitor_Arrangement::scale()
 {
   const int MARGIN = 20;
   std::pair<int, int> size = this->size();
@@ -274,7 +279,7 @@ double MonitorArrangement::scale()
     return s_w;
 }
 
-std::pair<int, int> MonitorArrangement::size()
+std::pair<int, int> Fl_Monitor_Arrangement::size()
 {
   int x, y, w, h;
   int top, bottom, left, right;
@@ -305,7 +310,7 @@ std::pair<int, int> MonitorArrangement::size()
   return std::make_pair(x_max - x_min, y_max - y_min);
 }
 
-std::pair<int, int> MonitorArrangement::offset()
+std::pair<int, int> Fl_Monitor_Arrangement::offset()
 {
   double scale = this->scale();
   std::pair<int, int> size = this->size();
@@ -317,7 +322,7 @@ std::pair<int, int> MonitorArrangement::offset()
   return std::make_pair(offset_x + abs(origin.first)*scale, offset_y + abs(origin.second)*scale);
 }
 
-std::pair<int, int> MonitorArrangement::origin()
+std::pair<int, int> Fl_Monitor_Arrangement::origin()
 {
   int x, y, w, h, ox, oy;
   ox = oy = 0;
@@ -335,7 +340,7 @@ std::pair<int, int> MonitorArrangement::origin()
   return std::make_pair(ox, oy);
 }
 
-std::string MonitorArrangement::description(int m)
+std::string Fl_Monitor_Arrangement::description(int m)
 {
   std::string name;
   int x, y, w, h;
@@ -356,7 +361,8 @@ std::string MonitorArrangement::description(int m)
 
 #if defined(WIN32)
 static BOOL CALLBACK EnumDisplayMonitorsCallback(
-  HMONITOR monitor, HDC deviceContext, LPRECT rect, LPARAM userData)
+  HMONITOR monitor, HDC /*deviceContext*/, LPRECT /*rect*/,
+  LPARAM userData)
 {
   std::set<HMONITOR>* sys_monitors = (std::set<HMONITOR>*)userData;
   sys_monitors->insert(monitor);
@@ -364,7 +370,7 @@ static BOOL CALLBACK EnumDisplayMonitorsCallback(
 }
 #endif
 
-std::string MonitorArrangement::get_monitor_name(int m)
+std::string Fl_Monitor_Arrangement::get_monitor_name(int m)
 {
 #if defined(WIN32)
   std::set<HMONITOR> sys_monitors;
@@ -530,9 +536,9 @@ std::string MonitorArrangement::get_monitor_name(int m)
 #endif
 }
 
-int MonitorArrangement::fltk_event_handler(int event)
+int Fl_Monitor_Arrangement::fltk_event_handler(int event)
 {
-  std::set<MonitorArrangement *>::iterator it;
+  std::set<Fl_Monitor_Arrangement *>::iterator it;
 
   if (event != FL_SCREEN_CONFIGURATION_CHANGED)
     return 0;
@@ -543,9 +549,10 @@ int MonitorArrangement::fltk_event_handler(int event)
   return 0;
 }
 
-void MonitorArrangement::monitor_pressed(Fl_Widget *widget, void *user_data)
+void Fl_Monitor_Arrangement::monitor_pressed(Fl_Widget* /*widget*/,
+                                             void *user_data)
 {
-  MonitorArrangement *self = (MonitorArrangement *) user_data;
+  Fl_Monitor_Arrangement *self = (Fl_Monitor_Arrangement *) user_data;
 
   // When a monitor is selected, FLTK changes the state of it for us.
   // However, selecting a monitor might implicitly change the state of
@@ -555,7 +562,7 @@ void MonitorArrangement::monitor_pressed(Fl_Widget *widget, void *user_data)
   self->redraw();
 }
 
-void MonitorArrangement::checkered_pattern_draw(
+void Fl_Monitor_Arrangement::checkered_pattern_draw(
   int x, int y, int width, int height, Fl_Color color)
 {
   bool draw_checker = false;

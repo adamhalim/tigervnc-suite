@@ -63,7 +63,7 @@ public class VncViewer implements Runnable {
   public static final String aboutText =
     new String("TigerVNC Java Viewer v%s (%s)%n"+
                "Built on %s at %s%n"+
-               "Copyright (C) 1999-2022 TigerVNC Team and many others (see README.rst)%n"+
+               "Copyright (C) 1999-2024 TigerVNC Team and many others (see README.rst)%n"+
                "See https://www.tigervnc.org for information on TigerVNC.");
 
   public static String version = null;
@@ -387,7 +387,7 @@ public class VncViewer implements Runnable {
     cc = null;
     UserDialog dlg = new UserDialog();
     CSecurity.upg = dlg;
-    CSecurityTLS.msg = dlg;
+    CSecurity.msg = dlg;
     Socket sock = null;
 
     /* Specifying -via and -listen together is nonsense */

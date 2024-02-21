@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <rfb/LogWriter.h>
+#include <rfb/Exception.h>
 
 #include <x0vncserver/XDesktop.h>
 
@@ -51,7 +52,6 @@ void vncSetGlueContext(Display *dpy, void *res);
 #include <x0vncserver/Geometry.h>
 #include <x0vncserver/XPixelBuffer.h>
 
-using namespace std;
 using namespace rfb;
 
 extern const unsigned short code_map_qnum_to_xorgevdev[];
@@ -276,8 +276,10 @@ void XDesktop::start(VNCServer* vs) {
 void XDesktop::stop() {
   running = false;
 
+#ifdef HAVE_XTEST
   // Delete added keycodes
   deleteAddedKeysyms(dpy);
+#endif
 
 #ifdef HAVE_XDAMAGE
   if (haveDamage)
@@ -327,9 +329,9 @@ void XDesktop::queryConnection(network::Socket* sock,
 
   queryConnectSock = sock;
 
-  CharArray address(sock->getPeerAddress());
   delete queryConnectDialog;
-  queryConnectDialog = new QueryConnectDialog(dpy, address.buf,
+  queryConnectDialog = new QueryConnectDialog(dpy,
+                                              sock->getPeerAddress(),
                                               userName,
                                               queryConnectTimeout,
                                               this);
@@ -355,6 +357,9 @@ void XDesktop::pointerEvent(const Point& pos, int buttonMask) {
     }
   }
   oldButtonMask = buttonMask;
+#else
+  (void)pos;
+  (void)buttonMask;
 #endif
 }
 
@@ -396,7 +401,6 @@ KeyCode XDesktop::XkbKeysymToKeycode(Display* dpy, KeySym keysym) {
 
   return keycode;
 }
-#endif
 
 KeyCode XDesktop::addKeysym(Display* dpy, KeySym keysym)
 {
@@ -512,9 +516,10 @@ KeyCode XDesktop::keysymToKeycode(Display* dpy, KeySym keysym) {
 
   return keycode;
 }
+#endif
 
 
-void XDesktop::keyEvent(rdr::U32 keysym, rdr::U32 xtcode, bool down) {
+void XDesktop::keyEvent(uint32_t keysym, uint32_t xtcode, bool down) {
 #ifdef HAVE_XTEST
   int keycode = 0;
 
@@ -546,10 +551,14 @@ void XDesktop::keyEvent(rdr::U32 keysym, rdr::U32 xtcode, bool down) {
   vlog.debug("%d %s", keycode, down ? "down" : "up");
 
   XTestFakeKeyEvent(dpy, keycode, down, CurrentTime);
+#else
+  (void)keysym;
+  (void)xtcode;
+  (void)down;
 #endif
 }
 
-void XDesktop::clientCutText(const char* str) {
+void XDesktop::clientCutText(const char* /*str*/) {
 }
 
 ScreenSet XDesktop::computeScreenLayout()
@@ -778,6 +787,9 @@ unsigned int XDesktop::setScreenLayout(int fb_width, int fb_height,
   return ret;
 
 #else
+  (void)fb_width;
+  (void)fb_height;
+  (void)layout;
   return rfb::resultProhibited;
 #endif /* HAVE_XRANDR */
 }
@@ -938,6 +950,7 @@ void XDesktop::queryRejected()
   queryConnectSock = 0;
 }
 
+#ifdef HAVE_XFIXES
 bool XDesktop::setCursor()
 {
   XFixesCursorImage *cim;
@@ -948,20 +961,20 @@ bool XDesktop::setCursor()
 
   // Copied from XserverDesktop::setCursor() in
   // unix/xserver/hw/vnc/XserverDesktop.cc and adapted to
-  // handle long -> U32 conversion for 64-bit Xlib
-  rdr::U8* cursorData;
-  rdr::U8 *out;
+  // handle long -> uint32_t conversion for 64-bit Xlib
+  uint8_t* cursorData;
+  uint8_t *out;
   const unsigned long *pixels;
 
-  cursorData = new rdr::U8[cim->width * cim->height * 4];
+  cursorData = new uint8_t[cim->width * cim->height * 4];
 
   // Un-premultiply alpha
   pixels = cim->pixels;
   out = cursorData;
   for (int y = 0; y < cim->height; y++) {
     for (int x = 0; x < cim->width; x++) {
-      rdr::U8 alpha;
-      rdr::U32 pixel = *pixels++;
+      uint8_t alpha;
+      uint32_t pixel = *pixels++;
 
       alpha = (pixel >> 24) & 0xff;
       if (alpha == 0)
@@ -985,3 +998,4 @@ bool XDesktop::setCursor()
   XFree(cim);
   return true;
 }
+#endif

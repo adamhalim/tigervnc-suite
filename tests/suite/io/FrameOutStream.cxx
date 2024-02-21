@@ -43,7 +43,7 @@ namespace suite {
     lock.unlock();
   }
 
-  void FrameOutStream::addUpdate(rdr::U8* data, int width, int height,
+  void FrameOutStream::addUpdate(uint8_t* data, int width, int height,
                                 int x_offset, int y_offset, int size)
   {
     Image* image = new Image(width, height, data, size, x_offset, y_offset);

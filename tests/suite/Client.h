@@ -25,9 +25,9 @@ namespace suite {
 
     // Unused
     virtual void initDone();
-    virtual void setCursor(int, int, const rfb::Point&, const rdr::U8*);
+    virtual void setCursor(int, int, const rfb::Point&, const uint8_t*);
     virtual void setCursorPos(const rfb::Point&);
-    virtual void setColourMapEntries(int, int, rdr::U16*);
+    virtual void setColourMapEntries(int, int, uint16_t*);
     virtual void bell();
 
     rfb::SimpleUpdateTracker updates;

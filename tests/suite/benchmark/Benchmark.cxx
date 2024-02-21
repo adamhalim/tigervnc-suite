@@ -14,7 +14,7 @@
 
 using namespace suite;
 
-Benchmark::Benchmark(std::string filename, const rdr::S32* encodings,
+Benchmark::Benchmark(std::string filename, const int32_t* encodings,
                                            const size_t len)
   : filename(filename), encodings_(encodings), encodingsLength_(len)
 {

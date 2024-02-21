@@ -20,7 +20,7 @@ include(CMakeMacroLibtoolFile)
 include(cmake/TargetLinkDirectories.cmake)
 
 project(tigervnc)
-set(VERSION 1.13.1)
+set(VERSION 1.13.80)
 
 # The RC version must always be four comma-separated numbers
 string(REPLACE . , RCVERSION "${VERSION}.0")
@@ -73,12 +73,12 @@ ENDIF()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 
 # Tell the compiler to be stringent
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat=2")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wformat=2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wformat=2 -Wvla")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wvla")
 # Make sure we catch these issues whilst developing
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Werror=vla")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Werror=vla")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 ENDIF()
 # clang doesn't support format_arg, which breaks this warning
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -112,17 +112,21 @@ if(APPLE)
   add_definitions(-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0)
 endif()
 
-# MinGW64 has header support but no library support for IActiveDesktop, so we
-# need to check for both the header and library and use our own implementation
-# in common/os if either doesn't exist.
-if(WIN32)
-  check_c_source_compiles("#include <windows.h>\n#include <wininet.h>\n#include <shlobj.h>\nint main(int c, char** v) {IActiveDesktop iad; (void)iad; return 0;}" HAVE_ACTIVE_DESKTOP_H)
-  check_c_source_compiles("#include <windows.h>\n#include <wininet.h>\n#include <shlobj.h>\nint main(int c, char** v) {GUID i = CLSID_ActiveDesktop; (void)i; return 0;}" HAVE_ACTIVE_DESKTOP_L)
-endif()
-
 # X11 stuff. It's in a if() so that we can say REQUIRED
 if(UNIX AND NOT APPLE)
   find_package(X11 REQUIRED)
+  if(X11_Xdamage_LIB)
+    add_definitions(-DHAVE_XDAMAGE)
+  endif()
+  if(X11_Xfixes_LIB)
+    add_definitions(-DHAVE_XFIXES)
+  endif()
+  if(X11_Xrandr_LIB)
+    add_definitions(-DHAVE_XRANDR)
+  endif()
+  if(X11_XTest_LIB)
+    add_definitions(-DHAVE_XTEST)
+  endif()
 endif()
 
 # Check for zlib
@@ -309,6 +313,17 @@ if(UNIX AND NOT APPLE)
   endif()
 endif()
 
+# check for systemd support (socket activation)
+if(UNIX AND NOT APPLE)
+  find_package(PkgConfig)
+  if (PKG_CONFIG_FOUND)
+    pkg_check_modules(LIBSYSTEMD libsystemd)
+    if (LIBSYSTEMD_FOUND)
+      add_definitions(-DHAVE_LIBSYSTEMD)
+    endif()
+  endif()
+endif()
+
 # Generate config.h and make sure the source finds it
 configure_file(config.h.in config.h)
 add_definitions(-DHAVE_CONFIG_H)
@@ -348,3 +363,5 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
   "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P cmake_uninstall.cmake)
+
+libtool_generate_control_files()

@@ -44,7 +44,7 @@ void Client::setInStream(DummyInStream* in)
 
 void Client::copyOutStreamToInStream(DummyOutStream* out)
 {
-  rdr::U8* data = new rdr::U8[out->length()];
+  uint8_t* data = new uint8_t[out->length()];
   memcpy(data, out->dump(), out->length());
   DummyInStream* is = new DummyInStream(data, out->length());
   setInStream(is);
@@ -72,7 +72,7 @@ void Client::framebufferUpdateEnd()
     int stride;
     pb = getFramebuffer();
 
-    const rdr::U8* data = pb->getBuffer(pb->getRect(), &stride);
+    const uint8_t* data = pb->getBuffer(pb->getRect(), &stride);
     PNGDecoder decoder = PNGDecoder();
 
     decoder.encodeImageTofile(data, pb->width(), pb->height(),
@@ -91,7 +91,7 @@ void Client::initDone()
 {
 }
 
-void Client::setColourMapEntries(int firstColour, int nColours, rdr::U16* rgbs)
+void Client::setColourMapEntries(int firstColour, int nColours, uint16_t* rgbs)
 {
 }
 
@@ -101,7 +101,7 @@ void Client::bell()
 
 
 void Client::setCursor(int width, int height, const rfb::Point& hotspot,
-                                              const rdr::U8* data)
+                                              const uint8_t* data)
 {
 }
 

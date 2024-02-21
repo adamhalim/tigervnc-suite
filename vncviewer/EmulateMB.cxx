@@ -96,7 +96,7 @@
  * action = 0: nothing
  * action < 0: ButtonRelease
  *
- * The comment preceeding each section is the current emulation state.
+ * The comment preceding each section is the current emulation state.
  * The comments to the right are of the form
  *      <button state> (<events>) -> <new emulation state>
  * which should be read as
@@ -304,7 +304,7 @@ bool EmulateMB::handleTimeout(rfb::Timer *t)
   // Pointer move events are not sent when waiting for the timeout.
   // However, we can't let the position get out of sync so when
   // the pointer has moved we have to send the latest position here.
-  if (!origPos.equals(lastPos)) {
+  if (origPos != lastPos) {
     buttonMask = createButtonMask(buttonMask);
     sendPointerEvent(lastPos, buttonMask);
   }

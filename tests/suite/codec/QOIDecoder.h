@@ -12,14 +12,14 @@ namespace suite {
     ~QOIDecoder();
 
     Image *decodeImageFromFile(std::string filename);
-    Image* decodeImageFromMemory(rdr::U8* data, int width, int height,
+    Image* decodeImageFromMemory(uint8_t* data, int width, int height,
                                  int size, int x_offest = 0,
                                  int y_offset = 0);
 
-    void encodeImageTofile(const rdr::U8* data, int width, int height,
+    void encodeImageTofile(const uint8_t* data, int width, int height,
                            std::string filename);
 
-    Image* encodeImageToMemory(const rdr::U8* data, int width, int height,
+    Image* encodeImageToMemory(const uint8_t* data, int width, int height,
                                int x_offset = 0, int y_offset = 0);
   };
 }

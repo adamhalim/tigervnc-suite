@@ -30,7 +30,7 @@ namespace suite {
     int height;
     int channels;
 
-    rdr::U8* data = (rdr::U8*) stbi_load(filename.c_str(), &width, &height,
+    uint8_t* data = (uint8_t*) stbi_load(filename.c_str(), &width, &height,
                                         &channels, 0);
     int bufSize = width * height * channels;
 
@@ -39,7 +39,7 @@ namespace suite {
     return image;
   }
 
- Image* PNGDecoder::decodeImageFromMemory(rdr::U8* data, int width, int height,
+ Image* PNGDecoder::decodeImageFromMemory(uint8_t* data, int width, int height,
                                           int size, int x_offset, int y_offset)
   {
 
@@ -51,7 +51,7 @@ namespace suite {
     if (ret)
       throw std::ios_base::failure("fpng: failed to decode image\n");
 
-    rdr::U8* vectoryCopy = new rdr::U8[width * height * 4];
+    uint8_t* vectoryCopy = new uint8_t[width * height * 4];
     std::copy(out.begin(), out.end(), vectoryCopy);
 
     Image* image = new Image(width, height, vectoryCopy, out.size(),
@@ -60,31 +60,31 @@ namespace suite {
     return image;
   }
 
-  void PNGDecoder::encodeImageTofile(const rdr::U8 *data, int width,
+  void PNGDecoder::encodeImageTofile(const uint8_t *data, int width,
                                      int height, std::string filename)
   {
     // We use fpng to encode images as it's faster than stb_image.
     // FIXME: images encoded by fpng must be decoded using fpng.
     // Won't work using stb_image for example
-    rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
+    uint8_t* paddedBuf = addAlphaPadding(data, width, height);
     fpng::fpng_encode_image_to_file(filename.c_str(),
                                     paddedBuf, width, height, 4);
     delete paddedBuf;
     measurePixelRate(width, height, 4);
   }
 
-  Image* PNGDecoder::encodeImageToMemory(const rdr::U8 *data, int width,
+  Image* PNGDecoder::encodeImageToMemory(const uint8_t *data, int width,
                                         int height, int x_offset, int y_offset)
   {
-    rdr::U8* paddedBuf = addAlphaPadding(data, width, height);
-    std::vector<rdr::U8> out;
+    uint8_t* paddedBuf = addAlphaPadding(data, width, height);
+    std::vector<uint8_t> out;
     int ret = fpng::fpng_encode_image_to_memory(paddedBuf, width, height,
                                                 4, out);
     delete paddedBuf;
     if (!ret)
       throw std::ios_base::failure("fpng: failed to encode image\n");
 
-    rdr::U8* vectorCopy = new rdr::U8[out.size()];
+    uint8_t* vectorCopy = new uint8_t[out.size()];
     std::copy(out.begin(), out.end(), vectorCopy);
 
     Image* image = new Image(width, height, vectorCopy, out.size(),
@@ -93,14 +93,14 @@ namespace suite {
     return image;
   }
 
-  rdr::U8* PNGDecoder::addAlphaPadding(const rdr::U8* data,
+  uint8_t* PNGDecoder::addAlphaPadding(const uint8_t* data,
                                        int width, int height)
   {
     // When copying data from the framebuffer, the alpha channel is set to 0
     // which causes issues when encoding PNG. We don't want anything to be
     // transparent, so we set all alpha bits to 255.
     int bufSize = width * height * 4;
-    rdr::U8* paddedBuf = new rdr::U8[bufSize];
+    uint8_t* paddedBuf = new uint8_t[bufSize];
 
     for (int i = 0; i < bufSize; i += 4) {
       paddedBuf[i] = data[i];

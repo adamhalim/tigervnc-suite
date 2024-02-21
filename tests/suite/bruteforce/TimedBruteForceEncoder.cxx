@@ -50,7 +50,7 @@ namespace suite {
 
     void TimedBruteForceEncoder::writeSolidRect(int width, int height,
                                                 const rfb::PixelFormat& pf,
-                                                const rdr::U8* colour)
+                                                const uint8_t* colour)
   {
     int inputSize = width * height  *4;
     BestEncoder best{};

@@ -70,8 +70,8 @@ extern char buildtime[];
 #undef VENDOR_STRING
 #include "version-config.h"
 
-#define XVNCVERSION "TigerVNC 1.13.1"
-#define XVNCCOPYRIGHT ("Copyright (C) 1999-2022 TigerVNC Team and many others (see README.rst)\n" \
+#define XVNCVERSION "TigerVNC 1.13.80"
+#define XVNCCOPYRIGHT ("Copyright (C) 1999-2024 TigerVNC Team and many others (see README.rst)\n" \
                        "See https://www.tigervnc.org for information on TigerVNC.\n")
 
 #define VNC_DEFAULT_WIDTH  1024
@@ -366,8 +366,10 @@ ddxProcessArgument(int argc, char *argv[], int i)
     if (strcmp(argv[i], "-inetd") == 0) {
         int nullfd;
 
-        dup2(0, 3);
-        vncInetdSock = 3;
+        if ((vncInetdSock = dup(0)) == -1)
+            FatalError
+                ("Xvnc error: failed to allocate a new file descriptor for -inetd: %s\n", strerror(errno));
+
 
         /* Avoid xserver >= 1.19's epoll-fd becoming fd 2 / stderr only to be
            replaced by /dev/null by OsInit() because the pollfd is not
@@ -990,8 +992,6 @@ vncScreenInit(ScreenPtr pScreen, int argc, char **argv)
     vncFbptr[0] = pbits;
     vncFbstride[0] = vncScreenInfo.fb.paddedWidth;
 
-    miSetPixmapDepths();
-
     switch (vncScreenInfo.fb.depth) {
     case 16:
         miSetVisualTypesAndMasks(16,
@@ -1015,6 +1015,8 @@ vncScreenInit(ScreenPtr pScreen, int argc, char **argv)
     default:
         return FALSE;
     }
+
+    miSetPixmapDepths();
 
     ret = fbScreenInit(pScreen, pbits,
                        vncScreenInfo.fb.width, vncScreenInfo.fb.height,
