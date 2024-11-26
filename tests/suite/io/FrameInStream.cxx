@@ -30,7 +30,8 @@ namespace suite {
     if (!headerParsed)
       throw std::logic_error("need to parse header before reading image");
 
-    int size, width, height, x_offset, y_offset, frameTime;
+    int size, width, height, x_offset, y_offset;
+    double frameTime;
     ImageUpdateStats stats;
 
     if (is.peek() == EOF) 
