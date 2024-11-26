@@ -36,10 +36,10 @@ namespace suite {
     ImageDecoder(DecoderEnum type)
       : type(type), name(decoderTypeToString(type))
     {
-      #ifdef _DEBUG
+#ifdef _DEBUG
         start = std::chrono::system_clock::now();
         pixelCount = 0;
-      #endif
+#endif // _DEBUG
     };
     virtual ~ImageDecoder() {};
 
@@ -55,7 +55,7 @@ namespace suite {
     const DecoderEnum type;
     const std::string name;
   protected:
-    #ifdef _DEBUG
+#ifdef _DEBUG
     // Measures encoding/decoding performance.
     void measurePixelRate(int width, int height, int channels)
     {
@@ -73,7 +73,7 @@ namespace suite {
   private:
     unsigned long pixelCount;
     std::chrono::system_clock::time_point start;
-    #endif // _DEBUG
+#endif // _DEBUG
   };
 }
 

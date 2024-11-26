@@ -32,9 +32,9 @@ Benchmark::Benchmark(std::string filename, const int32_t* encodings,
   this->height_ = header.height;
   try {
     this->defaultServer_ = new Server(header.width, header.height);
-    #ifdef _DEBUG
+#ifdef _DEBUG
     debugServer_ = new Server(header.width, header.height, fbPF, true);
-    #endif // _DEBUG
+#endif // _DEBUG
   } catch (rfb::Exception &e) {
     throw e;
   }
@@ -43,9 +43,9 @@ Benchmark::Benchmark(std::string filename, const int32_t* encodings,
 Benchmark::~Benchmark()
 {
   delete defaultServer_;
-  #ifdef _DEBUG
+#ifdef _DEBUG
   delete debugServer_;
-  #endif // _DEBUG
+#endif // _DEBUG
 }
 
 void Benchmark::runBenchmark()
@@ -89,9 +89,9 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       server->out->clear();
     }
     defaultServer_->loadImage(image, image->x_offset, image->y_offset);
-    #if _DEBUG
+#if _DEBUG
     debugServer_->loadImage(image, image->x_offset, image->y_offset);
-    #endif // _DEBUG
+#endif // _DEBUG
     delete image;
   }
   std::cout << "Benchmarking complete!\n";

@@ -23,9 +23,9 @@ namespace suite {
     int width() const { return width_; }
     int height() const { return height_; }
     Server* server() const { return defaultServer_; }
-    #ifdef _DEBUG
+#ifdef _DEBUG
     Server* debugServer_;
-    #endif //_DEBUG
+#endif // _DEBUG
 
   protected:
     std::string filename;

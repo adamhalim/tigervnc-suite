@@ -48,9 +48,9 @@ namespace suite {
       *image += pixel;
     }
 
-    #ifdef _DEBUG
+#ifdef _DEBUG
     measurePixelRate(width, height, 3);
-    #endif //_DEBUG
+#endif // _DEBUG
 
     return image;
   }
@@ -91,9 +91,9 @@ namespace suite {
     file << oss.str();
     file.close();
 
-    #ifdef _DEBUG
+#ifdef _DEBUG
     measurePixelRate(width, height, 3);
-    #endif //_DEBUG
+#endif // _DEBUG
   }
 
   Image* PPMDecoder::encodeImageToMemory(const uint8_t *data, int width,
@@ -110,9 +110,9 @@ namespace suite {
       buf[i + 2 - (i/4)] = data[i+ 2];
     }
 
-    #ifdef _DEBUG
+#ifdef _DEBUG
     measurePixelRate(width, height, 3);
-    #endif //_DEBUG
+#endif // _DEBUG
 
     Image* image = new Image(width, height, buf,
                              width * height * 3,

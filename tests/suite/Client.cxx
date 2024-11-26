@@ -66,7 +66,7 @@ void Client::framebufferUpdateStart()
 
 void Client::framebufferUpdateEnd()
 {
-  #ifdef _DEBUG
+#ifdef _DEBUG
     // Dump framebuffer to file after each framebufferUpdate
     rfb::PixelBuffer* pb;
     int stride;
@@ -77,7 +77,7 @@ void Client::framebufferUpdateEnd()
     JPEGDecoder decoder = JPEGDecoder();
     decoder.encodeImageTofile(data, pb->width(), pb->height(),
                                           "debug_output.png");
-  #endif
+#endif // _DEBUG
 
   rfb::CConnection::framebufferUpdateEnd();
 }

@@ -82,20 +82,20 @@ namespace suite {
       lastImageStats.encodingTime = encodeTime_;
       lastImageStats.margin = interval - encodeTime_;
 
-      #ifdef _DEBUG
+#ifdef _DEBUG
         std::cout << "Encoding took: " << encodeTime.count() << std::endl;
-      #endif
+#endif // _DEBUG
       // Sleep until next update
       if (encodeTime.count() + intervalThreshold <= interval) {
         struct timespec timespec;
         std::chrono::steady_clock::time_point sleepStart;
         std::chrono::steady_clock::time_point sleepEnd;
 
-        #ifdef _DEBUG
+#ifdef _DEBUG
         double sleeptime = interval - intervalThreshold
                          - encodeTime.count() - sleepDuration.count();
           std::cout << "Sleep for: " << sleeptime << std::endl;
-        #endif
+#endif // _DEBUG
 
         // 1e6: convert from milli to nanosec
         long sleep = ((interval - intervalThreshold) * 1e6)
@@ -112,9 +112,9 @@ namespace suite {
                        <std::chrono::milliseconds>(sleepEnd - sleepStart);
       } else {
         sleepDuration = std::chrono::steady_clock::duration::zero();
-        #ifdef _DEBUG
+#ifdef _DEBUG
           std::cerr << "Frame not encoded within time interval\n";
-        #endif
+#endif // _DEBUG
       }
     }
   }
