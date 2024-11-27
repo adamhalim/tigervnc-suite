@@ -89,7 +89,7 @@ void Benchmark::runBenchmark(EncoderSettings* settings, size_t len)
       server->out->clear();
     }
     defaultServer_->loadImage(image, image->x_offset, image->y_offset);
-#if _DEBUG
+#ifdef _DEBUG
     debugServer_->loadImage(image, image->x_offset, image->y_offset);
 #endif // _DEBUG
     delete image;
