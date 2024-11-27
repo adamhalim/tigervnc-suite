@@ -7,6 +7,7 @@ target_sources(recorder PRIVATE
   ../io/ImageUpdate.cxx
   ../codec/ImageDecoder.cxx
   ../codec/JPEGDecoder.cxx
+  ../codec/PPMDecoder.cxx
   ../codec/Image.cxx
   ../codec/decoderFactory.cxx
   ../../../unix/x0vncserver/Image.cxx

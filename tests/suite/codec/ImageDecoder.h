@@ -8,16 +8,19 @@
 namespace suite {
 
   enum DecoderEnum {
-    JPEG = 0,
+    PPM = 0,
+    JPEG,
   };
 
   static std::map<std::string, DecoderEnum> decodersMap = {
+    {"PPM", PPM},
     {"JPEG", JPEG}
   };
 
   static std::string decoderTypeToString(enum DecoderEnum e)
   {
     static std::string strings[] = {
+      "PPM",
       "JPEG",
     };
     return strings[e];
