@@ -1,17 +1,15 @@
 #include "Manager.h"
-#include "Server.h"
 #include "codec/timed/TimedEncoder.h"
 #include "codec/timed/timedEncoderFactory.h"
+#include "stats/ManagerStats.h"
+
 #include <chrono>
+
 #include <rfb/EncodeManager.h>
 #include <rfb/Encoder.h>
 #include <rfb/SConnection.h>
 #include <rfb/encodings.h>
-#include "stats/EncoderStats.h"
-#include "stats/ManagerStats.h"
-#include <algorithm>
-#include <cassert>
-#include <iostream>
+#include <rfb/UpdateTracker.h>
 
 namespace suite {
 
@@ -24,6 +22,7 @@ namespace suite {
       return;
     }
 
+    // Free encoders from EncodeManager and replace with TimedEncoders
     for (rfb::Encoder* encoder : encoders)
       delete encoder;
 
@@ -45,6 +44,7 @@ namespace suite {
                                            SINGLE_ENCODER(true),
                                            currentWriteUpdate(0)
   {
+    // Free encoders from EncodeManager and replace with TimedEncoders
     for (rfb::Encoder* e : encoders)
       delete e;
 
